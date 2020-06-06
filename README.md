@@ -7,4 +7,19 @@ This repository contains the web front-end of the web application presented in t
 
 
 
-The web f
+The web front-end offers the following functionality:
+
+- create collections of tablet images
+- upload tablet images
+- apply the sign detector
+- visualize sign detections
+- annotate cuneiform signs
+- annotate lines
+
+The web front-end has been developed using a combination of PHP and JavaScript.
+
+
+### Requirements
+
+- Apache web server (otherwise replace `.htaccess` files)
+- PHP7 (with php-xml, php-curl, php
