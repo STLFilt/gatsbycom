@@ -22,4 +22,14 @@ The web front-end has been developed using a combination of PHP and JavaScript.
 ### Requirements
 
 - Apache web server (otherwise replace `.htaccess` files)
-- PHP7 (with php-xml, php-curl, php
+- PHP7 (with php-xml, php-curl, php-zip, php-gd packages)
+
+
+### Installation
+
+1) Create a copy of this repository on your machine so that the installed web server makes the web front end available through the browser.
+
+2) Ensure that the `cuneiformbrowser/data` and `cuneiformbrowser/log` directory is writable.
+One of several options is to use the chmod command, e.g. `$chmod -R 777 ./cuneiformbrowser/log/`
+
+3) Setup your login preferences under `cuneiformbrowser/use
