@@ -36,4 +36,11 @@ One of several options is to use the chmod command, e.g. `$chmod -R 777 ./cuneif
 (WARNING: the user access management is very basic and only provides a low level of protection)
 
 4) To enable sign detection in the web front end, install the [cuneiform-sign-detection-code](https://github.com/compvis/cuneiform-sign-detection-code/) on the same machine and run the webapp back-end using `$python detector_app.py`.
-For instruction how to run the webapp back-end, refer to the rea
+For instruction how to run the webapp back-end, refer to the readme provided in [./lib/webapp/](https://github.com/compvis/cuneiform-sign-detection-code/blob/master/lib/webapp/).
+
+
+### Usage
+
+Please refer to the video and the help texts provided throughout the web front-end.
+
+<img src="https://cunei.iwr.uni-heidelberg.de/cuneiformbrowser/functions/demo_cuneiform_sign_detection.gif" alt="Web interface dete
