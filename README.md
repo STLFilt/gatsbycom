@@ -32,4 +32,8 @@ The web front-end has been developed using a combination of PHP and JavaScript.
 2) Ensure that the `cuneiformbrowser/data` and `cuneiformbrowser/log` directory is writable.
 One of several options is to use the chmod command, e.g. `$chmod -R 777 ./cuneiformbrowser/log/`
 
-3) Setup your login preferences under `cuneiformbrowser/use
+3) Setup your login preferences under `cuneiformbrowser/users/users.xml`.
+(WARNING: the user access management is very basic and only provides a low level of protection)
+
+4) To enable sign detection in the web front end, install the [cuneiform-sign-detection-code](https://github.com/compvis/cuneiform-sign-detection-code/) on the same machine and run the webapp back-end using `$python detector_app.py`.
+For instruction how to run the webapp back-end, refer to the rea
