@@ -43,4 +43,9 @@ For instruction how to run the webapp back-end, refer to the readme provided in 
 
 Please refer to the video and the help texts provided throughout the web front-end.
 
-<img src="https://cunei.iwr.uni-heidelberg.de/cuneiformbrowser/functions/demo_cuneiform_sign_detection.gif" alt="Web interface dete
+<img src="https://cunei.iwr.uni-heidelberg.de/cuneiformbrowser/functions/demo_cuneiform_sign_detection.gif" alt="Web interface detection" width="700"/>
+
+
+#### References
+
+The two example images of clay tablets included in this repo are from the collection of the [Vorderasiatisches Museum Berlin](https://www.smb.museum/en/museums-institutions/vorderasiatisches-museum/home.html) which kindly granted us permission to use them for our research purposes.
