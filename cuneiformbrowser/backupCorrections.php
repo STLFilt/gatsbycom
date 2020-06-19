@@ -32,3 +32,15 @@
  	$backupCorrections = fopen(_USERS_.$_SESSION['cuneidemo']['user'].'_backupDetection.txt','rb');
 
  	// Read all the contents
+ 	fgets($backupCorrections); // first line is only for the server
+ 	$content ='';
+
+ 	while(($line = fgets($backupCorrections))!== false)
+ 	{
+ 		$content .= $line; // append the whole infos.
+ 	}
+
+ 	fclose($backupCorrections);
+ 	echo $content;
+ }
+ ?>
