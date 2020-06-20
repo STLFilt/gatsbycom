@@ -28,4 +28,15 @@ include_once('config.php');
 <div id=Annotations style="float:left">
 <?php
 $mainInfo = json_decode(file_get_contents($_SESSION['cuneidemo']["performance"]."mainIndex.json"),true);
-$trainingData =
+$trainingData = json_decode(file_get_contents($_SESSION['cuneidemo']["groupFolder"]."archivedAnnotations.json"),true);
+$lastTrain = intval(end($mainInfo["trainingIDs"]));
+$current = intval($mainInfo["currentID"]);
+$annotations = Array();
+$numCollections = count($trainingData["images"]);
+
+for($i = 0; $i < $numCollections; $i++)
+{
+	foreach($trainingData["images"][$i] as $name)
+		$annotations[$name] = Array("Train" => true, "Feedback"=> false);
+}
+// "de
