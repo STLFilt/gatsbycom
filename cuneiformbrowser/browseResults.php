@@ -39,4 +39,13 @@ for($i = 0; $i < $numCollections; $i++)
 	foreach($trainingData["images"][$i] as $name)
 		$annotations[$name] = Array("Train" => true, "Feedback"=> false);
 }
-// "de
+// "detected":"20","correct":19,"falsePositive":0,"falseDetection":1,"threshhold":"0.3"
+for($i = $lastTrain+1; $i <= $current; $i++)
+{
+	$info = json_decode(file_get_contents($_SESSION['cuneidemo']["performance"]."statsGeneral".DIRECTORY_SEPARATOR.sprintf("%'.010d.json",$i)),true);
+
+	if(array_key_exists("FeedbackData",$info))
+	{
+		$name = substr($info["image"],0,-4);
+		if(array_key_exists($name,$annotations))
+			$train = t
