@@ -48,4 +48,24 @@ for($i = $lastTrain+1; $i <= $current; $i++)
 	{
 		$name = substr($info["image"],0,-4);
 		if(array_key_exists($name,$annotations))
-			$train = t
+			$train = true;
+		else
+			$train = false;
+
+		$annotations[$name] = Array("Train" => $train, "Feedback"=> true, "detected"=> $info["FeedbackData"]["detected"], "correct"=>$info["FeedbackData"]["correct"],"threshhold"=>$info["FeedbackData"]["threshhold"]);
+
+
+	}
+}
+?>
+<table>
+	<tr>
+		<th>Image</th><th>Set</th><th>Feedback</th><th>Detected</th><th>Correct</th><th>Thresh</th>
+	</tr>
+		<?php
+		$totalDet = 0;
+		$totalCor = 0;
+
+		foreach($annotations as $name=>$info)
+		{
+			
