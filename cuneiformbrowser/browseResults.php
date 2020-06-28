@@ -82,4 +82,16 @@ for($i = $lastTrain+1; $i <= $current; $i++)
 			else
 				$part2 = "<td>no</td><td>-</td><td>-</td><td>-</td>";
 
-			echo "<tr><td>$
+			echo "<tr><td>$name</td>$part1$part2</tr>";
+
+		}
+		echo "<td>Total</td><td>-</td><td>-</td><td>$totalDet</td><td>$totalCor</td><td>-</td>"
+		?>
+
+
+</table>
+</div>
+<script src="functions/resultsBrowser.js"> </script>
+</body>
+
+</html>
