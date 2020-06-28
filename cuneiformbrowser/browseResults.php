@@ -68,4 +68,18 @@ for($i = $lastTrain+1; $i <= $current; $i++)
 
 		foreach($annotations as $name=>$info)
 		{
-			
+			if($info["Train"])
+				$part1 = "<td class=\"yesModel\">train</td>";
+			else
+				$part1 = "<td class=\"noModel\">test</td>";
+
+			if($info["Feedback"])
+			{
+				$part2 = "<td class=\"yesModel\">yes</td><td>$info[detected]</td><td>$info[correct]</td><td>$info[threshhold]</td>";
+				$totalDet += $info["detected"];
+				$totalCor +=  $info["correct"];
+			}
+			else
+				$part2 = "<td>no</td><td>-</td><td>-</td><td>-</td>";
+
+			echo "<tr><td>$
