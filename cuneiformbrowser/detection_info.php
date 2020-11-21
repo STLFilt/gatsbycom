@@ -39,4 +39,18 @@ switch ($_GET['infoRequest']) {
 			{
 //				$info[] = [$number, sprintf("v%03d", $number)];
 				$parts = explode("_", basename($folder), 2);
-				if(coun
+				if(count($parts) == 1)
+					$info[] = [basename($folder), "Tobias' fancy versioning system"];
+				else
+					$info[] = [basename($folder), $parts[1]];
+					
+				//$info[] = [basename($folder), "Tobias' fancy versioning system"];
+			}
+		}
+		echo json_encode($info);
+		break;
+}
+
+
+
+?>
