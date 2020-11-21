@@ -25,4 +25,18 @@ switch ($_GET['infoRequest']) {
 
 		$base_directory = './'.$_SESSION['cuneidemo']["performance"].'fullResults'.$DS;   // '../../'
 
-		$all_folders 
+		$all_folders = glob($base_directory.'v*');
+
+		$info = [];
+
+		foreach($all_folders as $folder)
+		{
+	//		$number = intval(array_filter(explode('v', basename($folder)))[1]);
+
+			$search_file = glob($base_directory.basename($folder).$DS.$_SESSION['cuneidemo']['collectionFolderName'].$name.'*.csv');
+
+			if(!empty($search_file))
+			{
+//				$info[] = [$number, sprintf("v%03d", $number)];
+				$parts = explode("_", basename($folder), 2);
+				if(coun
