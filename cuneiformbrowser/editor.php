@@ -16,4 +16,16 @@
 <title>Loading...</title>
 
 <script src="lib/jquery.min.js"></script>
-</h
+</head>
+<body>
+<div class="container">
+<div id="overlay" onclick=""></div>
+<div class="menu" style="cursor:default;">
+<p id="tabletName"><b> Loading... </b></p>
+<div id="totals" class="small">Boxes: 0/0</div>
+<div class="signInfo">
+<p style="text-align: center;">Sign's Information </p>
+<div class="numberArea" id="number">00</div>
+<div id="nameArea" class="numberArea nameArea"> AN
+    </div>
+<div id="confidenceArea" style="display:none;"> <div cl
