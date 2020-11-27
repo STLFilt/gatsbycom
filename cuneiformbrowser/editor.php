@@ -28,4 +28,13 @@
 <div class="numberArea" id="number">00</div>
 <div id="nameArea" class="numberArea nameArea"> AN
     </div>
-<div id="confidenceArea" style="display:none;"> <div cl
+<div id="confidenceArea" style="display:none;"> <div class="confidenceArea" id="signConfidence" >00</div></div>
+</div>
+
+<input type=range min=0 max=1 value=0 id="slider" step=".01" oninput="confidenceUpdate(this.value)" disabled="true" autocomplete="off" style="display: none;" >
+<div id="sliderPosition" style="display: none;">0</div>
+<hr>
+Zoom
+<select name="zoom" id="zoom" onchange='resizeEverything(this.value);' autocomplete="off">
+  <option value="150">150%</option>
+  <option value="100">100%</opti
