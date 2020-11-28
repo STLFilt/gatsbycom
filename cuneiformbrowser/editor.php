@@ -37,4 +37,14 @@
 Zoom
 <select name="zoom" id="zoom" onchange='resizeEverything(this.value);' autocomplete="off">
   <option value="150">150%</option>
-  <option value="100">100%</opti
+  <option value="100">100%</option>
+  <option value="75">75%</option>
+  <option value="50">50%</option>
+  <option value="25">25%</option>
+  <option value="10">10%</option>
+</select>
+<hr>
+<form>
+<div id="online">
+	<div><div style="float:left;margin-left:2em;">Server Services</div> <div class="button helpButton" onclick='setPopUp("popServerServices");'>?</div></div><br />
+	<div class="button" id="detect" onclick=' setPopUp("popDetect");' >Detect</div> <!-- 
