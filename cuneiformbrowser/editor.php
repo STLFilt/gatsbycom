@@ -56,4 +56,7 @@ Zoom
 	<div class="button" id="saveCorrections" onclick="saveCorrections();" style="display:none">Continue Later</div>
 	<div class="button" id="reTrain" onclick="prepareRetrain();" style="display:none">Re-train</div>
 	<div class="button" id="backStart" >Back to Index</div>
-	<div class="button" id="clear" style="di
+	<div class="button" id="clear" style="display: none;" onclick="clearAnnotations();">Clear Annotations</div>
+	<div class="button" id="reload" style="display: none;" onclick="reloadAnnotations();">Reload Annotations</div>
+	<div class="button" id="lastResult" style="display: block;" onclick="loadResults('');">Load latest Result</div>
+	<div class="button" id="lastResultOld" style="display: block;" onclick="oldDetectionsWindow.show();">Load old Results</div>
