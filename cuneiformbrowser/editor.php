@@ -60,3 +60,9 @@ Zoom
 	<div class="button" id="reload" style="display: none;" onclick="reloadAnnotations();">Reload Annotations</div>
 	<div class="button" id="lastResult" style="display: block;" onclick="loadResults('');">Load latest Result</div>
 	<div class="button" id="lastResultOld" style="display: block;" onclick="oldDetectionsWindow.show();">Load old Results</div>
+    <div class="button" id="acceptAll" style="display: none;" onclick="acceptAllCorrections();">Accept all Results</div>
+	<div class="button" id="cleanUp" style="display: none;" onclick="cleanUp();">Clean-up Results</div>
+	<div class="button" id="loadBackup" style="display: none;" onclick="restoreBackup()">Continue Feedback</div>
+
+	<div id="backup" style="display: none;">
+	<select name="backupSelect" id="backupSelect" onch
