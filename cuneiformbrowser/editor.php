@@ -47,4 +47,9 @@ Zoom
 <form>
 <div id="online">
 	<div><div style="float:left;margin-left:2em;">Server Services</div> <div class="button helpButton" onclick='setPopUp("popServerServices");'>?</div></div><br />
-	<div class="button" id="detect" onclick=' setPopUp("popDetect");' >Detect</div> <!-- 
+	<div class="button" id="detect" onclick=' setPopUp("popDetect");' >Detect</div> <!-- onclick=' setPopUp("popDetect");' -->
+	<div class="button" id="load" onclick="loadAnnotations();">Load Annotations</div>
+	<!-- <div class="button" id="upload" >Upload Annotations</div> -->
+	<div class="button disabled" id="saveServer" onclick="saveAnnotationsServer('noArchive');">Save Annotations</div>
+	<!-- <div class="button" id="archiveServer" onclick="saveAnnotationsServer('archive');" style="display:none">Archive</div> -->
+	<div cla
