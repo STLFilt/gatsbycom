@@ -52,4 +52,8 @@ Zoom
 	<!-- <div class="button" id="upload" >Upload Annotations</div> -->
 	<div class="button disabled" id="saveServer" onclick="saveAnnotationsServer('noArchive');">Save Annotations</div>
 	<!-- <div class="button" id="archiveServer" onclick="saveAnnotationsServer('archive');" style="display:none">Archive</div> -->
-	<div cla
+	<div class="button" id="sendCorrections" onclick="saveAnnotationsServer('noArchive', true);" style="display:none">Save as Annotation</div>
+	<div class="button" id="saveCorrections" onclick="saveCorrections();" style="display:none">Continue Later</div>
+	<div class="button" id="reTrain" onclick="prepareRetrain();" style="display:none">Re-train</div>
+	<div class="button" id="backStart" >Back to Index</div>
+	<div class="button" id="clear" style="di
