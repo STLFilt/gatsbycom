@@ -74,4 +74,9 @@ Zoom
 </div>
 <!-- <div><div style="float:left;margin-left:2em;">Local Functions</div> <div class="button helpButton" onclick='setPopUp("popLocalServices");'>?</div></div><br />
 <div class="button" onclick="localImage('start')" style="display: none;" id="localImage">Load Image</div>
-<div class="button" oncl
+<div class="button" onclick="localAnnotation('start')" id="loadLocal">Load Locally</div>
+<div class="button" id="clearOff" style="display: none;" onclick="clearAnnotations();">Clear Annotations</div>
+<div class="button" id="saveLocal" onclick="downloadXML();">Save Locally</div>-->
+</form></div>
+<div class="infoPanel infoHelp" id="helpPanel" style="height:8.5em; cursor:default;">
+<div id="infoEdit" style="display: none"> <br /> <b>Click</
