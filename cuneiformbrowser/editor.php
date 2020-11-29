@@ -65,4 +65,13 @@ Zoom
 	<div class="button" id="loadBackup" style="display: none;" onclick="restoreBackup()">Continue Feedback</div>
 
 	<div id="backup" style="display: none;">
-	<select name="backupSelect" id="backupSelect" onch
+	<select name="backupSelect" id="backupSelect" onchange='reloadAnnotations(this.value);' autocomplete="off">
+	  <option value="0">Newest Annotation</option>
+	</select>
+	</div>
+	<hr>
+
+</div>
+<!-- <div><div style="float:left;margin-left:2em;">Local Functions</div> <div class="button helpButton" onclick='setPopUp("popLocalServices");'>?</div></div><br />
+<div class="button" onclick="localImage('start')" style="display: none;" id="localImage">Load Image</div>
+<div class="button" oncl
