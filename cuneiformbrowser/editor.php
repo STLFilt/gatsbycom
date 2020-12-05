@@ -79,4 +79,16 @@ Zoom
 <div class="button" id="saveLocal" onclick="downloadXML();">Save Locally</div>-->
 </form></div>
 <div class="infoPanel infoHelp" id="helpPanel" style="height:8.5em; cursor:default;">
-<div id="infoEdit" style="display: none"> <br /> <b>Click</
+<div id="infoEdit" style="display: none"> <br /> <b>Click</b> a Box to select<br />
+<i><b>Click</b> and <b>Drag</b></i> to move
+</div>
+<div id="infoProtected">
+<br /> <b>Click</b> a Box to select<br />
+Press <b>ESC</b> to deselect<br />
+Press <b>TAB</b> to change box
+Press <b>ENTER</b> to see details
+</div>
+<div id="infoDefault" style="display: none">
+<i><b>Click</b> and <b>Drag</b></i> to move<br />
+ <b>Click</b> a Box to select:<br />
+Pre
