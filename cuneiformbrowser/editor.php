@@ -103,4 +103,15 @@ Press <b>ESC</b> to deselect<br />
 <b>Click</b> on image to deselect
 </div>
 <div id="infoTrain" style="display: none">
-<br /> <b>Click</b> a Box to select
+<br /> <b>Click</b> a Box to select<br />
+Change confidence threshhold moving the slider<br />
+Press <b>ENTER</b> to see details<br />
+</div>
+<div id="infoFeedback" style="display: none">
+<br /> <b>Click</b> a Box to select<br />
+Change confidence threshhold moving the slider<br />
+Press <b>ENTER</b> to give feedback<br />
+</div>
+<div id="infoNewBoxes" style="display: none">
+<div class="small" style="text-align: center;"><br />Start on upper-right corner!</div>
+<b>C
