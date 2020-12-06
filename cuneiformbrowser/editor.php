@@ -91,4 +91,16 @@ Press <b>ENTER</b> to see details
 <div id="infoDefault" style="display: none">
 <i><b>Click</b> and <b>Drag</b></i> to move<br />
  <b>Click</b> a Box to select:<br />
-Pre
+Press <b>E</b> to resize the box<br />
+Press <b>ENTER</b> to relabel<br />
+Press <b>DEL</b> to erase<br />
+Press <b>ESC</b> to deselect<br />
+Press <b>TAB</b> to change box</div>
+
+<div id="infoRelabel" style="display: none">
+<br /> <b>Click</b> a Box to relabel<br />
+Press <b>ESC</b> to deselect<br />
+<b>Click</b> on image to deselect
+</div>
+<div id="infoTrain" style="display: none">
+<br /> <b>Click</b> a Box to select
