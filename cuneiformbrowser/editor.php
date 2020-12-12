@@ -114,4 +114,17 @@ Press <b>ENTER</b> to give feedback<br />
 </div>
 <div id="infoNewBoxes" style="display: none">
 <div class="small" style="text-align: center;"><br />Start on upper-right corner!</div>
-<b>C
+<b>Click</b> to draw new Box <br />
+<b>ESC</b> to cancel drawing <br />
+<b>Click</b> to end drawing<br />
+<b style="color:red;">NOT</b> Click&Drag!!!
+</div>
+</div>
+<div class="infoPanel" style="cursor:default;">
+	Signs' Color Code
+	<br />
+
+	<div id="statusfeld" style="width:10em;margin-left:0.5em;">
+		<div style="float:left; width:1em;margin-top:0.05em">
+			<div class="smallbox" id="annotationColor"></div>
+			<div class="smallbox" id="no
