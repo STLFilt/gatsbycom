@@ -127,4 +127,16 @@ Press <b>ENTER</b> to give feedback<br />
 	<div id="statusfeld" style="width:10em;margin-left:0.5em;">
 		<div style="float:left; width:1em;margin-top:0.05em">
 			<div class="smallbox" id="annotationColor"></div>
-			<div class="smallbox" id="no
+			<div class="smallbox" id="nonAnnotationColor"></div>
+			<div class="smallbox" id="selectedColor"></div>
+			<div class="smallbox" id="sameColor"></div>
+		</div>
+		<div  style="text-align:left;float:left; margin-left:0.5em;">
+			Annotated<br />
+			 Not Annotated<br />
+			 Selected<br />
+			 Same Value<br />
+		</div>
+	</div>
+<!--  		<div id="statusfeld" style="text-align:left;"> -->
+<!-- 		Annotated<div class="smallbox" id="annotatio
