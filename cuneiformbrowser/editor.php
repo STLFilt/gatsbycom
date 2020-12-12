@@ -139,4 +139,11 @@ Press <b>ENTER</b> to give feedback<br />
 		</div>
 	</div>
 <!--  		<div id="statusfeld" style="text-align:left;"> -->
-<!-- 		Annotated<div class="smallbox" id="annotatio
+<!-- 		Annotated<div class="smallbox" id="annotationColor"></div><br /> -->
+<!-- 		 Not Annotated<div class="smallbox" id="nonAnnotationColor"></div><br /> -->
+<!-- 		 Selected<div class="smallbox" id="selectedColor"></div><br /> -->
+<!-- 		 Same Value<div class="smallbox" id="sameColor"></div><br /> -->
+<!-- 		</div> -->
+	<div id="infoDetect" style="margin-left:0.5em; display: none;">
+		<div style="float:left; width:1em;margin-top:0.05em">
+		 <div class="smallbox" sty
