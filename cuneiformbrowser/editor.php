@@ -146,4 +146,10 @@ Press <b>ENTER</b> to give feedback<br />
 <!-- 		</div> -->
 	<div id="infoDetect" style="margin-left:0.5em; display: none;">
 		<div style="float:left; width:1em;margin-top:0.05em">
-		 <div class="smallbox" sty
+		 <div class="smallbox" style="background-color: hsla(0,100%,50%,1)"></div>
+		 <div class="smallbox" style="background-color: hsla(25,100%,50%,1)"></div>
+		 <div class="smallbox" style="background-color: hsla(50,100%,50%,1)"></div>
+		 <div class="smallbox" style="background-color: hsla(75,100%,50%,1)"></div>
+		 <div class="smallbox" style="background-color: hsla(100,100%,50%,1)"></div>
+		</div>
+		<div  style="text-align:right;
