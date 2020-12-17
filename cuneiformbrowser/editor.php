@@ -152,4 +152,16 @@ Press <b>ENTER</b> to give feedback<br />
 		 <div class="smallbox" style="background-color: hsla(75,100%,50%,1)"></div>
 		 <div class="smallbox" style="background-color: hsla(100,100%,50%,1)"></div>
 		</div>
-		<div  style="text-align:right;
+		<div  style="text-align:right;float:right; margin-left:0.5em; margin-right:1.5em; width:9em;">
+		 0% confidence<br />
+		 25% confidence<br />
+		 50% confidence<br />
+		 75% confidence<br />
+		 100% confidence<br />
+		</div>
+	</div>
+
+	<div id="infoCorrect" style="margin-left:0.5em; display:none;">
+		<div style="float:left; width:1em;margin-top:0.05em">
+			<div class="smallbox" id="blue" style="background-color:blue"></div>
+			<div 
