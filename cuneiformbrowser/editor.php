@@ -171,3 +171,18 @@ Press <b>ENTER</b> to give feedback<br />
 		</div>
 		<div  style="text-align:left;float:left; margin-left:0.5em;">
 			Not Reviewed<br />
+			Reviewed as:<br />
+			 Correct<br />
+			 Not a Sign (Fp)<br />
+			 Incorrect Sign<br />
+		</div>
+	</div>
+</div>
+
+<div class="nonMax" id="nonMaxBox" style="cursor:default;">
+Non-Maximum Suppression<br />
+<input type=range min=0 max=1 value=0.5 id="nonmax" step=".01" oninput="maximumSuppression(this.value)"  autocomplete="off" style="display: block;" >
+<div id="sliderNonMax" style="display: block;">0.5</div>
+</div>
+<div>
+	<div class="
