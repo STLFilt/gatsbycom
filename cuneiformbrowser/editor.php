@@ -185,4 +185,9 @@ Non-Maximum Suppression<br />
 <div id="sliderNonMax" style="display: block;">0.5</div>
 </div>
 <div>
-	<div class="
+	<div class="statusBar">
+		<div class="statusFlag mode" id="mode" onClick="switchModes();"><b>Box</b> Mode</div>
+		<div class="statusBuffer" id="buffer1"></div>
+		<div class="statusBuffer" id="buffer2"></div>
+		<div class="button statusButton" onClick="annotate();" style="float:left; margin-left:1em;" id="statusAnnotate">New Boxes</div>
+		<!-- <div class="button statusButton" id="statusEdit" onClick="relabel()" sty
