@@ -164,4 +164,10 @@ Press <b>ENTER</b> to give feedback<br />
 	<div id="infoCorrect" style="margin-left:0.5em; display:none;">
 		<div style="float:left; width:1em;margin-top:0.05em">
 			<div class="smallbox" id="blue" style="background-color:blue"></div>
-			<div 
+			<div class="smallbox" id="blue" style="background-color:white"></div>
+			<div class="smallbox" id="green" style="background-color:green"></div>
+			<div class="smallbox" id="red" style="background-color:red"></div>
+			<div class="smallbox" id="orange" style="background-color:orange"></div>
+		</div>
+		<div  style="text-align:left;float:left; margin-left:0.5em;">
+			Not Reviewed<br />
