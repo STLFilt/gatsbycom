@@ -193,4 +193,9 @@ Non-Maximum Suppression<br />
 		<!-- <div class="button statusButton" id="statusEdit" onClick="relabel()" style="float:left; margin-left: 3px;">Relabel</div> -->
 		<div class="button statusButton" id="statusCorrect" onClick="correctMode()" style="float:left; margin-left: 3px; display:none;">Corrections</div>
 		<div class="button statusButton" id="statusDefault" onClick="defaultMode()" style="float:left; margin-left: 3px;">Edit Boxes</div>
-		<div class="button statusButton" id="statusProtected" onClick="noEdi
+		<div class="button statusButton" id="statusProtected" onClick="noEditMode()" style="float:left; margin-left: 3px;">Protected</div>
+
+		<a href="logout.php"><div class="logout" title="logout"></div></a>
+		<div class="smallbox" id="ping" style="background-color:green; float:right; transform: translateY(-50%); position:relative; top:50%;right:0.5em;"></div>
+		<div class="button statusButton" onclick='setPopUp("popUpHelp");' style="float:right; margin-right:1em;">Help</div>
+		<!--  <div class="but
