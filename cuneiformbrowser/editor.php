@@ -190,4 +190,7 @@ Non-Maximum Suppression<br />
 		<div class="statusBuffer" id="buffer1"></div>
 		<div class="statusBuffer" id="buffer2"></div>
 		<div class="button statusButton" onClick="annotate();" style="float:left; margin-left:1em;" id="statusAnnotate">New Boxes</div>
-		<!-- <div class="button statusButton" id="statusEdit" onClick="relabel()" sty
+		<!-- <div class="button statusButton" id="statusEdit" onClick="relabel()" style="float:left; margin-left: 3px;">Relabel</div> -->
+		<div class="button statusButton" id="statusCorrect" onClick="correctMode()" style="float:left; margin-left: 3px; display:none;">Corrections</div>
+		<div class="button statusButton" id="statusDefault" onClick="defaultMode()" style="float:left; margin-left: 3px;">Edit Boxes</div>
+		<div class="button statusButton" id="statusProtected" onClick="noEdi
