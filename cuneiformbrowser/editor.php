@@ -198,4 +198,13 @@ Non-Maximum Suppression<br />
 		<a href="logout.php"><div class="logout" title="logout"></div></a>
 		<div class="smallbox" id="ping" style="background-color:green; float:right; transform: translateY(-50%); position:relative; top:50%;right:0.5em;"></div>
 		<div class="button statusButton" onclick='setPopUp("popUpHelp");' style="float:right; margin-right:1em;">Help</div>
-		<!--  <div class="but
+		<!--  <div class="button statusButton" onclick='setPopUp("popShortcut");' style="float:right; margin-right:3px;">Shortcuts</div> -->
+		<div class="statusFlag" id="statusSave">Saved</div>
+
+	</div>
+		<svg id='containerSVG' width=0 height=0  class="content">
+		   <g id="svgMaster">
+			 <image xlink:href="dummy.jpg" draggable="true" x=0 y=0 height=0 width=0 id="image"></image>
+			 <g id="boxes_group"></g>
+			 <g id="lines_group" style="display:none;"></g>
+			
