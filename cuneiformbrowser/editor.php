@@ -207,4 +207,17 @@ Non-Maximum Suppression<br />
 			 <image xlink:href="dummy.jpg" draggable="true" x=0 y=0 height=0 width=0 id="image"></image>
 			 <g id="boxes_group"></g>
 			 <g id="lines_group" style="display:none;"></g>
-			
+			</g>
+		 </svg>
+</div>
+
+</div>
+<div id="tooltip" class="tooltip"></div>
+<div id="popUpHelp" class="hoverInfo" style="text-align:center;">
+<div id="popuptext" class="popText">
+<h3 style="text-align:center;">General Help</h3>
+To close any window, click "ok"/"cancel" or press ESC <br />
+<br />
+<div id="generalHelp">
+When in editing mode, there are 4 main submodes you can select the editor to be:<br /><br />
+<
