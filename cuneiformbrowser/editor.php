@@ -220,4 +220,8 @@ To close any window, click "ok"/"cancel" or press ESC <br />
 <br />
 <div id="generalHelp">
 When in editing mode, there are 4 main submodes you can select the editor to be:<br /><br />
-<
+<div class="center"><div class="button statusButton">New Boxes</div><div class="button statusButton">Relabel</div><div class="button statusButton">Edit Boxes</div><div class="button statusButton">Protected</div></div>
+<br/>
+<div class="center"><div class="button statusButton statusSelected">Protected</div></div>
+A protected mode: you can select bounding boxes but aren't allowed to edit, delete or resize them.<br />
+Clicking 
