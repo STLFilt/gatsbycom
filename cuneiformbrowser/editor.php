@@ -224,4 +224,10 @@ When in editing mode, there are 4 main submodes you can select the editor to be:
 <br/>
 <div class="center"><div class="button statusButton statusSelected">Protected</div></div>
 A protected mode: you can select bounding boxes but aren't allowed to edit, delete or resize them.<br />
-Clicking 
+Clicking on a bounding box will select it, showing you the ones with the same label.<br />
+When selected, you can take a closer look at the bounding box by pressing <b>ENTER</b>.<br />
+This is the default mode for image with <i>archived</i> annotations. <br />
+Pressing ESC or clicking anywhere on the picture will deselect the box, TAB will select the next box.
+<br />
+<div class="center"><div class="button statusButton statusSelected">Edit Boxes</div></div>
+This
