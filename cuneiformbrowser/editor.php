@@ -251,4 +251,8 @@ L : Change edit mode (Line/Box) <br />
 <div id="trainHelp" style="display:none;">
 
 After performing a detection (or loading a saved detection) you will be in <i>training mode</i>.<br />
-One important difference with the editing mode 
+One important difference with the editing mode is the small slider underneath the "Sign
+s information Box": detected signs have a normed <i>confidence</i> (how sure a detection is) and moving the slider you can set the threshold for the results to be shown.
+Only the detections with a higher confidence than the threshold will be shown.<br/>
+Only two main options are available during training:<br/>
+<div class="center"><div class="button statusButton">Corrections</div><div class="button statusBut
