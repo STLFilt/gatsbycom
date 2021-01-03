@@ -230,4 +230,8 @@ This is the default mode for image with <i>archived</i> annotations. <br />
 Pressing ESC or clicking anywhere on the picture will deselect the box, TAB will select the next box.
 <br />
 <div class="center"><div class="button statusButton statusSelected">Edit Boxes</div></div>
-This
+This is the default mode for images with non-archived annotations.<br />
+In this mode, you can edit any aspect of the bounding boxes.<br />
+Clicking on a bounding box will select it, showing you the boxes with the same label in blue.<br />
+When selected, you can change the labeling, position and size of the box.<br /> You can also delete them while selected (press <b>DEL</b>)<br />
+Pressing ESC or clicking anywhere on the pictu
