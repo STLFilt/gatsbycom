@@ -243,4 +243,12 @@ again for the bottom right corner. Cancel the drawing clicking ESC.<br />
 When done, a pop up window will prompt you for the sign's ID. <br />
 
 <br />
-<div class
+<div class="center"><div class="button statusButton statusSelected">Hot Keys</div></div>
+* (Numeric Pad): Show labels (Box mode only, function: showLabels() )<br />
++ : Show meta-data <br />
+L : Change edit mode (Line/Box) <br />
+</div>
+<div id="trainHelp" style="display:none;">
+
+After performing a detection (or loading a saved detection) you will be in <i>training mode</i>.<br />
+One important difference with the editing mode 
