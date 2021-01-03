@@ -255,4 +255,10 @@ One important difference with the editing mode is the small slider underneath th
 s information Box": detected signs have a normed <i>confidence</i> (how sure a detection is) and moving the slider you can set the threshold for the results to be shown.
 Only the detections with a higher confidence than the threshold will be shown.<br/>
 Only two main options are available during training:<br/>
-<div class="center"><div class="button statusButton">Corrections</div><div class="button statusBut
+<div class="center"><div class="button statusButton">Corrections</div><div class="button statusButton">Protected</div></div>
+<br/>
+<div class="center"><div class="button statusButton statusSelected">Protected</div></div>
+A protected mode: you can select bounding boxes but aren't allowed to edit, delete or resize them.<br />
+Clicking on a bounding box will select it, showing you the ones with the same label.<br />
+When selected, you can take a closer look at the bounding box by pressing <b>ENTER</b>.<br />
+Pressing 
