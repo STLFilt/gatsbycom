@@ -234,4 +234,13 @@ This is the default mode for images with non-archived annotations.<br />
 In this mode, you can edit any aspect of the bounding boxes.<br />
 Clicking on a bounding box will select it, showing you the boxes with the same label in blue.<br />
 When selected, you can change the labeling, position and size of the box.<br /> You can also delete them while selected (press <b>DEL</b>)<br />
-Pressing ESC or clicking anywhere on the pictu
+Pressing ESC or clicking anywhere on the picture will deselect the box, TAB will select the next box.
+<br />
+
+<div class="center"><div class="button statusButton statusSelected">New Boxes</div></div>
+Enables you to add new bounding boxes to the image.<br /> Click where you want the boxe's upper left corner to be and then click
+again for the bottom right corner. Cancel the drawing clicking ESC.<br />
+When done, a pop up window will prompt you for the sign's ID. <br />
+
+<br />
+<div class
