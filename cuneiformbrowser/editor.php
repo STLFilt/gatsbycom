@@ -261,4 +261,9 @@ Only two main options are available during training:<br/>
 A protected mode: you can select bounding boxes but aren't allowed to edit, delete or resize them.<br />
 Clicking on a bounding box will select it, showing you the ones with the same label.<br />
 When selected, you can take a closer look at the bounding box by pressing <b>ENTER</b>.<br />
-Pressing 
+Pressing ESC or clicking anywhere on the picture will deselect the box, TAB will select the next box.
+<br />
+<div class="center"><div class="button statusButton statusSelected">Corrections</div></div>
+Here you can correct the detections before sending the feedback for re-training.<br />
+When you select a box, a small window will pop up showing you the content of the box and enabling you to review the detection: <br />
+You can accept the detecti
