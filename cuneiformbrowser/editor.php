@@ -266,4 +266,9 @@ Pressing ESC or clicking anywhere on the picture will deselect the box, TAB will
 <div class="center"><div class="button statusButton statusSelected">Corrections</div></div>
 Here you can correct the detections before sending the feedback for re-training.<br />
 When you select a box, a small window will pop up showing you the content of the box and enabling you to review the detection: <br />
-You can accept the detecti
+You can accept the detection, correct it when the wrong sign was detected or just signal that the detection is not a sign at all.<br/>
+<b>Important</b>: only the boundign boxes shown on the screen <i>that have been reviewed</i> will be sent as feedback!!<br/>
+</div>
+<div class="small">For more help, click the "?" buttons</div><br />
+<!-- <b>Detect</b>: try to detect the cuneiform signs<br /> -->
+<!-- <b>Load Annotations</b>: load the tablet's annotat
