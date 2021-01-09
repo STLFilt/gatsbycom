@@ -271,4 +271,11 @@ You can accept the detection, correct it when the wrong sign was detected or jus
 </div>
 <div class="small">For more help, click the "?" buttons</div><br />
 <!-- <b>Detect</b>: try to detect the cuneiform signs<br /> -->
-<!-- <b>Load Annotations</b>: load the tablet's annotat
+<!-- <b>Load Annotations</b>: load the tablet's annotation from the server <br /> -->
+<!-- <b>Upload Annotation</b>: upload an annotation file to the server <br /> -->
+<!-- <b>Save Annotations</b>: save the current annotation on the server <br /> -->
+<!-- <b>Back to Index</b>: go back to the entry page <br /> -->
+<!-- <b>Load Locally</b>: TODO <br /> -->
+<!-- <b>Save Annotations</b>: download the annotations' file <br /> -->
+<!-- <h4>Color code</h4> -->
+<!--   - Annotated Sign<div class="smal
