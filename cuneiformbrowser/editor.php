@@ -278,4 +278,12 @@ You can accept the detection, correct it when the wrong sign was detected or jus
 <!-- <b>Load Locally</b>: TODO <br /> -->
 <!-- <b>Save Annotations</b>: download the annotations' file <br /> -->
 <!-- <h4>Color code</h4> -->
-<!--   - Annotated Sign<div class="smal
+<!--   - Annotated Sign<div class="smallbox" id="annotationColor"></div><br /> -->
+<!--   - Non-Annotated Sign<div class="smallbox" id="nonAnnotationColor"></div><br /> -->
+<!--  - Selected Sign<div class="smallbox" id="selectedColor"></div><br /> -->
+<!--  - Same signs as selected one<div class="smallbox" id="sameColor"></div><br /> -->
+<!-- <br /> -->
+</div>
+<div class="button statusButton popupButton" onclick="setPopUp();">Ok</div></div>
+
+<div id="loadAnno
