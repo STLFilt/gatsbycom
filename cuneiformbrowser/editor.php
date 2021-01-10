@@ -286,4 +286,15 @@ You can accept the detection, correct it when the wrong sign was detected or jus
 </div>
 <div class="button statusButton popupButton" onclick="setPopUp();">Ok</div></div>
 
-<div id="loadAnno
+<div id="loadAnnotation" class="hoverInfo" >
+<div id="popuptext" class="popText">
+Please choose an xml annotation file to open <br />
+<form id="fileField"><input type="file" id="annotationFile"></form>
+<br />
+<div class="button statusButton" onclick="localAnnotation('load');">Load File</div>
+<div class="button statusButton" onclick="localAnnotation('cancel');">Cancel</div>
+<div id="error"></div>
+</div>
+</div>
+
+<div id="loadImage" cl
