@@ -297,4 +297,18 @@ Please choose an xml annotation file to open <br />
 </div>
 </div>
 
-<div id="loadImage" cl
+<div id="loadImage" class="hoverInfo" >
+<div id="popuptext" class="popText">
+Please choose an imagen file to open <br />
+<form id="fileField"><input type="file" id="imageFile"></form>
+<br />
+<div class="button statusButton" onclick="localImage('load');">Load File</div>
+<div class="button statusButton" onclick="localImage('cancel');">Cancel</div>
+<div id="error"></div>
+</div>
+</div>
+
+
+<div class="signEdit" id="signEdit">
+Edit Information<br />
+<svg id="svgThumb" width="50px" he
