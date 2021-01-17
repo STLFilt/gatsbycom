@@ -311,4 +311,13 @@ Please choose an imagen file to open <br />
 
 <div class="signEdit" id="signEdit">
 Edit Information<br />
-<svg id="svgThumb" width="50px" he
+<svg id="svgThumb" width="50px" height="30px" style="border: 1px; solid #000000;">
+	<image xlink:href="dummy.jpg" draggable="true" x="0" y="0" height="0" width="0" id="thumb">
+	</svg>
+</svg>
+<form autocomplete="off"><input type="text" id="numberEdit" value=""></form>
+<div id="editHumanReadable" style="text-align:center;"></div>
+<form id="SignConservationState">
+	<p>Sign's conservation state:</p>
+	<div>
+		<input type="radio" id="conservation1" name="conservation" value
