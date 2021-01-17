@@ -320,4 +320,13 @@ Edit Information<br />
 <form id="SignConservationState">
 	<p>Sign's conservation state:</p>
 	<div>
-		<input type="radio" id="conservation1" name="conservation" value
+		<input type="radio" id="conservation1" name="conservation" value="intact" checked>
+		<label for="conservation1">Intact</label>
+		<input type="radio" id="conservation2" name="conservation" value="partial">
+		<label for="conservation2">Partially broken</label>
+		<input type="radio" id="conservation3" name="conservation" value="broken">
+		<label for="conservation3">Broken</label>
+	</div>
+</form>
+<div id="editWarning" style="color:red; text-align:center; display:none;"></div>
+<!--
