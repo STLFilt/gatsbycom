@@ -329,4 +329,9 @@ Edit Information<br />
 	</div>
 </form>
 <div id="editWarning" style="color:red; text-align:center; display:none;"></div>
-<!--
+<!-- <div id="nameArea" class="numberArea nameArea"> AN</div> -->
+<div id="HOGandModel" style="display:none;">
+<form action="" id="trainCheckboxes"  style="display:none;">
+<input type="checkbox" name="correct" id="wrongSign"  onclick="toggleTrainCheckBoxes(this);">Wrong Sign
+<input type="checkbox" name="correct" id="noSign" onclick="toggleTrainCheckBoxes(this);">Not a Sign</form>
+<div>Confidence:<div id="showConfid
