@@ -334,4 +334,10 @@ Edit Information<br />
 <form action="" id="trainCheckboxes"  style="display:none;">
 <input type="checkbox" name="correct" id="wrongSign"  onclick="toggleTrainCheckBoxes(this);">Wrong Sign
 <input type="checkbox" name="correct" id="noSign" onclick="toggleTrainCheckBoxes(this);">Not a Sign</form>
-<div>Confidence:<div id="showConfid
+<div>Confidence:<div id="showConfidence"></div><br /></div>
+<!-- <div style="float:left;border: 1px solid #A1A1A1; border-radius:3px;margin-right:2em;padding:0.5em; margin-top:5px;">Closest Model <br />
+ 	<svg id="svgModel" width="50px" height="64px" style="border: 1px solid #000000; ">
+ 		<image xlink:href="results/TEST2.jpg" draggable="true" x="0" y="0" height="64" width="6800" id="model" title="4">
+	</svg>
+</div>
+<div style="float:right;border: 1px solid #A1A1A1; bo
