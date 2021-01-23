@@ -348,4 +348,12 @@ Edit Information<br />
 </div>
 
 <div class="button statusButton" onclick="openDictionary();">Dictionary</div><br/ >
-<div class="button statusBut
+<div class="button statusButton popupButton" onclick="storeSignInfo()" id="okButtonSave">Save</div>
+<div class="button statusButton popupButton" onclick="setPopUp();signEditing= false;">Cancel</div></div>
+</div>
+<div class="signEdit popUp" id="popShortcut">
+<div class="popText">
+<h3 style="text-align:center;">Shortcuts</h3>
+h - Open the main help pop-up <br />
+n - Start the "new Boxes" mode<br />
+e - resize box (only if selected and 
