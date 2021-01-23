@@ -340,4 +340,12 @@ Edit Information<br />
  		<image xlink:href="results/TEST2.jpg" draggable="true" x="0" y="0" height="64" width="6800" id="model" title="4">
 	</svg>
 </div>
-<div style="float:right;border: 1px solid #A1A1A1; bo
+<div style="float:right;border: 1px solid #A1A1A1; border-radius:3px;;padding:0.5em; margin-top:5px;"> HOG influence <br />
+	 <svg id="svgHOG" width="50px" height="64px" style="border: 1px solid #000000;">
+	 	<image xlink:href="results/TESTHOG.jpg" draggable="true" x="0" y="0" height="64" width="6800" id="hog" title="4">
+	</svg> -->
+
+</div>
+
+<div class="button statusButton" onclick="openDictionary();">Dictionary</div><br/ >
+<div class="button statusBut
