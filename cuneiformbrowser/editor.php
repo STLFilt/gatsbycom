@@ -392,3 +392,14 @@ ESC - deselect / close window<br />
 
 				<div class="helpAnnotate">
 						<div class="center"><div class="button">Clear Annotations</div></div>
+						Erase all annotations on the image<br /><br />
+				</div>
+				<div>
+
+				<div class="center"><div class="button">Back to Index</div></div>
+						Closes the editor and opens the images' index.<br />
+						<b>Nothing</b> is saved!<br /><br />
+				</div>
+				<div class="helpStart">
+						<div class="center"><div class="button">Load latest Results</div></div>
+						Loads the image
