@@ -356,4 +356,12 @@ Edit Information<br />
 <h3 style="text-align:center;">Shortcuts</h3>
 h - Open the main help pop-up <br />
 n - Start the "new Boxes" mode<br />
-e - resize box (only if selected and 
+e - resize box (only if selected and allowed)<br />
+ESC - deselect / close window<br />
+</div>
+<div class="button statusButton popupButton" onclick="setPopUp();">Ok</div>
+</div>
+<div id="popServerServices" class="hoverInfo" style="text-align:center; left: 250px; width:32em;">
+	<div class="popText">
+		<h3 style="text-align:center;">Server Services</h3>
+		<div class="small">Note: buttons appear and are clickable only in context! <br/></div><
