@@ -382,4 +382,13 @@ ESC - deselect / close window<br />
 				</div>
 				<div class="helpTraining">
 						<div class="center"><div class="button">Quit Training</div></div>
-						Clear results and leave training 
+						Clear results and leave training mode.<br />
+						<!-- No feedback is sent to the server!<br /><br /> -->
+				</div>
+				<div class="helpTraining">
+						<div class="center"><div class="button">Clean-up Results</div></div>
+						Filter detections with non-maximum suppression of 0.5 and minimum confidence of 0.3.<br /><br />
+				</div>
+
+				<div class="helpAnnotate">
+						<div class="center"><div class="button">Clear Annotations</div></div>
