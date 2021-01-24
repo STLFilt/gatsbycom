@@ -373,4 +373,13 @@ ESC - deselect / close window<br />
 						Note that this will open the training mode<br/><br />
 				</div>
 				<div class="helpStart">
-						<div class="center"><div class="button">Load Annotations<
+						<div class="center"><div class="button">Load Annotations</div></div>
+						Loads the image's annotations from the server<br /><br />
+				</div>
+				<div class="editpossible">
+						<div class="center"><div class="button">Save Annotations</div></div>
+						Saves the current annotations on the server. Old versions are backed up<br /><br />
+				</div>
+				<div class="helpTraining">
+						<div class="center"><div class="button">Quit Training</div></div>
+						Clear results and leave training 
