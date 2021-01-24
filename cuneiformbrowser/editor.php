@@ -364,4 +364,13 @@ ESC - deselect / close window<br />
 <div id="popServerServices" class="hoverInfo" style="text-align:center; left: 250px; width:32em;">
 	<div class="popText">
 		<h3 style="text-align:center;">Server Services</h3>
-		<div class="small">Note: buttons appear and are clickable only in context! <br/></div><
+		<div class="small">Note: buttons appear and are clickable only in context! <br/></div><br />
+
+				<div class="helpStart">
+						<div class="center"><div class="button">Detect</div></div>
+						Open the detection function window. When the detection program is run, the results are displayed color-coded
+						according to the detector's confidence <br/>
+						Note that this will open the training mode<br/><br />
+				</div>
+				<div class="helpStart">
+						<div class="center"><div class="button">Load Annotations<
