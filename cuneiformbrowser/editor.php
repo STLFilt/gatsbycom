@@ -420,4 +420,16 @@ ESC - deselect / close window<br />
 					<select autocomplete="off">
  						 <option value="0">Newest Annotation</option>
 					</select></div>
-					<br /> Select the annotati
+					<br /> Select the annotations' version you want to edit<br /> (only if not archived)
+				</div>
+				<div>
+
+		</div>
+	<div class="button statusButton popupButton" onclick="setPopUp();">Ok</div>
+</div>
+</div>
+
+<div id="popLocalServices" class="hoverInfo" style="text-align:center; left: 250px; width:25em;">
+	<div class="popText">
+		<h3 style="text-align:center;">Local Services</h3>
+		<div class="center"><div class="b
