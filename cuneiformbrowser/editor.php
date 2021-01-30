@@ -402,4 +402,11 @@ ESC - deselect / close window<br />
 				</div>
 				<div class="helpStart">
 						<div class="center"><div class="button">Load latest Results</div></div>
-						Loads the image
+						Loads the image's latest detection results from the server<br />
+						Note that this will open the training mode<br/><br />
+				</div>
+				<div class="helpStart">
+						<div class="center"><div class="button">Load old Results</div></div>
+						Opens small window with list of all available detection results for this image. After
+						confirming a selection, loads the selected detection results from the server<br />
+						Note that this will o
