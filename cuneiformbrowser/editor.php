@@ -409,4 +409,15 @@ ESC - deselect / close window<br />
 						<div class="center"><div class="button">Load old Results</div></div>
 						Opens small window with list of all available detection results for this image. After
 						confirming a selection, loads the selected detection results from the server<br />
-						Note that this will o
+						Note that this will open the training mode<br/><br />
+				</div>
+				<div class="helpAnnotate">
+						<div class="center"><div class="button">Reload Annotations</div></div>
+						Reload the last saved annotation's version<br /><br />
+				</div>
+				<div class="editpossible">
+					<div class="center">
+					<select autocomplete="off">
+ 						 <option value="0">Newest Annotation</option>
+					</select></div>
+					<br /> Select the annotati
