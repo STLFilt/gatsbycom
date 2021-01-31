@@ -432,4 +432,11 @@ ESC - deselect / close window<br />
 <div id="popLocalServices" class="hoverInfo" style="text-align:center; left: 250px; width:25em;">
 	<div class="popText">
 		<h3 style="text-align:center;">Local Services</h3>
-		<div class="center"><div class="b
+		<div class="center"><div class="button statusButton">Load Locally</div></div><br />
+		Load an annotations file from your computer<br />
+		<div class="small">Note: the annotations are <b>not</b> saved on the server automatically</div><br />
+		<div class="center"><div class="button statusButton">Save Locally</div></div><br />
+		Save the annotations on your computer<br />
+		A pop-up window will appear enabling you to download the current annotation (or detection) in XML format.<br />
+	</div>
+	<div class
