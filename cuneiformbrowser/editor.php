@@ -439,4 +439,14 @@ ESC - deselect / close window<br />
 		Save the annotations on your computer<br />
 		A pop-up window will appear enabling you to download the current annotation (or detection) in XML format.<br />
 	</div>
-	<div class
+	<div class="button statusButton popupButton" onclick="setPopUp();">Ok</div>
+</div>
+
+<div id="popSaveLocally" class="hoverInfo" style="text-align:center; left: 20%px; top:25%; width:25em;">
+	<div class="popText">
+		<h3 style="text-align:center;">Save annotations' XML-file locally</h3>
+
+		<b>Firefox/Chrome</b><br />
+		Click on the link <br /><br />
+		<b>Other browsers</b><br />
+		Right-Click on the link and select "Save as..." <
