@@ -459,4 +459,12 @@ ESC - deselect / close window<br />
 	<div class="popText">
 		<h3 style="text-align:center;">Detect Signs</h3>
 		<div style="text-align:center;">
-			<div class="button statu
+			<div class="button statusButton statusSelected" id="detectAll" onclick="showDetectAll();">All Signs</div>
+			<div class="button statusButton" id="detectSingular" onclick="showDetectSpecific();" style="width: 7em; ">Specific Signs</div>
+		</div>
+
+		<div style="border-radius: 5px; border: 1px solid #000000; vertical-align: middle; margin-top: 3px;padding:3px;">
+		<b>Options</b><br />
+		<form>
+		<div >
+		  <input type="checkbox" 
