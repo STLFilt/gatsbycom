@@ -467,4 +467,7 @@ ESC - deselect / close window<br />
 		<b>Options</b><br />
 		<form>
 		<div >
-		  <input type="checkbox" 
+		  <input type="checkbox" id="prior"> Prior <input type="checkbox" id="ngram"> n-gram<div style="display:none;"><input type="checkbox" id="multi"> Multi-Class <input type="checkbox" id="SIFT"> SIFT <br />
+		 <input type="checkbox" id="consensus" checked> Consensus
+	 	<input type="checkbox" id="edge"> Edge Representation </div></div>
+		 <div id="options" style="text-align:center;"><select id="imageOptions" autocomplete="off" onchange="refreshInfo(
