@@ -449,4 +449,14 @@ ESC - deselect / close window<br />
 		<b>Firefox/Chrome</b><br />
 		Click on the link <br /><br />
 		<b>Other browsers</b><br />
-		Right-Click on the link and select "Save as..." <
+		Right-Click on the link and select "Save as..." <br /><br />
+		<a download="info.txt" id="downloadlink" style="display: none;text-align:center;" onclick="">Download annotations</a>
+	</div>
+	<div class="button statusButton popupButton" onclick="setPopUp();">Ok</div>
+</div>
+
+<div id="popDetectOld" class="hoverInfo" style="text-align:center; left: 20%px; top:25%; width:21em;">
+	<div class="popText">
+		<h3 style="text-align:center;">Detect Signs</h3>
+		<div style="text-align:center;">
+			<div class="button statu
