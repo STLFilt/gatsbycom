@@ -470,4 +470,12 @@ ESC - deselect / close window<br />
 		  <input type="checkbox" id="prior"> Prior <input type="checkbox" id="ngram"> n-gram<div style="display:none;"><input type="checkbox" id="multi"> Multi-Class <input type="checkbox" id="SIFT"> SIFT <br />
 		 <input type="checkbox" id="consensus" checked> Consensus
 	 	<input type="checkbox" id="edge"> Edge Representation </div></div>
-		 <div id="options" style="text-align:center;"><select id="imageOptions" autocomplete="off" onchange="refreshInfo(
+		 <div id="options" style="text-align:center;"><select id="imageOptions" autocomplete="off" onchange="refreshInfo();" name="imageOptions" >
+		 <option value="defaultOptions">Default options</option>
+		 </select></div>
+		 <div style="text-align:right">Fast Search<input type="checkbox" id="fast"></div>
+		</form>
+		<div id="errorField2" style="color:red; text-align:center;"></div>
+		</div>
+		<div id="specificInput" style="border-radius: 5px; border: 1px solid #000000; vertical-align: middle; display:none; margin-top: 3px; padding:3px;">
+		<form
