@@ -478,4 +478,8 @@ ESC - deselect / close window<br />
 		<div id="errorField2" style="color:red; text-align:center;"></div>
 		</div>
 		<div id="specificInput" style="border-radius: 5px; border: 1px solid #000000; vertical-align: middle; display:none; margin-top: 3px; padding:3px;">
-		<form
+		<form>
+		 Detect the following signs: <br />
+		 <input type="text" id="selectedSign" name="todetect" autocomplete="off" size="20" value="" style="width:22ch; margin:5px;"> <div class="button statusButton" id="chooseSign" onclick="showModelList();" style="width: 6em; text-align:center;">List Available</div>
+		 <div class="small">Enter the signs' numbers or text labels separated by commas</div>
+		 <div id="errorField"
