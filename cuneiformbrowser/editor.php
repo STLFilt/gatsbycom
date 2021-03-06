@@ -482,4 +482,17 @@ ESC - deselect / close window<br />
 		 Detect the following signs: <br />
 		 <input type="text" id="selectedSign" name="todetect" autocomplete="off" size="20" value="" style="width:22ch; margin:5px;"> <div class="button statusButton" id="chooseSign" onclick="showModelList();" style="width: 6em; text-align:center;">List Available</div>
 		 <div class="small">Enter the signs' numbers or text labels separated by commas</div>
-		 <div id="errorField"
+		 <div id="errorField" style="color:red; text-align:center;"></div>
+		</form>
+
+		</div>
+	</div>
+
+	<div class="button statusButton popupButton" onclick="startDetection();">Detect!</div>
+	<div class="button statusButton popupButton" onclick="setPopUp();errorField.innerHTML='';">Cancel</div>
+</div>
+
+
+<div id="popDetect" class="hoverInfo" style="text-align:center; left: 20%px; top:25%; width:21em;">
+	<div class="popText">
+		<h3 s
