@@ -495,4 +495,9 @@ ESC - deselect / close window<br />
 
 <div id="popDetect" class="hoverInfo" style="text-align:center; left: 20%px; top:25%; width:21em;">
 	<div class="popText">
-		<h3 s
+		<h3 style="text-align:center;">Detect Signs</h3>
+		<div style="border-radius: 5px; border: 1px solid #000000; vertical-align: middle; margin-top: 3px;padding:3px;">
+		<b>Options</b><br />
+		<form>
+		<div>Tablet Scaling</div>
+		<div class="small">Move the slider to select an appropriate input scale. A blue help grid appears on slider movement. For the best results the distance between two blue lines should appro
