@@ -500,4 +500,9 @@ ESC - deselect / close window<br />
 		<b>Options</b><br />
 		<form>
 		<div>Tablet Scaling</div>
-		<div class="small">Move the slider to select an appropriate input scale. A blue help grid appears on slider movement. For the best results the distance between two blue lines should appro
+		<div class="small">Move the slider to select an appropriate input scale. A blue help grid appears on slider movement. For the best results the distance between two blue lines should approximately match the sign height of the script.</div>
+		<div><input type="range" id="scale_slider" name="tab_scale" min="0" max="5" value="1.0" step="0.25" oninput="updateTextInput(this.value, 'scale_val');">
+		     <input type="number" id="scale_val" min="0" max="5" value="1.0" step="0.25" oninput="updateTextInput(this.value, 'scale_slider');"></div>
+        <div>Detector Model</div>
+		<div>
+			<select id="model_version" autocompl
