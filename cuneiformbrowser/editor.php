@@ -505,4 +505,11 @@ ESC - deselect / close window<br />
 		     <input type="number" id="scale_val" min="0" max="5" value="1.0" step="0.25" oninput="updateTextInput(this.value, 'scale_slider');"></div>
         <div>Detector Model</div>
 		<div>
-			<select id="model_version" autocompl
+			<select id="model_version" autocomplete="off" name="model_version" > <!-- onchange="refreshInfo();" -->
+		 		<option value="vF" selected>Default Detector</option>
+		 		<option value="vA">Detector (exp)</option>
+		 	</select>
+		</div>
+		</form>
+		<div>Notice</div>
+		<div class="small">The detection speed depends on the input size (and the server load). In the case of very large tablets it may take several minutes. Please be patient and scroll to the 
