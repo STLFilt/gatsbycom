@@ -512,4 +512,13 @@ ESC - deselect / close window<br />
 		</div>
 		</form>
 		<div>Notice</div>
-		<div class="small">The detection speed depends on the input size (and the server load). In the case of very large tablets it may take several minutes. Please be patient and scroll to the 
+		<div class="small">The detection speed depends on the input size (and the server load). In the case of very large tablets it may take several minutes. Please be patient and scroll to the top to check for the response window!</div>
+		<div id="errorFieldDet" style="color:red; text-align:center;"></div>
+		</div>
+	</div>
+
+	<div class="button statusButton popupButton" onclick="startDetection();">Detect!</div>
+	<div class="button statusButton popupButton" onclick="setPopUp();clearScalePattern();errorFieldDet.innerHTML='';">Cancel</div>
+</div>
+
+<div id="modelList" class="hoverInfo" style="text-align:center; left:
