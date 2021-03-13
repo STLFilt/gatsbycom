@@ -551,4 +551,12 @@ $collectionNames = $archive['collections'];
 
 //$xmlImages = simplexml_load_file($_SESSION['cuneidemo']['imagesPath'].'imagesList.xml');
 $counter = 0;
-foreach($archive['images'] as
+foreach($archive['images'] as $group => $images)
+		{
+				echo "<th colspan=\"6\">$collectionNames[$group]</th></tr><tr>";
+				//$statusAnnotations = $imageInfo->annotation['info'];
+
+				foreach($images as $key=>$annotation)
+				{
+					echo "<td style='border:none;'><label style='white-space:nowrap; display:inline-block;vertical-align:middle; margin-top:0.5em;'>
+					<input type='checkbox' value=$group name=$key checked=true style=
