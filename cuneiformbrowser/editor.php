@@ -531,4 +531,13 @@ ESC - deselect / close window<br />
 <div class="button" style="display:inline-block;width:7ch;" id="verbose" onclick="streamChange = true;">verbose</div>
 <div><textarea id="matlabOutput" rows="40" cols="98" readonly="true" style="resize:none;"></textarea></div>
 <div class="smallbox" style="color:green" id="pingLeft"></div><div class="smallbox" style="color:white;" id="pingRight"></div>
-	<div class="button stat
+	<div class="button statusButton popupButton" style="display:none;" id="closeStream" onclick="setPopUp();loadResults(detectionInfo.ID);">Ok</div>
+</div>
+
+<div id="retrainPopUp" class="hoverInfo" style="text-align:center; left: 20%px; top:25%; heigth:45em; padding: 1ch;">
+	<h2>Retrain</h2>
+	The following signs will be retrained:<br />
+	<div id='retrainData'></div>
+	Please choose the Annotations to be used:<br />
+	<b>Available Annotations</b>
+<for
