@@ -527,4 +527,8 @@ ESC - deselect / close window<br />
 	<div class="button statusButton popupButton" onclick="document.getElementById('modelList').style.display = 'none';">Ok</div>
 </div>
 
-<div id="matlabStream" class="hoverInfo" style="text-align:center; left: 20em; top:5em; width: 100ch
+<div id="matlabStream" class="hoverInfo" style="text-align:center; left: 20em; top:5em; width: 100ch; heigth:45em">
+<div class="button" style="display:inline-block;width:7ch;" id="verbose" onclick="streamChange = true;">verbose</div>
+<div><textarea id="matlabOutput" rows="40" cols="98" readonly="true" style="resize:none;"></textarea></div>
+<div class="smallbox" style="color:green" id="pingLeft"></div><div class="smallbox" style="color:white;" id="pingRight"></div>
+	<div class="button stat
