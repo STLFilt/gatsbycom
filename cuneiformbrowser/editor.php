@@ -521,4 +521,10 @@ ESC - deselect / close window<br />
 	<div class="button statusButton popupButton" onclick="setPopUp();clearScalePattern();errorFieldDet.innerHTML='';">Cancel</div>
 </div>
 
-<div id="modelList" class="hoverInfo" style="text-align:center; left:
+<div id="modelList" class="hoverInfo" style="text-align:center; left: 20%px; top:25%; width:43ch; heigth:45em; padding: 1ch;">
+<b>Available Models</b>
+<div id="availableModels" style="text-align:left;font-family: monospace;"></div>
+	<div class="button statusButton popupButton" onclick="document.getElementById('modelList').style.display = 'none';">Ok</div>
+</div>
+
+<div id="matlabStream" class="hoverInfo" style="text-align:center; left: 20em; top:5em; width: 100ch
