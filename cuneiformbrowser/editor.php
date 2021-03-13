@@ -540,4 +540,15 @@ ESC - deselect / close window<br />
 	<div id='retrainData'></div>
 	Please choose the Annotations to be used:<br />
 	<b>Available Annotations</b>
-<for
+<form id="availableAnnotations">
+<table style="margin:auto; border:hidden">
+<tr>
+	<?php
+$archiveJSON = file_get_contents($_SESSION['cuneidemo']['groupFolder']."archivedAnnotations.json");
+$archive = json_decode($archiveJSON,true);
+
+$collectionNames = $archive['collections'];
+
+//$xmlImages = simplexml_load_file($_SESSION['cuneidemo']['imagesPath'].'imagesList.xml');
+$counter = 0;
+foreach($archive['images'] as
