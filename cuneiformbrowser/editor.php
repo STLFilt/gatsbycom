@@ -559,4 +559,26 @@ foreach($archive['images'] as $group => $images)
 				foreach($images as $key=>$annotation)
 				{
 					echo "<td style='border:none;'><label style='white-space:nowrap; display:inline-block;vertical-align:middle; margin-top:0.5em;'>
-					<input type='checkbox' value=$group name=$key checked=true style=
+					<input type='checkbox' value=$group name=$key checked=true style='width:1.5em;vertical-align:middle'/>$annotation </label></td>";
+					$counter++;
+					if( ($counter % 3) == 0)
+					{
+						echo '</tr><tr>';
+					}
+				}
+				for (;($counter % 3) != 0; $counter++)
+				{	echo "<td></td>";
+				}
+				echo '</tr><tr>';
+
+}
+
+
+?>
+</tr>
+</table>
+</form>
+<!-- 	<div style="text-align:center;font-family: monospace;">
+	<form action="" id="availableAnnotations"></form>
+	</div>-->
+	<div class="button st
