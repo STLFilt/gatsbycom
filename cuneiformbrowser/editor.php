@@ -588,4 +588,11 @@ foreach($archive['images'] as $group => $images)
 <div id="updateDictionary" class="hoverInfo" style="position:absolute; text-align:center; left: 20%; top:25%; width:43ch; heigth:45em; padding: 1ch;">
 <h3>Update labels' dictionary</h3>
 <div style="text-align: left;">
-You
+You entered a name that isn't in the database. <br />
+Please enter the corresponding numbering for this test label and press ok or click cancel to re-enter the label.
+<div class="small" style="text-align: center;"><br />Only english alphanumeric, no spaces!</div>
+</div>
+
+	Entered Label: <b><div id="enteredLabel"></div></b>
+	<div id="actualLabel"></div>
+	<form autocomplete="off">ID:<input type="text" id="dictionaryEdit" value=""></form
