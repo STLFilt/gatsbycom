@@ -595,4 +595,10 @@ Please enter the corresponding numbering for this test label and press ok or cli
 
 	Entered Label: <b><div id="enteredLabel"></div></b>
 	<div id="actualLabel"></div>
-	<form autocomplete="off">ID:<input type="text" id="dictionaryEdit" value=""></form
+	<form autocomplete="off">ID:<input type="text" id="dictionaryEdit" value=""></form>
+
+	<div id="dictWarning" style="color:red; text-align:center; display:none;"></div>
+	<div class="button statusButton" onclick="openDictionary();">Dictionary</div><br />
+	<div class="button statusButton popupButton" onclick="dictionaryUpdate();">Save</div>
+	<div class="button statusButton popupButton" onclick="document.getElementById('updateDictionary').style.display = 'none';
+														 document.getE
