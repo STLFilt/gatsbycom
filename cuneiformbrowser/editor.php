@@ -581,4 +581,11 @@ foreach($archive['images'] as $group => $images)
 <!-- 	<div style="text-align:center;font-family: monospace;">
 	<form action="" id="availableAnnotations"></form>
 	</div>-->
-	<div class="button st
+	<div class="button statusButton popupButton" style="display:none;" id="startRetrain" onclick="startRetrain();">Retrain</div>
+	<div class="button statusButton popupButton"  onclick="setPopUp();">Cancel</div>
+</div>
+
+<div id="updateDictionary" class="hoverInfo" style="position:absolute; text-align:center; left: 20%; top:25%; width:43ch; heigth:45em; padding: 1ch;">
+<h3>Update labels' dictionary</h3>
+<div style="text-align: left;">
+You
