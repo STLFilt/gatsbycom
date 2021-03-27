@@ -601,4 +601,11 @@ Please enter the corresponding numbering for this test label and press ok or cli
 	<div class="button statusButton" onclick="openDictionary();">Dictionary</div><br />
 	<div class="button statusButton popupButton" onclick="dictionaryUpdate();">Save</div>
 	<div class="button statusButton popupButton" onclick="document.getElementById('updateDictionary').style.display = 'none';
-														 document.getE
+														 document.getElementById('dictWarning').innerHTML = '';
+														  document.getElementById('dictionaryEdit').value = '';">Cancel</div><br />
+  <!--  <div class="button statusButton popupButton" style="width:'auto';" onclick="dictionaryAuto();">Create Automatically</div>-->
+</div>
+
+<div id="metaData" class="hoverInfo" style="text-align:center; left: 20%px; top:10%; width:50ch; padding: 3ch;">
+<h3>Meta-Data for Image</h3>
+<div class=
