@@ -616,4 +616,10 @@ Please enter the corresponding numbering for this test label and press ok or cli
 <div id="searchedTools" class="hoverInfo" style="text-align:center; left: 14em; bottom:10%; top:auto; width:1000px;">
 <h3>Searched signs</h3>
 <div id="searchedSigns" style="text-align:left;"></div>
-<div clas
+<div class="button statusButton popupButton" onclick="updateVisible();">Show Signs</div>
+<div id="searchedOptions" style="text-align:center;">
+<input id="sliderAdjustSize" type=range min=0 max=1 value=0.95 id="slider" step=".01" oninput="adjustmentUpdate(this.value)" autocomplete="off">
+<div id="sliderAdjustVlue">0.95</div>
+<div id="buttonAdjustSize" class="button statusButton" onclick="adjustSize(true);">Adjust Size</div>
+</div>
+	<div class=
