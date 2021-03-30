@@ -608,4 +608,12 @@ Please enter the corresponding numbering for this test label and press ok or cli
 
 <div id="metaData" class="hoverInfo" style="text-align:center; left: 20%px; top:10%; width:50ch; padding: 3ch;">
 <h3>Meta-Data for Image</h3>
-<div class=
+<div class="meta" id="metaForm" style="text-align:left;"></div>
+	<div class="button statusButton popupButton" onclick="meta.saveMeta();">Save</div>
+	<div class="button statusButton popupButton" onclick="setPopUp();">Cancel</div>
+</div>
+
+<div id="searchedTools" class="hoverInfo" style="text-align:center; left: 14em; bottom:10%; top:auto; width:1000px;">
+<h3>Searched signs</h3>
+<div id="searchedSigns" style="text-align:left;"></div>
+<div clas
