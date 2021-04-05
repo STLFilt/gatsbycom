@@ -629,4 +629,10 @@ Please enter the corresponding numbering for this test label and press ok or cli
 This image hasn't got any annotation. <br/>
 Do you want to generate an annotation from your feedback?
 	<div class="button statusButton popupButton" onclick=" setPopUp(); sendCorrections(true);">Yes</div>
-	<div class="button 
+	<div class="button statusButton popupButton" onclick=" setPopUp(); sendCorrections(false);">No</div>
+</div>
+
+<div id=testDIV style="width:20em; height:1.75em; overflow:hidden; position:fixed; z-index:4; right:10;top:10;border: 2px solid #a1a1a1;
+  border-radius: 10px;background-color:#ffffff;  text-align: center; resize: both;">
+    <div id="dictionaryHeader" style="top:0; padding-top:0.2">
+        <div id="openCloseDic" style="width:15em; display:inlin
