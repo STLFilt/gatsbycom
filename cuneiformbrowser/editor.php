@@ -622,4 +622,11 @@ Please enter the corresponding numbering for this test label and press ok or cli
 <div id="sliderAdjustVlue">0.95</div>
 <div id="buttonAdjustSize" class="button statusButton" onclick="adjustSize(true);">Adjust Size</div>
 </div>
-	<div class=
+	<div class="button statusButton popupButton" onclick="setPopUp();">Cancel</div>
+</div>
+
+<div id="generateAnno" class="hoverInfo" style="text-align:center; left: 20%px; top:10%; width:50ch; padding: 3ch;">
+This image hasn't got any annotation. <br/>
+Do you want to generate an annotation from your feedback?
+	<div class="button statusButton popupButton" onclick=" setPopUp(); sendCorrections(true);">Yes</div>
+	<div class="button 
