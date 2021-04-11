@@ -635,4 +635,11 @@ Do you want to generate an annotation from your feedback?
 <div id=testDIV style="width:20em; height:1.75em; overflow:hidden; position:fixed; z-index:4; right:10;top:10;border: 2px solid #a1a1a1;
   border-radius: 10px;background-color:#ffffff;  text-align: center; resize: both;">
     <div id="dictionaryHeader" style="top:0; padding-top:0.2">
-        <div id="openCloseDic" style="width:15em; display:inlin
+        <div id="openCloseDic" style="width:15em; display:inline-block;text-align:center;cursor:default;" >Dictionary
+            <div style="display:inline-block; border:1px solid #000000; margin:2px; width:2.25em; height=1em; border-radius:7px; cursor:pointer;" id="toggle" onclick="openDictionary();">&#x25BE;</div>
+        </div>
+    </div>
+    <div id="dictionary" style="overflow:auto; max-height: 50em "></div>
+</div>
+
+ <div id="transliteration" class="hoverInfo" style="text-align:center; left: 20%px; to
