@@ -642,4 +642,13 @@ Do you want to generate an annotation from your feedback?
     <div id="dictionary" style="overflow:auto; max-height: 50em "></div>
 </div>
 
- <div id="transliteration" class="hoverInfo" style="text-align:center; left: 20%px; to
+ <div id="transliteration" class="hoverInfo" style="text-align:center; left: 20%px; top:10%; width:50ch; height: 5ch; display:none;">
+<textarea id="transText" rows="4" cols="60"></textarea>
+<div id="transTable"></div>
+ </div>
+<script> offline =false;</script>
+<script src="functions/gui.js" type=text/javascript></script>
+<script src="functions/cuneiformOOP.js" type=text/javascript></script>
+
+</body>
+</html>
