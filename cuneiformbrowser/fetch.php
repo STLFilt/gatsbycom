@@ -17,4 +17,23 @@
 // 	else
 // 	{
 // 	$xmlImages = simplexml_load_file(_IMAGESLIST_);
-// 	$imageID = 
+// 	$imageID = intval($_SESSION['cuneidemo']['imageID']);
+// 	$name = $xmlImages->image[$imageID]->name;
+// 	$annotationfile = _ANNOTATIONS_.($xmlImages->image[$imageID]->annotation);
+
+// 	$xmlAnnotation = simplexml_load_file($annotationfile);
+
+// 	header ("Content-Type:text/xml");
+//     echo $xmlAnnotation->saveXML();
+// 	}
+
+	if($_GET["version"]==0)
+		{
+			$version = "";
+		}
+	else
+		{
+			$version = "-v".$_GET["version"];
+		}
+
+	$xmlImage
