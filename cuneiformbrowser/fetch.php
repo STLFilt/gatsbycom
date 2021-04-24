@@ -36,4 +36,15 @@
 			$version = "-v".$_GET["version"];
 		}
 
-	$xmlImage
+	$xmlImages = simplexml_load_file($_SESSION['cuneidemo']['imagesList']);
+	$imageID = intval($_SESSION['cuneidemo']['imageID']);
+	$name = $xmlImages->image[$imageID]->name;
+	$annotationfile = $_SESSION['cuneidemo']['annotationsPath'].($xmlImages->image[$imageID]->annotation).$version.".xml";
+	$fileName = (string)$xmlImages->image[$imageID]->annotation;
+
+
+
+	// change header!!!!
+	header ("Content-Type: application/json");
+
+	$lines_file = $_SE
