@@ -47,4 +47,21 @@
 	// change header!!!!
 	header ("Content-Type: application/json");
 
-	$lines_file = $_SE
+	$lines_file = $_SESSION['cuneidemo']['collectionFolder']."archivedAnnotations" . DIRECTORY_SEPARATOR.$fileName."_lines.csv";
+
+	if(file_exists($lines_file))
+		$lines = file_get_contents($lines_file);
+	else
+		$lines ="";
+
+	if(file_exists($annotationfile))
+	{
+		$xmlAnnotation = simplexml_load_file($annotationfile);
+		$xml = $xmlAnnotation->saveXML();
+	}
+	else
+		$xml = "";
+
+	$annotations = Array("xml"=>$xml, "csv" => $lines);
+
+    
