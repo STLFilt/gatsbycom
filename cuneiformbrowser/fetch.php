@@ -64,4 +64,8 @@
 
 	$annotations = Array("xml"=>$xml, "csv" => $lines);
 
-    
+    echo json_encode($annotations);
+    if($version == "")
+    	$version = "newest";
+	logMessage("images'annotations loaded (version == $version)");
+?>
