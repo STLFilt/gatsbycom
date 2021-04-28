@@ -725,3 +725,411 @@ boundingBox.prototype.jsonThumbs = function(detection, model) {
 //	this.thumbXStart = element.XStart;
 //	this.thumbWidth = element.width;
 //	this.thumbHOG = element.xHOG;
+
+	this.thumbName = "thumb_" + detection + "_model" + model + ".jpg";
+	this.HOGName = "thumb_" + detection + "_model" + model + "_HOG.jpg";
+};
+
+boundingBox.prototype.svgBox = function() {
+	var x = Math.round(this.xmin);
+	var y = Math.round(this.ymin);
+	var width = Math.round(this.xmax) - x;
+	var height = Math.round(this.ymax) - y;
+	var elem = document.createElementNS(xmlns, "rect");
+
+	elem.setAttribute("id", this.id);
+	elem.setAttribute("x", x);
+	elem.setAttribute("y", y);
+	elem.setAttribute("width", width);
+	elem.setAttribute("height", height);
+	elem.setAttribute("name", this.symbol);
+	if (this.symbol != "000")
+		elem.setAttribute("stroke", defaultColor);
+	else
+		elem.setAttribute("stroke", noValue);
+	elem.setAttribute("stroke-width", 1);
+	elem.setAttribute("fill", "none");
+	elem.setAttribute("vector-effect", "non-scaling-stroke");
+    elem.classList.add(this.status);
+	document.getElementById("boxes_group").appendChild(elem);
+	this.svg = elem;
+};
+boundingBox.prototype.setMax = function(width, height) {
+	this.xmax = +this.xmin + +width;
+	this.ymax = +this.ymin + +height;
+};
+
+boundingBox.prototype.boxToXML = function(newXML) {
+	var sign = newXML.createElement("object");
+	var newNode = newXML.createElement("name");
+
+	newNode.appendChild(newXML.createTextNode(this.id));
+	sign.appendChild(newNode);
+
+	// Symbol <symbol>511</symbol>
+
+	newNode = newXML.createElement("symbol");
+	newNode.appendChild(newXML.createTextNode(this.symbol));
+	sign.appendChild(newNode);
+
+	// bndbox
+	newNode = newXML.createElement("bndbox");
+	var x = newXML.createElement("xmin");
+	var y = newXML.createElement("ymin");
+
+	x.appendChild(newXML.createTextNode(this.xmin));
+	y.appendChild(newXML.createTextNode(this.ymin));
+
+	newNode.appendChild(x);
+	newNode.appendChild(y);
+
+	x = newXML.createElement("xmax");
+	y = newXML.createElement("ymax");
+
+	x.appendChild(newXML.createTextNode(this.xmax));
+	y.appendChild(newXML.createTextNode(this.ymax));
+
+	newNode.appendChild(x);
+	newNode.appendChild(y);
+
+	sign.appendChild(newNode);
+
+	// center
+	newNode = newXML.createElement("center");
+	x = newXML.createElement("xc");
+	y = newXML.createElement("yc");
+
+	x.appendChild(newXML.createTextNode((parseFloat(this.xmin) + parseFloat(this.xmax)) / 2));
+	y.appendChild(newXML.createTextNode((parseFloat(this.ymin) + parseFloat(this.ymax)) / 2));
+
+	newNode.appendChild(x);
+	newNode.appendChild(y);
+
+	sign.appendChild(newNode);
+
+	// coordpos
+	newNode = newXML.createElement("coordpos");
+	var rowNode = newXML.createElement("row");
+	var colNode = newXML.createElement("col");
+
+	rowNode.appendChild(newXML.createTextNode("1"));
+	colNode.appendChild(newXML.createTextNode("1"));
+
+	newNode.appendChild(rowNode);
+	newNode.appendChild(colNode);
+
+	sign.appendChild(newNode);
+
+	// Human readable symbol
+
+	if(this.readableSymbol != "N/A")
+	{
+		newNode = newXML.createElement("hrsymbol");
+		newNode.appendChild(newXML.createTextNode(this.readableSymbol));
+		sign.appendChild(newNode);
+	}
+
+	// Conservation status
+	newNode = newXML.createElement("conservation");
+	newNode.appendChild(newXML.createTextNode(this.status));
+	sign.appendChild(newNode);
+
+	return sign;
+
+};
+
+boundingBox.prototype.boxToXMLCorrection = function(newXML) {
+	var sign = newXML.createElement("object");
+	var newNode = newXML.createElement("name");
+
+	newNode.appendChild(newXML.createTextNode(this.id));
+	sign.appendChild(newNode);
+
+	// Symbol <symbol>511</symbol>
+
+	newNode = newXML.createElement("symbol");
+if(this.fp) {
+	newNode.appendChild(newXML.createTextNode(this.correction));
+} else {
+	newNode.appendChild(newXML.createTextNode(this.symbol));
+}
+	sign.appendChild(newNode);
+
+	// bndbox
+	newNode = newXML.createElement("bndbox");
+	var x = newXML.createElement("xmin");
+	var y = newXML.createElement("ymin");
+
+	x.appendChild(newXML.createTextNode(this.xmin));
+	y.appendChild(newXML.createTextNode(this.ymin));
+
+	newNode.appendChild(x);
+	newNode.appendChild(y);
+
+	x = newXML.createElement("xmax");
+	y = newXML.createElement("ymax");
+
+	x.appendChild(newXML.createTextNode(this.xmax));
+	y.appendChild(newXML.createTextNode(this.ymax));
+
+	newNode.appendChild(x);
+	newNode.appendChild(y);
+
+	sign.appendChild(newNode);
+
+	// center
+	newNode = newXML.createElement("center");
+	x = newXML.createElement("xc");
+	y = newXML.createElement("yc");
+
+	x.appendChild(newXML.createTextNode((parseFloat(this.xmin) + parseFloat(this.xmax)) / 2));
+	y.appendChild(newXML.createTextNode((parseFloat(this.ymin) + parseFloat(this.ymax)) / 2));
+
+	newNode.appendChild(x);
+	newNode.appendChild(y);
+
+	sign.appendChild(newNode);
+
+	// coordpos
+	newNode = newXML.createElement("coordpos");
+	var rowNode = newXML.createElement("row");
+	var colNode = newXML.createElement("col");
+
+	rowNode.appendChild(newXML.createTextNode("1"));
+	colNode.appendChild(newXML.createTextNode("1"));
+
+	newNode.appendChild(rowNode);
+	newNode.appendChild(colNode);
+
+	sign.appendChild(newNode);
+
+	// Human readable symbol
+
+	if(this.fp)
+	{
+		newNode = newXML.createElement("hrsymbol");
+		newNode.appendChild(newXML.createTextNode(this.corRead));
+		sign.appendChild(newNode);
+	} else {
+		newNode = newXML.createElement("hrsymbol");
+		newNode.appendChild(newXML.createTextNode(this.readableSymbol));
+		sign.appendChild(newNode);
+	}
+
+	// Conservation status
+	newNode = newXML.createElement("conservation");
+	newNode.appendChild(newXML.createTextNode(this.status));
+	sign.appendChild(newNode);
+
+	return sign;
+
+};
+
+boundingBox.prototype.boxCorrections = function() {
+	boxArray = {};
+	boxArray['symbol'] = this.symbol;
+	boxArray['xmin'] = Math.round(this.xmin);
+	boxArray['ymin'] = Math.round(this.ymin);
+	boxArray['xmax'] = Math.round(this.xmax);
+	boxArray['ymax'] = Math.round(this.ymax);
+	boxArray['fp'] = this.fp;
+	boxArray['correction'] = this.correction;
+	boxArray['reviewed'] = this.reviewed;
+	return boxArray;
+};
+
+function generateXML(bCorrection) {
+	var newXML = document.implementation.createDocument(null, null, null);
+
+	var rootNode = newXML.createElement("annotation");
+	var folderNode = newXML.createElement("folder");
+	var filenameNode = newXML.createElement("filename");
+	var sizeImageNode = newXML.createElement("size");
+	var widthNode = newXML.createElement("width");
+	var heightNode = newXML.createElement("height");
+
+	// Node size: just the size of the image
+	widthNode.appendChild(newXML.createTextNode(imageWidth));
+	heightNode.appendChild(newXML.createTextNode(imageHeight));
+	sizeImageNode.appendChild(widthNode);
+	sizeImageNode.appendChild(heightNode);
+
+	// Node folderNode
+	folderNode.appendChild(newXML.createTextNode(folderName));
+
+	// Node tabletNameNode
+	filenameNode.appendChild(newXML.createTextNode(tabletName));
+
+	// now start appending things to the root node
+	rootNode.appendChild(folderNode);
+	rootNode.appendChild(filenameNode);
+	rootNode.appendChild(sizeImageNode);
+
+	// compact the boxes' array (the ids are just re-arranged to avoid problems due to erased boxes.
+	// Now loop over all the boundingboxes and append them!
+	var compactIndex = 1;
+	boxes.forEach(function(element, index, array) {
+		if (element != null) {
+			element.id = compactIndex;
+			if(bCorrection) {
+				if (element.reviewed && parseInt(element.correction)) {
+					rootNode.appendChild(element.boxToXMLCorrection(newXML));
+					compactIndex += 1;
+				}
+			} else {
+				rootNode.appendChild(element.boxToXML(newXML));
+				compactIndex += 1;
+			}
+		}
+	});
+
+	// append the rootNode to the document
+
+	newXML.appendChild(rootNode);
+
+	// test
+	return newXML;
+
+}
+
+function downloadXML() {
+	var newXML = generateXML();
+	var buffer;
+	var XMLS = new XMLSerializer();
+
+	// now, generate downalod link! Using the "download" in case it works.
+
+	var downloadData = new Blob([ XMLS.serializeToString(newXML) ], {
+		type : 'text/plain'
+	});
+
+	if (buffer !== null) {
+		window.URL.revokeObjectURL(buffer);
+	}
+
+	buffer = window.URL.createObjectURL(downloadData);
+	var date = new Date();
+	var link = document.getElementById('downloadlink');
+	link.download = tabletName + "_" + date.getFullYear() + "_"
+			+ date.getMonth() + "_" + date.getDate() + ".txt";
+	link.href = buffer;
+	link.onclick = function() {
+		setPopUp();
+	};
+	link.style.display = 'block';
+
+	setPopUp("popSaveLocally");
+
+}
+
+function localAnnotation(doAction) {
+	if (doAction == "start") {
+		document.getElementById("loadAnnotation").style.display = 'block';
+		document.getElementById("fileField").reset();
+		return;
+	}
+	if (doAction == "cancel") {
+		document.getElementById("loadAnnotation").style.display = 'none';
+		$("#error").text("");
+		return;
+	}
+
+	var control = document.getElementById("annotationFile");
+	var reader = new FileReader();
+
+	reader.readAsText(control.files[0]);
+	reader.onload = function(event) {
+		var data = event.target.result;
+		var parser = new DOMParser();
+		var xmlData = parser.parseFromString(data, "application/xml");
+		if (xmlData.firstElementChild.nodeName == "parsererror") {
+			$("#error").text("Invalid File");
+			return;
+		}
+		document.getElementById("loadAnnotation").style.display = 'none';
+		xmlProcess(xmlData);
+		trackChanges.changed();
+	};
+	reader.onerror = function(event) {
+		console
+				.error("File could not be read! Code "
+						+ event.target.error.code);
+	};
+
+}
+
+function jsonProcess(jsonResult) {
+	// detectionInfo.ID = jsonResult["detectionID"];
+	detectionInfo.ID = jsonResult["network_version"];
+	detectionInfo.detectedSigns = new Set();
+	for ( var i = 0; i < jsonResult['data'].length; i++) {
+		var box = new boundingBox();
+		box.jsonBox(jsonResult['data'][i]);
+		box.svgBox();
+		boxes.push(box);
+		detectionInfo.detectedSigns.add(box.symbol);
+	}
+
+	detectionInfo.searchedSigns = jsonResult["searched"];
+	detectionInfo.algorithms = jsonResult["algorithms"];
+	detectionInfo.fullInfo = jsonResult["detectionInfo"];
+	detectionInfo.all = jsonResult["all"];
+	detectionInfo.lines = jsonResult["lines"];
+//	updateSignList("detection");
+
+	$("rect").on("mousedown", rectangleMouseDown);
+	$("rect").on("mouseover", rectangleOver);
+	$("rect").on("mouseover", rectangleOver);
+	$("rect").attr("pointer-events", "all");
+	document.getElementById("slider").disabled = false;
+
+}
+
+function modelsProcess(results) {
+
+//	// Nearest models stored in the corresponding boxes
+//	// resulst[0] are the dimensions for the thumbnails!
+//
+//	for ( var i = 2; i < results.length; i++) {
+//		boxes[i-1].jsonThumbs(results[i]);
+//
+//	}
+//	// Now adjust the Thumbnails!
+//	//	array("height"=>$height, "xThumb"=>$xThumb, "xHOG"=>$xHOG, "maxWidth"=>$maxWidth);
+//	// "hogThumb":"matlab\/resultsWeb\/tester_13_Jul_2015_12_47_23HOG.jpg"
+//	document.getElementById('model').setAttribute('xlink:href',	results[1]['modelThumb']);
+//	document.getElementById('hog').setAttribute('xlink:href',	results[1]['hogThumb']);
+//	$("#svgModel").attr('width',results[0].maxwidth);
+//	$("#svgModel").attr('height' , results[0].height);
+//	$("#svgHOG").attr('width' , results[0].maxWidth);
+//	$("#svgHOG").attr('height' , results[0].height);
+//	$("#model").attr('width' , results[0].xThumb);
+//	$("#hog").attr('width' , results[0].xHOG);
+//	$("#model").attr('height' , results[0].height);
+//	$("#hog").attr('height' , results[0].height);
+//	//$("#model").attr('xlink:href', urlThumb);
+//	//$("#hog").attr('xlink:href', urlThumbHOG);
+
+
+	// Nearest models stored in the corresponding boxes
+	// resulst[0] are the dimensions for the thumbnails!
+	if(results == null)
+		return;
+
+	for ( var i = 1; i < results.model.length+1; i++) {
+		boxes[i].jsonThumbs(results.detection[i-1],results.model[i-1]);
+
+	}
+	// Now adjust the Thumbnails!
+	//	array("height"=>$height, "xThumb"=>$xThumb, "xHOG"=>$xHOG, "maxWidth"=>$maxWidth);
+	// "hogThumb":"matlab\/resultsWeb\/tester_13_Jul_2015_12_47_23HOG.jpg"
+	var modelname = results.directory+"thumb_"+results.detection[1]+"_model"+results.model[1]+".jpg";
+	var hogname = results.directory+"thumb_"+results.detection[1]+"_model"+results.model[1]+"_HOG.jpg";
+
+	resultsDirectory = results.directory;
+
+	document.getElementById('model').setAttribute('xlink:href',	modelname);
+	document.getElementById('hog').setAttribute('xlink:href',	hogname);
+	$("#svgModel").attr('width',results.width);
+	$("#svgModel").attr('height' , results.height);
+	$("#svgHOG").attr('width' , results.width);
