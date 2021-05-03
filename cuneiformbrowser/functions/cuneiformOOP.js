@@ -1545,3 +1545,446 @@ function rectangleOver(event) {
 }
 function xmlProcess(xmlData) {
 	// This function goes through the whole annotation and-or results
+	// and creates the results
+	// it is assumed that the file is xml
+
+	// extract all of the signs
+	if(xmlData === "")
+		return;
+
+	var $signs = $(xmlData).find('object');
+
+	$signs.each(function() {
+		var box = new boundingBox();
+		box.xmlBox($(this));
+		if( (box.xmax-box.xmin > 10) && (box.ymax-box.ymin > 10))  // ignore too small or corrupted boxes!
+		{
+			box.svgBox();
+			boxes.push(box);
+		}
+	});
+
+	// $("rect").on("click",rectangleClicked);
+	$("rect").on("mousedown", rectangleMouseDown);
+	$("rect").on("mouseover", rectangleOver);
+	$("rect").attr("pointer-events", "all");
+
+}
+
+function processCSVLines(csvData){
+
+	if( csvData === "")
+		return;
+
+	var csv_lines = csvData.split('\n');
+
+	var data = csv_lines[0].split(',');
+	var current_line = data[0];
+	var line_obj = new line(parseFloat(data[1]), parseFloat(data[2]), 0);
+	lines.push(line_obj);
+
+	for(var i = 1, n = csv_lines.length; i < n; i++)
+		{
+			data = csv_lines[i].split(',');
+
+			if(data[0] !== current_line)
+				{
+					current_line = data[0];
+					line_obj.clearLast(); // line always adds a last, movable segment, it has to be erased
+					line_obj = new line(parseFloat(data[1]), parseFloat(data[2]), lines.length-1);
+					lines.push(line_obj);
+				}
+			else
+				{
+					line_obj.x = parseFloat(data[1]);
+					line_obj.y = parseFloat(data[2]);
+					line_obj.addSegment();
+				}
+		}
+
+	line_obj.clearLast(); // line always adds a last, movable segment, it has to be erased
+
+}
+function reactKeyboard(event) {
+	this.popUp;
+	this.popUpName;
+	// If popUp:
+
+	if (visible) {
+		if (event.which == _ESC_) // ESC: close Popup.
+		{
+			oldDetectionsWindow.hide();
+			setPopUp();
+			return;
+		}
+		if (event.which == _ENTER_) // ENTER: store data
+		{
+			if (noEdit) {
+				event.preventDefault();
+				return;
+			}
+			event.preventDefault();
+			if(dictUpdateOpen) // update dictionary
+			{
+				dictionaryUpdate();
+			}else				// save annotation
+				storeSignInfo();
+
+			return;
+		}
+		return;
+	}
+
+	// check for shurtcuts
+	if(event.ctrlKey && event.shiftKey)
+	{
+		switch (event.which) {
+		case _A_:
+			annotate();
+			return;
+		case _E_:
+			defaultMode();
+			return;
+		}
+	}
+    if(event.ctrlKey && event.shiftKey && event.which == _COMMA_) {
+        switchAlpha();
+    }
+
+	if (this.popUp == true) {
+		document.getElementById(this.popUpName).style.display = 'none';
+		this.popUp = false;
+		return;
+	}
+
+	// h -> help
+	if (event.which == _H_) {
+		document.getElementById("popUp").style.display = 'block';
+		this.popUp = true;
+		this.popUpName = "popUp";
+		return;
+	}
+
+	if (event.which == _H_) {
+		document.getElementById("popUp").style.display = 'block';
+		this.popUp = true;
+		this.popUpName = "popUp";
+		return;
+	}
+
+	// If a rectangle is selected
+	if (selectFlag) {
+		if (!editName) {
+			switch (event.which) {
+			case _DEL_: // DEL
+				if (noEdit) {
+					return;
+				}
+				var rectangle = document.getElementById(activeRectangle);
+				rectangle.parentNode.removeChild(rectangle);
+				boxes[activeRectangle] = null;
+				changesLog.deleteBox(activeRectangle);
+				activeRectangle = null;
+				trackChanges.changed();
+
+				break;
+			case _ESC_: // ESC
+				break;
+			case _E_: // e (edit)
+				if (noEdit) {
+					return;
+				}
+				document.getElementById(activeRectangle).setAttribute("stroke",
+						"orange");
+				document.getElementById(activeRectangle).addEventListener(
+						"click", imageClicked);
+				svgElement.addEventListener("mousemove", resizeRectangle);
+				setResize();
+				document.body.style.cursor = 'nwse-resize';
+				reactKeyboard.selected = true;
+				clickFlag = !clickFlag;
+				return;
+			case _ENTER_: // ENTER ****************************************
+				if (!noEdit) {
+					event.preventDefault();
+					editSignPopup(document.getElementById(activeRectangle),
+							boxes[activeRectangle]);
+				}
+				else
+					if(noEdit)
+					{
+						event.preventDefault();
+						document.getElementById("numberEdit").readonly = true;
+						document.getElementById("okButtonSave").style.display = 'none';
+						editSignPopup(document.getElementById(activeRectangle),
+								boxes[activeRectangle]);
+					}
+				return;
+			case _TAB_: // TAB
+						// **************************************************
+				event.preventDefault();
+				var index = parseInt(activeRectangle) + 1;
+				while ((index <= boxes.length) && boxes[index] == null) {
+					index++;
+				}
+				if (index <= boxes.length && boxes[index] != null) {
+					unSelect();
+					selectFlag = !selectFlag;
+					selectRectangle(index);
+				}
+				return;
+			default:
+				return;
+			}
+			unSelect();
+			selectFlag = !selectFlag;
+		}
+
+	}
+
+	// If a rectangle is being drawn
+	if (clickFlag) {
+		if (event.which == _ESC_) {
+			if(draw_line)
+				{
+					clickFlag = !clickFlag;
+					svgElement.removeEventListener("mousemove", moveLine);
+					lines[lines.length-1].clearLast();
+					if(lines[lines.length-1].segments.length == 0)
+						lines.pop();
+				}else
+				{
+					clearCurrentRectangle();
+				}
+		}
+	}
+
+	// if a LINE is selected
+	if(lines[0] != 0)
+	{
+		switch (event.which) {
+		case _DEL_: // DEL
+			if (noEdit) {
+				return;
+			}
+			lines[lines[0]].erase();
+			lines[0] = 0;
+			break;
+		case _ESC_: // ESC
+			unSelect();
+			break;
+		}
+
+	}
+	// General short-cuts
+	switch (event.which) {
+	case _N_: // N - New Bounding Box Mode.
+		// changeMode();
+		break;
+	}
+
+	// Meta-Data
+	if(!clickFlag && !selectFlag)
+		{
+			if(event.which == _ADD_)   //|| event.which == _ADD2_
+ 				{
+				setPopUp("metaData");
+				}
+			if(event.which == _HASH_)
+				{
+					if(detectionInfo.detectedSigns.size > 0)
+						document.getElementById("searchedOptions").style.display = "block";
+					else
+						document.getElementById("searchedOptions").style.display = "none";
+					setPopUp("searchedTools");
+				}
+			if(event.which == _MULT_ || event.which == _DOT_) 
+                (event.ctrlKey) ? showLabels(true): showLabels(false);
+		}
+
+	if(event.which == _L_){
+		// LINE MODE!
+		switchModes();
+
+	}
+}
+
+function switchAlpha() {
+	boxes.forEach(function(element, index, array) {
+		if (element != null) {
+			var opacity = element.svg.getAttribute("stroke-opacity");
+            opacity = (opacity == opacityValue) ? 1 : opacityValue;
+			element.svg.setAttribute("stroke-opacity", opacity);
+		}
+	});
+}
+function switchModes()
+{
+	if(train)
+		return;
+
+	unSelect();
+	if(mode == "boxes")  // change to line
+		{
+			clickFlag = false;
+			document.getElementById("mode").innerHTML = "<b>Line</b> Mode";
+			document.getElementById("statusDefault").innerHTML = "Edit Lines";
+			document.getElementById("statusAnnotate").innerHTML = "New Lines";
+			document.getElementById("boxes_group").style.display = "none";
+			document.getElementById("lines_group").style.display = "";
+			mode = "lines";
+			if(editFlag)
+				draw_line = true;
+		}
+	else
+		{
+			document.getElementById("boxes_group").style.display = "";
+			document.getElementById("lines_group").style.display = "none";
+			document.getElementById("mode").innerHTML = "<b>Box</b> Mode";
+			document.getElementById("statusDefault").innerHTML = "Edit Boxes";
+			document.getElementById("statusAnnotate").innerHTML = "New Boxes";
+			if(draw_line)
+			{
+				draw_line = false;
+				if(clickFlag)
+				{ // stop drawing if doing so
+					clickFlag = false;
+					svgElement.removeEventListener("mousemove", moveLine);
+					lines[lines.length-1].clearLast();
+				}
+
+			}
+			else
+			{
+				clickFlag = false;
+				draw_line = false;
+				//document.getElementById("mode").innerHTML = "<b>Line</b> Mode";
+			}
+			mode = "boxes";
+		}
+    updateTotalBoxes();
+	}
+function unSelect() {
+	if(lines[0] != 0)
+		lines[lines[0]].deselect();
+
+	var $sameSymbol = $("[name='" + rectangleClicked.symbol + "']");
+	setPopUp();
+	if((typeof activeRectangle != 'undefined') && activeRectangle != null)
+		document.getElementById(activeRectangle).setAttribute("stroke-width", 1);
+
+	if (resizeMode) {
+		document.getElementById("infoEdit").style.display = "none";
+		document.getElementById("infoDefault").style.display = "block";
+	}
+    unselectSignClass();
+
+	selectFlag = false;
+	activeRectangle = null;
+}
+
+function confidenceUpdate(threshold) {
+	var visible = 0;
+
+	boxes.forEach(function(element, index, array) {
+		if (element != null) {
+			if (element.confidence < threshold) {
+				document.getElementById(element.id).setAttribute("display",
+						"none");
+				element.show = 0;
+			} else {
+				document.getElementById(element.id).setAttribute("display",
+						"true");
+				element.show = 1;
+				visible++;
+			}
+		}
+	});
+	var totalBoxes = boxes.length-1;
+	document.getElementById("totals").innerHTML = "Boxes: "+visible+" / "+totalBoxes;
+	// update slider value
+    document.getElementById("slider").value=threshold;
+    // update text below slider
+	$("#sliderPosition").text(threshold);
+	if(train)
+		maximumSuppression(parseFloat(document.getElementById("nonmax").value));  //slider
+}
+
+function colorizeConfidence() {
+	boxes.forEach(function(element, index, array) {
+		if (element != null) {
+			var hue = Math.round(element.confidence * 100);
+			document.getElementById(element.id).setAttribute("stroke",
+					"hsla(" + hue + ",100%,50%,1)");
+		}
+	});
+}
+
+function colorizeNGram(direction) {
+
+	switch(direction)
+	{
+	case "lr":
+		boxes.forEach(function(element, index, array) {
+			if (element != null) {
+				var hue = Math.round(element.ngram * 100);
+				document.getElementById(element.id).setAttribute("stroke",
+						"hsla(" + hue + ",100%,50%,1)");
+			}
+		});
+		break;
+	case "rl":
+		boxes.forEach(function(element, index, array) {
+			if (element != null) {
+				var hue = Math.round(element.prior * 100);
+				document.getElementById(element.id).setAttribute("stroke",
+						"hsla(" + hue + ",100%,50%,1)");
+			}
+		});
+		break;
+	default:
+		boxes.forEach(function(element, index, array) {
+			if (element != null) {
+				var hue = Math.round(Math.max(element.ngram, element.prior) * 100);
+				document.getElementById(element.id).setAttribute("stroke",
+						"hsla(" + hue + ",100%,50%,1)");
+			}
+		});
+	}
+}
+
+function colorizeCorrections() {
+
+	boxes.forEach(function(element, index, array) {
+		if (element != null) {
+			if (element.reviewed) {
+				if (!element.fp)
+					document.getElementById(element.id).setAttribute("stroke",
+							"lawngreen"); // Reviewed and not FP -> ok!
+				else if (element.correction != "000")
+					document.getElementById(element.id).setAttribute("stroke",
+							"yellow"); // Reviewed, FP but still a sign
+				else
+					document.getElementById(element.id).setAttribute("stroke",
+							"red"); // Not even a sign!
+			} else
+				document.getElementById(element.id).setAttribute("stroke",
+						"blue");
+		}
+	});
+}
+
+function toggleLoadButtons() {
+	if (annotationsLoaded) {
+		document.getElementById("load").style.display = 'none';
+		document.getElementById("lastResult").style.display = 'none';
+	    document.getElementById("lastResultOld").style.display = "none";
+		// document.getElementById("upload").style.display = 'none';
+		document.getElementById("detect").style.display = 'none';
+		document.getElementById("reload").style.display = 'block';
+		document.getElementById("clear").style.display = 'block';
+	//	document.getElementById("saveLocal").style.display = 'block';
+		if (!train)
+			document.getElementById("backup").style.display = 'block';
+		$('.helpAnnotate').css("display", "block");
+		$('.editpossible').css("display", "block");
