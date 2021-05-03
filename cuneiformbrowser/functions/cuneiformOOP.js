@@ -1133,3 +1133,415 @@ function modelsProcess(results) {
 	$("#svgModel").attr('width',results.width);
 	$("#svgModel").attr('height' , results.height);
 	$("#svgHOG").attr('width' , results.width);
+	$("#svgHOG").attr('height' , results.height);
+	$("#model").attr('width' , results.width);
+	$("#hog").attr('width' , results.width);
+	$("#model").attr('height' , results.height);
+	$("#hog").attr('height' , results.height);
+	//$("#model").attr('xlink:href', urlThumb);
+	//$("#hog").attr('xlink:href', urlThumbHOG);
+
+
+}
+// ///////////////////////////////////
+// EVENTS HANDLING
+// ///////////////////////////////////
+
+function imageClicked(event) {
+	// This Function takes care of teh creation of new svg rectangles.
+	// It catches the "click" events on teh svg-image and calls the rectangle
+	// creation function
+	// TODO: nicer tracking of objects than that ugly array
+	var svgRectangle;
+	unselectSignClass();
+	if (!editFlag) // if not in edit mode, ignore the click or deselect the box
+	{
+		if (selectFlag || lines[0] != 0) {
+			unSelect();
+			selectFlag = false;
+			setPopUp();
+		}
+		return;
+	}
+
+	if (!clickFlag) // if false, no box is being drawn, so create a new one
+	{
+		clickFlag = !clickFlag;
+		document.body.style.cursor = 'nwse-resize';
+		document.getElementById("load").className += "disabled";
+
+		// Important: need to distinguish WHAT was clicekd or have 2 functions
+		// for that
+		// get position jsut substracting absolute position ofmouse from
+		// object's corner
+		var xSvg = (event.pageX - x) * zoomInverse;
+		var ySvg = (event.pageY - y) * zoomInverse;
+
+		if(!draw_line)
+		{
+			var bB = new boundingBox(xSvg, ySvg, boxes.length);
+			bB.svgBox();
+			boxes.push(bB);
+			activeRectangle = boxes.length - 1;
+
+			// set onMove
+			svgRectangle = document.getElementById(activeRectangle);
+			svgRectangle.setAttribute("stroke", "orange");
+			svgRectangle.addEventListener("click", imageClicked);
+
+			svgElement.addEventListener("mousemove", resizeRectangle);
+		}else
+		{
+			var new_id = (lines.length <= 1) ? 0 : lines[lines.length-1].id+1;
+			var segment = new line(xSvg, ySvg, new_id);
+			lines.push(segment);
+			svgElement.addEventListener("mousemove", moveLine);//.bind(segment);
+		}
+		if (visible)
+			setPopUp();
+	} else // if the flag is true, a box is active and being changed. Fix the
+			// and store the new box
+	{
+		if (!draw_line) // if false, no box is being drawn, so create a new one
+		{
+			svgElement.removeEventListener("mousemove", resizeRectangle);
+
+			svgRectangle = document.getElementById(activeRectangle);
+			svgRectangle.removeEventListener("click", imageClicked);
+			document.body.style.cursor = 'auto';
+			// store the data in the object too
+
+			boxes[activeRectangle].setMax(svgRectangle.getAttribute("width"),
+					svgRectangle.getAttribute("height"));
+
+			// check if box is too small or corrupted!
+			if( (svgRectangle.getAttribute("width") < 11) || (svgRectangle.getAttribute("height") < 11))
+				{
+					boxes.pop();
+					document.getElementById("boxes_group").removeChild(svgRectangle);
+					clickFlag = !clickFlag;
+					return;
+				}
+			if (reactKeyboard.selected == false) {
+				editSignPopup(svgRectangle, boxes[activeRectangle]);
+			}
+
+			if (boxes[activeRectangle].symbol == 0) {
+				svgRectangle.setAttribute("stroke", noValue);
+			} else {
+				svgRectangle.setAttribute("stroke", defaultColor);
+			}
+			clickFlag = !clickFlag;
+
+			if (reactKeyboard.selected == true) {
+				reactKeyboard.selected == false;
+				unSelect();
+				setStatic();
+				$("rect").on("mousedown", rectangleMouseDown);
+			}
+			if (resizeMode)
+				if(typeof(boxes[activeRectangle]) !="undefined")
+					changesLog.resizeBox(activeRectangle, boxes[activeRectangle].xmax,
+						boxes[activeRectangle].ymax);
+			else
+				if(typeof(boxes[activeRectangle]) !="undefined")
+					{
+					changesLog.newBox(activeRectangle, boxes[activeRectangle].symbol,
+						boxes[activeRectangle].xmin, boxes[activeRectangle].xmax,
+						boxes[activeRectangle].ymin, boxes[activeRectangle].ymax);
+					}
+
+		}else
+		{
+			lines[lines.length-1].addSegment();
+		}
+		trackChanges.changed();
+	}
+}
+
+function moveLine(event){
+	segment = lines[lines.length-1];
+	var xSvg = (event.pageX - x) * zoomInverse;
+	var ySvg = (event.pageY - y) * zoomInverse;
+	segment.x = xSvg;
+	segment.y = ySvg;
+	}
+
+function resizeRectangle(event) {
+	event.preventDefault();
+
+	var svgRectangle = document.getElementById(activeRectangle);
+	var width = (event.pageX - x) * zoomInverse - boxes[activeRectangle].xmin;
+	var height = (event.pageY - y) * zoomInverse - boxes[activeRectangle].ymin;
+
+	svgRectangle.setAttribute("width", width, 1);
+	svgRectangle.setAttribute("height", height, 1);
+}
+
+function rectangleClicked(event) {
+
+	if (editFlag) {
+		imageClicked(event);
+		return;
+	}
+//	temp2 = event;
+//	temp3 = $(event.target).attr("id");
+//	temp4 = activeRectangle;
+
+	if (!selectFlag || (activeRectangle != $(event.target).attr("id"))) {
+
+		selectRectangle($(event.target).attr("id"));
+		return;
+	}
+	if (activeRectangle == $(event.target).attr("id")) {
+		unSelect();
+		setPopUp();
+		selectFlag = !selectFlag;
+	}
+
+}
+
+function selectRectangle(id) {
+	if (!selectFlag) {
+		selectFlag = !selectFlag;
+	} else if (activeRectangle != id) {
+		unSelect();
+		selectFlag = true;
+	}
+	if (resizeMode) {
+		document.getElementById("infoDefault").style.display = "none";
+		document.getElementById("infoEdit").style.display = "block";
+	}
+	//var a = boxes[id].symbol;
+	$("#number").text(boxes[id].symbol);
+	activeRectangle = id;
+	rectangleClicked.symbol = boxes[id].symbol;
+
+	if (editName) {
+		editSignPopup(document.getElementById(activeRectangle),
+				boxes[activeRectangle]);
+	}
+
+	if (!train) {
+		selectSignClass(rectangleClicked.symbol);
+		document.getElementById(id).setAttribute("stroke", selectedColor);
+		document.getElementById(id).setAttribute("stroke-width", 3);
+	} else{
+		document.getElementById(id).setAttribute("stroke", "magenta");
+		document.getElementById(id).setAttribute("stroke-width", 3);
+	}
+	var frame = document.getElementById('dictionary');
+
+	if(frame.classList.contains("dictionaryOpen"))  {
+        id = "row" + ("000"+rectangleClicked.symbol).slice(-3);
+        if(document.getElementById(id) != null)
+            document.getElementById(id).scrollIntoView();
+    }
+	// setThumbnail(event);
+
+}
+
+function selectSignClass(signClassId) {
+
+	var aAllRectangles;
+	aAllRectangles = document.querySelectorAll(`[name='${signClassId}']`);
+	aAllRectangles.forEach(function(node) {
+		node.setAttribute("stroke", sameValue);	
+	});
+	selectedSignClass = signClassId;
+}
+
+function unselectSignClass() {
+
+	var sUseColor;
+
+	if(selectedSignClass !== "")
+	{
+		aAllRectangles = document.querySelectorAll(`[name='${selectedSignClass}']`);
+		if(train) {
+			if(editName) {
+				colorizeCorrections();		
+			} else {
+			
+				unSelectWithScore(aAllRectangles);
+			}
+		} else {
+			aAllRectangles.forEach(function(node) {
+				if (boxes[node.getAttribute("id")].symbol != "000")
+					var color = defaultColor;
+				else
+					var color = noValue;
+				node.setAttribute("stroke", color);	
+				node.setAttribute("stroke-width", 1);
+			});
+		}	
+		
+	}
+
+	// small check in case we are in detection mode with a selected rectangle
+    if(mode == "boxes") {
+    	aAllRectangles = document.querySelectorAll("[stroke='magenta']");
+	    unSelectWithScore(aAllRectangles);
+    }
+}
+
+function unSelectWithScore(aAllRectangles) {
+	aAllRectangles.forEach(function(node) {
+		var hue = Math.round(boxes[node.getAttribute("id")].confidence * 100);
+		node.setAttribute("stroke", "hsla(" + hue + ",100%,50%,1)");	
+		node.setAttribute("stroke-width", 1);
+	});
+}
+
+function rectangleMouseDown(event) {
+
+	if (editFlag) {
+		imageClicked(event);
+		return;
+	}
+
+	if (event.target.id == "image") // if the image was clicked, bubble up,
+									// maybe a rectangle was clicked!
+		return;
+
+	rectangleMouseDown.moved = 0;
+	rectangleMouseDown.up = 0;
+	rectangleMouseDown.click = true;
+	rectangleMouseDown.color = $(event.target).attr("stroke");
+	$(event.target).attr("stroke", selectedColor);
+	$("rect").attr("pointer-events", "none");
+	// $(event.target).attr("pointer-events","all");
+	// $(event.target).on("mouseup", rectangleMouseUp);
+	// timerStarter = window.setTimeout(function() {
+	//
+	rectangleMouseDown.current = $(event.target).attr("id");
+	rectangleMouseDown.event = event;
+	//
+	var xSvg = (event.pageX - x) * zoomInverse;
+	var ySvg = (event.pageY - y) * zoomInverse;
+	//
+	rectangleMouseDown.xOffset = boxes[rectangleMouseDown.current].xmin - xSvg;
+	rectangleMouseDown.yOffset = boxes[rectangleMouseDown.current].ymin - ySvg;
+	//
+	$("image").on("mouseup", rectangleMouseUp);
+	$("image").on("mousemove", rectangleMouseMove);
+	document.body.style.cursor = 'move';
+	//
+	// }, 5000);
+}
+
+function rectangleMouseMove(event) {
+	if(noEdit)
+		return;
+	rectangleMouseDown.click = false;
+	var xSvg = (event.pageX - x) * zoomInverse;
+	var ySvg = (event.pageY - y) * zoomInverse;
+	var svgRectangle = document.getElementById(rectangleMouseDown.current);
+	rectangleMouseDown.moved++;
+	boxes[rectangleMouseDown.current].xmin = xSvg + rectangleMouseDown.xOffset;
+	boxes[rectangleMouseDown.current].ymin = ySvg + rectangleMouseDown.yOffset;
+	boxes[rectangleMouseDown.current].setMax(
+			svgRectangle.getAttribute("width"), svgRectangle
+					.getAttribute("height"));
+	svgRectangle.setAttribute("x", xSvg + rectangleMouseDown.xOffset);
+	svgRectangle.setAttribute("y", ySvg + rectangleMouseDown.yOffset);
+}
+
+function rectangleMouseUp(event) {
+
+	// if(event.handled !== true) //
+	// http://sholsinger.com/2011/08/prevent-jquery-live-handlers-from-firing-multiple-times
+	// thanks!
+	// {
+	document.body.style.cursor = 'auto'
+	if (rectangleMouseDown.click) {
+		// window.clearTimeout(timerStarter);
+		// timerStarter = null;
+
+		event.stopPropagation();
+		$("image").off("mousemove", rectangleMouseMove);
+		$("image").off("mouseup", rectangleMouseUp);
+		$("rect").attr("pointer-events", "all");
+		// $(event.target).off("mouseup", rectangleMouseUp);
+		// $("rect").on("mousedown", rectangleMouseDown);
+		rectangleClicked(rectangleMouseDown.event);
+
+		event.handled = true;
+		rectangleMouseDown.click = null;
+		return;
+	}
+
+	event.stopPropagation();
+	$("image").off("mousemove", rectangleMouseMove);
+	$("image").off("mouseup", rectangleMouseUp);
+	// $(event.target).off("mouseup", rectangleMouseUp);
+	$(rectangleMouseDown.current).on("mousedown", rectangleMouseDown);
+	$("rect").attr("pointer-events", "all");
+	// window.clearTimeout(timerStarter);
+	trackChanges.changed();
+	changesLog.moveBox(rectangleMouseDown.current,
+			boxes[rectangleMouseDown.current].xmin,
+			boxes[rectangleMouseDown.current].ymin);
+	// timerStarter = null;
+	rectangleMouseDown.click = null;
+	$("#"+rectangleMouseDown.current).attr("stroke", rectangleMouseDown.color);
+	event.handled = true;
+
+	// unSelect();
+	// }
+}
+
+function imageOver(event) {
+	$("#tooltip").css("display", "none");
+}
+
+function rectangleOver(event) {
+	if (!clickFlag && editFlag) {
+		resizeRectangle(event);
+		return;
+	}
+
+	if (!selectFlag) {
+
+		var id = $(event.target).attr("id");
+//		var test = false;
+	//	var tempName = dictOrdered[boxes[a].symbol];
+//		if (typeof tempName == "undefined")
+	//		tempName = "N/A";
+
+//		for(var i =0; i< dictOrdered.length; i++) TODO
+//			{
+	//			if(typeof tempName != "undefined" )
+		//			{
+	//				$("#nameArea").text(tempName);
+			//		test = true;
+				//	}
+			//	else
+					//{
+				//	tempName = "N/A"
+					//}
+//			}
+//		if(!test)
+//			$("#nameArea").text("N/A");
+
+		document.getElementById("nameArea").innerHTML = boxes[id].unicodeName;
+
+		$("#number").text(boxes[id].symbol);
+		document.getElementById("tooltip").innerHTML = boxes[id].symbol+"<br />("+boxes[id].unicodeName+")";
+		$("#tooltip").css("display", "block");
+		$("#tooltip").css("top", boxes[id].ymax * zoom / 100 + y);
+		$("#tooltip").css("left",
+				(+boxes[id].xmin / 2 + boxes[id].xmax / 2) * zoom / 100 + x);
+
+		// setThumbnail(event);
+	}
+
+	if (train) {
+		var conf = boxes[$(event.target).attr("id")].confidence;
+		conf = Math.floor(conf * 100);
+		$("#signConfidence").text(conf + "\%");
+	}
+
+}
+function xmlProcess(xmlData) {
+	// This function goes through the whole annotation and-or results
