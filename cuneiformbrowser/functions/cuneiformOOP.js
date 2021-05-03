@@ -1988,3 +1988,395 @@ function toggleLoadButtons() {
 			document.getElementById("backup").style.display = 'block';
 		$('.helpAnnotate').css("display", "block");
 		$('.editpossible').css("display", "block");
+		$('.helpTraining').css("display", "none");
+		$('.helpStart').css("display", "none");
+		if(offline)
+			return;
+		if(statusAnnotations == "done")
+			$('.editpossible').css("display", "none");
+
+	} else {
+		document.getElementById("load").style.display = 'block';
+		document.getElementById("lastResult").style.display = 'block';
+	    document.getElementById("lastResultOld").style.display = "none";
+		// document.getElementById("upload").style.display = 'block';
+		document.getElementById("detect").style.display = 'block';
+		document.getElementById("reload").style.display = 'none';
+		document.getElementById("clear").style.display = 'none';
+		document.getElementById("slider").style.display = "none";
+		document.getElementById("confidenceArea").style.display = "none";
+		document.getElementById("sliderPosition").style.display = "none";
+		document.getElementById("backup").style.display = 'none';
+	//	document.getElementById("saveLocal").style.display = 'none';
+		$('.helpAnnotate').css("display", "none");
+		$('.editpossible').css("display", "none");
+		$('.helpTraining').css("display", "none");
+		$('.helpStart').css("display", "block");
+	}
+}
+
+function saveAnnotationsServer(saveMode, bCorrection=false) {
+
+
+	if (saveMode=='archive')
+		{
+		// check for unnamed boxes!
+		boxes.forEach(function(element, index, array) {
+			if(element !=null && element.symbol == "000")
+				window.alert("There are unlabeled boxes, archiving not possible!");
+			});
+
+		if(!trackChanges.prompt("Are you sure you want to archive this annotation?\nOnce archived, an annotation con not be edited and is free to be used for training!"))
+			return;
+		else
+			{
+			document.getElementById("backupSelect").style.display ='none';
+			//document.getElementById("archiveServer").style.display ='none';
+			statusAnnotations = 'done';
+			noEditMode();
+			}
+		}
+	else
+		{
+		if($('#saveServer').hasClass("disabled") && !$("#statusCorrect").hasClass("statusSelected"))
+		{
+			console.log('Saving not allowed');
+			return;
+		}
+		}
+
+
+	var newXML = generateXML(bCorrection);
+	var XMLS = new XMLSerializer();
+	var uploadData = {};
+
+	if(boxes.length >1)
+	{
+		uploadData.xml = XMLS.serializeToString(newXML);
+	}
+	else
+		uploadData.xml = "";
+
+	uploadData.saveMode = saveMode;
+
+	if(lines.length > 1)
+		{
+		var csv = Array();
+		lines.forEach(function(element, index, array){
+
+			if(element instanceof line)
+				csv.push(element.getCSV());
+		});
+		uploadData.lines = csv.join('\n');
+		}
+	else
+		uploadData.lines = "";
+
+	//JSON.stringify(uploadData);
+	$.ajax({
+/*		type : "GET",
+		url : "uploadannotation.php?annotationStatus=" + saveMode,
+		dataType : "json",
+		async : true,
+		cache : false,
+		error : function() {
+			alert("No data found.");
+		},
+		success : function(array) {
+			$.ajax({*/
+				type : "POST",
+				url : "uploadannotation.php",
+				data : uploadData,
+				//processData : false,
+				//contentType : "application/json", // was xml
+				cache : false,
+				error : function() {
+					alert("No data found.");
+				},
+				success : function() {
+					trackChanges.saved();
+					if (annotationsVersions > 0) {
+						var sel = document.getElementById("backupSelect");
+						var opt1 = document.createElement("option");
+						opt1.value = annotationsVersions + 1;
+						opt1.text = "Version " + annotationsVersions;
+						sel.add(opt1, sel.options[1]);
+					}
+					annotationsVersions = annotationsVersions + 1;
+					statusAnnotations = "partial";
+					var JSONdata = changesLog.flushLog();
+					$.ajax({
+						type : "POST",
+						url : "logChanges.php",
+						data : JSONdata,
+						processData : false,
+						contentType : "application/json",
+						cache : false,
+						error : function(jqXHR, textStatus, errorThrown) {
+							alert(errorThrown);
+						},
+						success : function() {
+
+						}
+					});
+
+				}
+			});
+		/*}
+	});*/
+}
+
+function possibleAutoAnnote()
+{
+	if(statusAnnotations == "none")
+		setPopUp('generateAnno');
+	else
+		sendCorrections(false);
+}
+function sendCorrections(newAnno) {
+	// Check if all corrected and select the correct ones
+	var threshold = document.getElementById("slider").value; // TODO
+	var positives = [];
+	var falsePositives = []; //
+	var notAllReviewed = false;
+	var goOn = true;
+	var signsList = []; // to tell php which signs are to be saved
+	var totalDetections = 0;
+	var threshDetections = 0;
+
+	boxes.forEach(function(element, index, array) {
+		if (element != null)
+			{
+				totalDetections += 1;
+				if( element.confidence >= threshold)
+					// element
+																		// exists and is
+																		// bigger than
+																		// threshhold
+				{
+					totalDetections += 1;
+					if (!element.reviewed)
+						notAllReviewed = true;
+					else if (element.fp)
+						{
+						threshDetections += 1;
+						falsePositives.push(element.boxCorrections());
+						if(signsList.indexOf(element.symbol) == -1)   // check if the name was already stored
+							signsList.push(element.symbol);
+						}
+					else
+						{
+						positives.push(element.boxCorrections());
+						threshDetections += 1;
+						}
+				}
+			}
+		});
+
+	// If not, prompt
+	if (notAllReviewed)
+		goOn = window
+				.confirm("You haven't reviewed all the detections.\nAre you sure you want to send the corrections?\nCurrent detection data will be lost!!\n(Think about saving the corrections and finishing your feedback later!)");
+
+	// if it's a go: Sort the
+	var data = {};
+	data = {
+			'detectionID': detectionInfo.ID,
+			'fpList': signsList,
+			'positives' : positives,
+			'fp' : falsePositives,
+			'threshold': threshold,
+			'totalDetections': totalDetections,
+			'threshDetections': threshDetections,
+			'fullFeedback': JSON.stringify(boxes) ,
+			'newAnnotation': newAnno
+			};
+	JSON.stringify(data);
+	if (goOn)
+		$.ajax({
+			type : "POST",
+			url : "storeCorrections.php",
+			data : data,
+			cache : false,
+			error : function() {
+				console.log("Error sending corrections!");
+				window.alert("An error ocurred");
+				return;
+			},
+			success : function(result) {
+				document.getElementById("saveCorrections").style.display = "none";
+				document.getElementById("sendCorrections").style.display = "none";
+				document.getElementById("reTrain").style.display = "block";
+				if(statusAnnotations == 'none')
+					{
+					statusAnnotations = 'partial';
+					window.alert("An annotation for this image has been generated from the positive feedback");
+					}
+			}
+		});
+}
+
+function clearAnnotations() {
+	var rectangle;
+
+	if (!trackChanges.prompt("Are you sure you want to clear the annotations?"))
+		return;
+
+	annotationsLoaded = false;
+
+/*	boxes.forEach(function(element, index, array) {
+		if (element != null) {
+			rectangle = document.getElementById(element.id);
+			rectangle.parentNode.removeChild(rectangle);
+		}
+	});*/
+
+	// get all the obects in teh svg
+	var SVG = document.getElementById("boxes_group").children;
+
+	// loop over all the rectangles and erase them!
+	// We have to start at the _end_ or the indexing will be lost!
+	for(var i = SVG.length-1; i>=0; i--)
+		{
+			SVG[i].parentNode.removeChild(SVG[i]);
+		}
+
+	var SVG = document.getElementById("lines_group").children;
+
+	// loop over all the lines and erase them!
+	// We have to start at the _end_ or the indexing will be lost!
+	for(var i = SVG.length-1; i>=0; i--)
+		{
+			SVG[i].parentNode.removeChild(SVG[i]);
+		}
+
+	boxes = [ null ];
+	lines = [ 0 ];
+	toggleLoadButtons();
+	document.getElementById("statusfeld").style.display = "block";
+	document.getElementById("infoDetect").style.display = "none";
+	if (train) {
+		train = false;
+		$("#clear").text("Clear Annotations");
+		$("#mode").text("Box Mode");
+		document.getElementById("infoDetect").style.display = "none";
+		document.getElementById("backup").style.display = "none";
+		document.getElementById("infoTrain").style.display = "none";
+		document.getElementById("statusAnnotate").style.display = 'block';
+		//document.getElementById("statusEdit").style.display = 'block';
+		document.getElementById("statusDefault").style.display = 'block';
+		document.getElementById("statusCorrect").style.display = 'none';
+		document.getElementById("buffer1").style.display = 'none';
+		document.getElementById("buffer2").style.display = 'none';
+		document.getElementById("sendCorrections").style.display = "none";
+		document.getElementById("reTrain").style.display = "none";
+		document.getElementById("trainCheckboxes").style.display = "none";
+		document.getElementById("HOGandModel").style.display = "none";
+
+	}
+	changesLog.clearLog();
+	trackChanges.clear();
+	//document.getElementById("loadLocal").style.display = 'block';
+	if(offline)
+		{
+			defaultMode();
+		}
+	if (statusAnnotations == "done") {
+		noEditMode();
+	}
+	else
+		defaultMode();
+
+	activeRectangle = null;
+	document.getElementById("totals").innerHTML = "Boxes: 0";
+}
+
+function reloadAnnotations(version) {
+	clearAnnotations();
+	loadAnnotations(version);
+	updateTotalBoxes();
+}
+
+function editSignPopup(svgRectangle, boundingBox) {
+	xSVG = boundingBox.xmax * zoom / 100 + 50;
+	ySVG = boundingBox.ymax * zoom / 100 + 50;
+	document.getElementById("signEdit").style.left = xSVG;
+	document.getElementById("signEdit").style.top = ySVG;
+	document.getElementById("numberEdit").value = boundingBox.symbol;
+	if(boundingBox.readableSymbol != "N/A")
+	{
+		document.getElementById("editHumanReadable").innerHTML = boundingBox.unicodeName + " ("+boundingBox.symbol+")";
+	}else
+		document.getElementById("editHumanReadable").innerHTML = "No dictionary entry";
+
+	document.getElementById("editWarning").style.display = "none";
+
+	if (train) {
+		// document.getElementById("model").src = "images/models/e2-thumb.jpg";
+		if(!noEdit)
+			document.getElementById("trainCheckboxes").style.display = "block";
+		else
+			document.getElementById("trainCheckboxes").style.display = "none";
+
+	//	document.getElementById('model').setAttribute('xlink:href',	resultsDirectory + boundingBox.thumbName);
+	//	document.getElementById('hog').setAttribute('xlink:href',	resultsDirectory + boundingBox.HOGName);
+
+//		var svgmodel = document.getElementById("svgModel");
+//		svgmodel.setAttribute("width", boundingBox.thumbWidth);
+//
+//		svgmodel.setAttribute("height", boundingBox.thumbHeight);
+//
+//		var model = document.getElementById("model");
+//		model.setAttribute("x", -boundingBox.thumbXStart);
+//		var svgHOG = document.getElementById("svgHOG");
+//		svgHOG.setAttribute("width", boundingBox.thumbWidth);
+//
+//		svgHOG.setAttribute("height", boundingBox.thumbHeight);
+//
+//		var HOG = document.getElementById("hog");
+//		HOG.setAttribute("x", -boundingBox.thumbHOG);
+		document.getElementById("wrongSign").checked = false;
+		document.getElementById("noSign").checked = false;
+		document.getElementById("numberEdit").readOnly = true; // the number
+																// field will
+																// only be
+																// editable
+																// after
+																// clicking on
+																// the richt
+																// checkbox (to
+																// avoid
+																// mistakes)
+		var roundScore = Math.round(boundingBox.confidence*100)/100;
+		document.getElementById("showConfidence").innerHTML = roundScore;
+	}
+	var svgthumb = document.getElementById("svgThumb");
+	var scaling = 100/svgRectangle.getAttribute("height");
+	svgthumb.setAttribute("width", svgRectangle.getAttribute("width") * scaling);
+	svgthumb.setAttribute("height", svgRectangle.getAttribute("height") * scaling);
+	svgthumb.setAttribute("viewBox", [boundingBox.xmin, boundingBox.ymin, svgRectangle.getAttribute("width"), svgRectangle.getAttribute("height")])
+	// svgthumb.setAttribute("transform", "scale(" + scaling + ")");
+
+	// Select the correct radio button
+	document.querySelector(`#SignConservationState input[value="${boundingBox.status}"]`).checked = true;
+
+	setPopUp("signEdit");
+	document.getElementById("numberEdit").focus();
+	document.getElementById("numberEdit").select();
+
+	// Place the big nasty thumbnail correctly.
+	//var thumb = document.getElementById("thumb");
+	//thumb.setAttribute("x", -boundingBox.xmin);
+	//thumb.setAttribute("y", -boundingBox.ymin);
+
+
+}
+
+function storeSignInfo() {
+	var editElement = document.getElementById("numberEdit");
+	var newName = editElement.value;
+	var warning = document.getElementById("editWarning");
+	var rectangle = document.getElementById(activeRectangle);
+
+	// Re-doing this for text-based annotations!
+	// TODO
