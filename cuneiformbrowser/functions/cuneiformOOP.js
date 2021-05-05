@@ -2380,3 +2380,452 @@ function storeSignInfo() {
 
 	// Re-doing this for text-based annotations!
 	// TODO
+	// Check for alphanumeric, skip if 000!
+	// this checks if newName is in dictionary and returns:
+	// newName.newName = input; // original name "N/A" if original input numeric AND no entry in dictionary NAME if exists in DIctionary
+	// newName.label   = "000"; // new numeric label
+	// newName.numeric = false; // was the original numeric?
+	// newName.newEntry = false; // did the original need a new Entry in the dictionary?
+
+	newName = parseInput(newName);
+
+	if (!train) { // Normal annotating mode
+		if (newName != null) { // correct input!
+
+			if(newName.newEntry)
+				return;  // this is a new entry, so wait for more input!
+
+			// First, new numeric label
+			// Numeric value will only change if different from actual value and non-zero
+			if (newName.label != boxes[activeRectangle].symbol && newName.label != 0) {
+			//	newNameID = ("000" + (newNameID)).slice(newNameID.length); done by parser
+				boxes[activeRectangle].symbol = newName.label;
+
+				rectangle.setAttribute("name", newName.label);
+				rectangle.setAttribute("stroke", defaultColor);
+				changesLog.newLabel(activeRectangle, newName.label);
+				trackChanges.changed();
+			}
+			if(newName.newName != boxes[activeRectangle].readableSymbol) // different HR name (could just be a synonim!)
+			{
+				boxes[activeRectangle].readableSymbol = newName.newName;
+				boxes[activeRectangle].unicodeName = unicodize(newName.newName);
+				trackChanges.changed();
+			}
+
+			if(newName.label == nextLabel)
+				{
+					var temp = parseInt(nextLabel);
+					if(temp != usedLabels.length)
+					{
+						usedLabels[temp] = 1;
+						for (var i = temp; i<usedLabels.length; i++)
+							{
+								if( typeof usedLabels[i] == "undefined")
+									{
+										nextLabel = ("000"+i).slice(-3);
+										break;
+									}
+							}
+					}else
+						{
+							nextLabel = ("000"+(temp+1)).slice(-3);
+							usedLabels[temp] = 1;
+						}
+
+				}
+			warning.style.display = "none";
+			// Now check the conservation state
+			if(boxes[activeRectangle].status != getConservationState()) {
+				boxes[activeRectangle].status = getConservationState();
+				trackChanges.changed();
+			}
+            rectangle.classList.remove("intact");
+            rectangle.classList.remove("broken");
+            rectangle.classList.remove("partial");
+            rectangle.classList.add(getConservationState());
+			setPopUp();
+			unSelect();
+			return;
+		} else {
+			editElement.value = "";
+			warning.innerHTML = "Not a valid label!";
+			warning.style.display = "block";
+
+			return;
+		}
+	} else { // Trainign mode, saving corrections
+		if (document.getElementById("noSign").checked) // Not a sign!
+		{
+			boxes[activeRectangle].fp = true;
+			boxes[activeRectangle].reviewed = true;
+			boxes[activeRectangle].correction = "000";
+			boxes[activeRectangle].corRead = "";
+			rectangle.setAttribute("name", "000");
+			rectangle.setAttribute("stroke", "red");
+		}
+		if (document.getElementById("wrongSign").checked) {
+			if (newName != null && !newName.newEntry) // Only if this not a new entry
+			{
+				if (newName.label != boxes[activeRectangle].symbol) { //accept the changes _only_ if a new number typed!
+					boxes[activeRectangle].fp = true;
+					boxes[activeRectangle].reviewed = true;
+					boxes[activeRectangle].corRead = unicodize(newName.newName);
+					rectangle.setAttribute("stroke", "yellow");
+					boxes[activeRectangle].correction = newName.label;
+                    boxes[activeRectangle].wrongLabel = boxes[activeRectangle].symbol;
+                    boxes[activeRectangle].symbol = newName.label;
+                    boxes[activeRectangle].unicodeName = boxes[activeRectangle].corRead;
+                    rectangle.setAttribute("name", newName.label);  
+                    boxes[activeRectangle].readableSymbol = newName.newName;
+				} else {
+					editElement.value = boxes[activeRectangle].symbol;
+					warning.innerHTML = "Please type a correction.";
+					warning.style.display = "block";
+					return;
+
+				}
+			} else {
+				if(!newName.newEntry) // if newEntry, no error mesage
+				{
+					editElement.value = boxes[activeRectangle].symbol;
+					warning.innerHTML = "Not a valid Label!";
+					warning.style.display = "block";
+				}
+				return;
+			}
+		}
+		if (!boxes[activeRectangle].fp) // no corrections made > correct sign!
+		{
+			boxes[activeRectangle].reviewed = true;
+			rectangle.setAttribute("stroke", "lawngreen");
+		}
+		boxes[activeRectangle].status = getConservationState();
+rectangle.classList.remove("intact");
+            rectangle.classList.remove("broken");
+            rectangle.classList.remove("partial");
+            rectangle.classList.add(getConservationState());
+		setPopUp();
+		unSelect();
+		// now move the svg Box to the back!
+		var parent = document.getElementById("boxes_group");
+		// remove the rectangle first
+		parent.removeChild(rectangle);
+		// insert it at the beginning
+		parent.insertBefore(rectangle, parent.children[1]);
+
+		return;
+	}
+	editElement.value = "";
+
+}
+
+function getConservationState() {
+	return document.querySelector('input[name="conservation"]:checked').value;
+}
+
+function acceptAllCorrections() {
+    
+    for(var i = 1; i < boxes.length; i++) {
+            if(boxes[i].show == 1) {
+			    boxes[i].reviewed = true;
+			    boxes[i].svg.setAttribute("stroke", "lawngreen");
+            }
+    }
+}
+function toggleTrainCheckBoxes(checkBox) {
+	if (checkBox.id == "wrongSign") {
+		if (checkBox.checked) // it was checked -> enable textfield!
+		{
+			document.getElementById("numberEdit").readOnly = false;
+			document.getElementById("numberEdit").focus();
+		} else
+			document.getElementById("numberEdit").readOnly = true;
+
+		if (document.getElementById("noSign").checked)
+			document.getElementById("noSign").checked = false;
+
+	} else // it"s the other cb!
+	{
+		if (checkBox.checked) {
+			document.getElementById("numberEdit").readOnly = true; // not even
+																	// a sign,
+																	// no need
+																	// to write
+																	// anything
+			document.getElementById("wrongSign").checked = false;
+		}
+
+	}
+}
+
+function setPopUp(name) {
+	this.visible;
+	this.active;
+
+	if (typeof name != 'undefined') {
+		// check if one is already assigned!
+		if (this.active != null)
+			setPopUp();
+
+		this.active = name;
+		this.visible = true;
+		document.getElementById(name).style.display = "block";
+	} else {
+		if (typeof active != 'undefined')
+			if (active != null) {
+				this.visible = false;
+				document.getElementById(active).style.display = "none";
+				this.active = null;
+				if (editName)
+					unSelect();
+			}
+
+	}
+	if (typeof visible == 'undefined')
+		visible = false;
+}
+
+function clearCurrentRectangle() {
+	if (clickFlag) // if true, a box is being drawn
+	{
+		var svgRectangle = document.getElementById(activeRectangle);
+		svgElement.removeEventListener("mousemove", resizeRectangle);
+		svgRectangle.removeEventListener("click", imageClicked);
+		svgRectangle.parentNode.removeChild(svgRectangle);
+		if (!(reactKeyboard.selected)) // an existing rectangle wasn't being
+										// drawn!!
+		{
+
+			boxes[activeRectangle] = null;
+
+		} else {
+			boxes[activeRectangle].svgBox();
+		}
+		clickFlag = !clickFlag;
+	}
+	// IMPORTANT: do not revert to incorrect mode!!!
+	if (resizeMode)
+		setMove();
+	activeRectangle = null;
+}
+
+function changesTracker() {
+	edited = false;
+	mayArchivate = false;
+
+}
+
+changesTracker.prototype.changed = function() {
+	if (this.mayArchivate) {
+		document.getElementById("saveServer").style.display = "block";
+		//document.getElementById("archiveServer").style.display = "none";
+		this.mayArchivate = false;
+	}
+	if (!this.edited) {
+		$("#statusSave").text("Not Saved");
+		this.edited = true;
+		$("#statusSave").toggleClass("statusAttention");
+		$("#saveServer").removeClass("disabled");
+	}
+	if(!train) {
+		updateTotalBoxes();
+	}
+};
+changesTracker.prototype.clear = function() {
+	$("#statusSave").text("Saved");
+	$("#statusSave").removeClass("statusAttention");
+	document.getElementById("saveServer").style.display = "block";
+	//document.getElementById("archiveServer").style.display = "none";
+	this.edited = false;
+	this.mayArchivate = false;
+	$("#saveServer").addClass("disabled");
+};
+
+changesTracker.prototype.saved = function() {
+	if (this.edited) {
+		$("#statusSave").text("Saved");
+		$("#statusSave").toggleClass("statusAttention");
+		//document.getElementById("saveServer").style.display = "none";
+		//if(statusAnnotations != "done")
+			//document.getElementById("archiveServer").style.display = "block";
+		this.edited = false;
+		this.mayArchivate = true;
+		$("#saveServer").addClass("disabled");
+	}
+
+};
+
+changesTracker.prototype.prompt = function(message) {
+	if (this.edited || this.mayArchivate)
+		return window.confirm(message);
+	else
+		return true;
+
+};
+
+function clearMode() {
+	$('#statusAnnotate').removeClass('statusSelected');
+	$('#statusEdit').removeClass('statusSelected');
+	$('#statusDefault').removeClass('statusSelected');
+	$('#statusProtected').removeClass('statusSelected');
+	$('#statusCorrect').removeClass('statusSelected');
+	if(clickFlag && draw_line)
+	{ // stop drawing if doing so
+		clickFlag = !clickFlag;
+		svgElement.removeEventListener("mousemove", moveLine);
+		lines[lines.length-1].clearLast();
+	}
+
+	setPopUp();
+	clearCurrentRectangle();
+	unSelect();
+	editName = false;
+	editFlag = false;
+	clickFlag = false;
+	selectFlag = false;
+	noEdit = false;
+	reactKeyboard.selected = false;
+	resizeMode = false;
+	draw_line = false;
+	document.getElementById("infoNewBoxes").style.display = "none";
+	document.getElementById("infoRelabel").style.display = "none";
+	document.getElementById("infoDefault").style.display = "none";
+	document.getElementById("infoProtected").style.display = "none";
+	document.getElementById("infoEdit").style.display = "none";
+	document.getElementById("numberEdit").readonly = false;
+	document.getElementById("okButtonSave").style.display = 'inline-block';
+	document.getElementById("sendCorrections").style.display = "none";
+	document.getElementById("saveCorrections").style.display = "none";
+	document.getElementById("loadBackup").style.display = "none";
+	document.getElementById("cleanUp").style.display = "none";
+    document.getElementById("acceptAll").style.display = "none";
+	document.getElementById("generalHelp").style.display = "block";
+	document.getElementById("trainHelp").style.display = "none";
+	//document.getElementById("totals").style.display = "none";
+	document.getElementById("image").style.cursor = "auto";
+	document.getElementById("nonMaxBox").style.display = "none";
+	document.getElementById("lastResult").style.display = "block";
+	document.getElementById("lastResultOld").style.display = "block";
+	updateTotalBoxes();
+//	if(annotationsLoaded)
+		//document.getElementById("saveLocal").style.display = "block";
+//	else
+		//document.getElementById("saveLocal").style.display = "none";
+}
+
+function setTraining()
+{
+	annotationsLoaded = !annotationsLoaded;
+	train = true;
+	$("#clear").text("Quit Training"); // TODO better own button.
+	document.getElementById("confidenceArea").style.display = "block";
+	document.getElementById("slider").style.display = "block";
+	document.getElementById("sliderPosition").style.display = "block";
+	document.getElementById("statusfeld").style.display = "none";
+	document.getElementById("infoDetect").style.display = "block";
+	document.getElementById("backup").style.display = "none";
+	$("#mode").text("Train Mode");
+	$('.helpAnnotate').css("display", "none");
+	$('.editpossible').css("display", "none");
+	$('.helpTraining').css("display", "block");
+	$('.helpStart').css("display", "none");
+	trainMode();
+	trackChanges.saved();
+
+}
+function trainMode() {
+	train = true;
+	// relabel();
+	noEditMode();
+	toggleLoadButtons();
+	document.getElementById("backup").style.display = 'none';
+	document.getElementById("infoTrain").style.display = "block";
+	document.getElementById("statusAnnotate").style.display = 'none';
+	//document.getElementById("statusEdit").style.display = 'none';
+	document.getElementById("statusDefault").style.display = 'none';
+	document.getElementById("statusCorrect").style.display = 'block';
+	document.getElementById("buffer1").style.display = 'block';
+	document.getElementById("buffer2").style.display = 'block';
+	document.getElementById("saveServer").style.display = 'none';
+	//document.getElementById("loadLocal").style.display = 'none';
+	document.getElementById("generalHelp").style.display = "none";
+	document.getElementById("trainHelp").style.display = "block";
+	//document.getElementById("saveLocal").style.display = "none";
+	document.getElementById("HOGandModel").style.display = "block";
+	//document.getElementById("totals").style.display = "block";
+	document.getElementById("cleanUp").style.display = "block";
+	document.getElementById("nonMaxBox").style.display = "block";
+	$('.helpAnnotate').css("display", "none");
+	$('.editpossible').css("display", "none");
+	$('.helpTraining').css("display", "block");
+	confidenceUpdate(0.3); // This will initialize the confidence tracker.
+	document.getElementById("slider").value=0.3;
+}
+function annotate() {
+	clearMode();
+	$('#statusAnnotate').addClass('statusSelected');
+	annotationsLoaded = true;
+	toggleLoadButtons();
+	document.getElementById("image").style.cursor = "crosshair"
+	setResize();
+	if (!train)
+		{
+		document.getElementById("infoNewBoxes").style.display = "block";
+	//	document.getElementById("saveLocal").style.display = "block";
+		}
+}
+
+function correctMode() {
+	clearMode();
+	$('#statusCorrect').addClass('statusSelected');
+	editName = true;
+	setStatic();
+	document.getElementById("infoDetect").style.display = "none";
+	document.getElementById("infoCorrect").style.display = "block";
+	document.getElementById("reTrain").style.display = "none";
+	document.getElementById("saveServer").style.display = "none";
+	document.getElementById("reload").style.display = "none";
+	document.getElementById("sendCorrections").style.display = "block";
+	document.getElementById("saveCorrections").style.display = "block";
+	document.getElementById("generalHelp").style.display = "none";
+	document.getElementById("lastResult").style.display = "none";
+	document.getElementById("lastResultOld").style.display = "none";
+	document.getElementById("trainHelp").style.display = "block";
+	document.getElementById("infoTrain").style.display = "none";
+	document.getElementById("infoFeedback").style.display = "block";
+    document.getElementById("acceptAll").style.display = "block";
+	// @TD
+	document.getElementById("cleanUp").style.display = "block";
+	document.getElementById("nonMaxBox").style.display = "block";
+	$('.helpAnnotate').css("display", "none");
+	$('.helpTraining').css("display", "block");
+	$('.editpossible').css("display", "none");
+	colorizeCorrections();
+}
+function relabel() {
+	clearMode();
+	$('#statusEdit').addClass('statusSelected');
+	editName = true;
+	setStatic();
+	toggleLoadButtons();
+	if (!train)
+		document.getElementById("infoRelabel").style.display = "block";
+	if(!annotationsLoaded && backupAvailable)
+		document.getElementById("loadBackup").style.display = "block";
+}
+
+function defaultMode() {
+	clearMode();
+	resizeMode = true;
+	$('#statusDefault').addClass('statusSelected');
+	setMove();
+	if (!train)
+		document.getElementById("infoDefault").style.display = "block";
+	if(!annotationsLoaded && backupAvailable)
+		document.getElementById("loadBackup").style.display = "block";
+}
+
+function noEditMode() {
+	clearMode();
+	$('#statusProtected').addClass('statusSelected');
