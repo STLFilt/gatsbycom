@@ -3761,3 +3761,441 @@ function localImage(doAction)
 //	this.prototype.askNewEntry = function(){};
 //
 //	this.prototype.update = function(){};
+//
+//	this.prototype.checkChanges = function(){};
+//
+//	this.prototype.sendChanges = function(){};
+//}
+function dictionaryPrepare()
+{
+	$.ajax({
+		type : "GET",
+		url : "matlabInfo.php?infoRequest=dictionary",
+		dataType : "json",
+		async : false,
+		cache : false,
+		processData: false,
+		error : function() {
+			console.log("error calling for startup Info!");
+			return;
+		},
+		success : function(result) {
+
+			// now flip this thing!!!
+
+			for(var id in result)
+				{
+				if(result.hasOwnProperty(id)){
+					var newId = ("000" + (id)).slice(-3);
+					dictOrdered[newId] = result[id][0];
+					for(var i = 0; i< result[id].length;i++)
+						 {
+                            if(i!=1) {
+							    var newId = ("000" + (id)).slice(-3);
+							    dictionary[result[id][i].toLowerCase()] = newId;  // store the dictionary!
+							    dictionary[unicodize(result[id][i].toLowerCase())] = newId;
+							    // here, expand to accents instead of numbers!
+							    dictionary[setAccents(unicodize(result[id][i].toLowerCase()))] = newId;
+                            } else {
+                                aDictUnicode[newId] = result[id][1];
+                            }
+                            
+						 }}
+					usedLabels[parseInt(id)] = 1; // index all used labels
+				}
+
+			for(var i = 1; i<= usedLabels.length; i++)
+				{
+					if(typeof usedLabels[i] == "undefined")
+						{
+						nextLabel = ("000" + i).slice(-3);
+						break;
+						}
+				}
+			if( nextLabel == null) // No empty spaces in the array
+				{
+					nextLabel = ("000"+usedLabels.length).slice(-3);
+				}
+		}
+	});
+	dictionaryRefresh();
+}
+
+
+function dictionaryUpdate()
+{
+	var editElement = document.getElementById("dictionaryEdit");
+	var newID = parseInput(editElement.value); // in case the user entered an existent name!
+	var newName = document.getElementById("enteredLabel").innerHTML;
+	var warning = document.getElementById("dictWarning");
+
+
+	// Re-doing this for text-based annotations!
+	// TODO
+	// Check for alphanumeric, skip if 000!
+	if (newID != null && newID.label != "000")
+		{
+		var newEntry = newID.label;
+		document.getElementById('updateDictionary').style.display = 'none';
+		warning.innerHTML = "";
+		editElement.value = '';
+		warning.style.display = "none";
+		dictionary[newName.toLowerCase()] = newEntry;
+		}
+	else
+		{
+			warning.innerHTML = "Please enter a valid name or numeric label different from 0!";
+			warning.style.display = "block";
+			return;
+		}
+
+	//update the data for overRectangle if needed
+	if(typeof dictOrdered[newEntry] == "undefined")
+		{
+			dictOrdered[newEntry] = newName;
+		}
+	// now update the dictionary on the server side
+	var width = boxes[activeRectangle].xmax - boxes[activeRectangle].xmin;  // dimensions to eventually generate thumbs!
+	var height = boxes[activeRectangle].ymax - boxes[activeRectangle].ymin;
+	var data = {};
+	data = {'id': newEntry, 'label':newName, 'x':boxes[activeRectangle].xmin ,'y':boxes[activeRectangle].ymin , 'width':width, 'height':height};
+	JSON.stringify(data);
+	console.log(data);
+
+	$.ajax({
+		type : "POST",
+		url : "updateDictionary.php",
+		data : data,
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+			console.log("error calling update function");
+			return;
+		},
+		success : function(result) {
+
+
+		}
+	});
+
+	// And now, save the new annotation!
+	dictUpdateOpen = false;
+	storeSignInfo();
+	dictionaryRefresh();
+}
+
+function openDictionary()
+{
+	var frame =document.getElementById('testDIV');
+	var dictionary = document.getElementById('dictionary');
+
+	if(dictionary.classList.contains("dictionaryOpen"))
+		{
+		//document.getElementById('dictionary').innerHTML = "";
+		frame.style.overflow = "hidden";
+		frame.style.height = "1.75em";
+		document.getElementById('toggle').innerHTML = "<b>&#x25BE;</b>";
+        dictionary.classList.remove("dictionaryOpen");
+		}
+	else
+//	if(windowObjectReference == null || windowObjectReference.closed)
+//		windowObjectReference = window.open('listDictionary.php');
+//	else
+//		{
+//		windowObjectReference.close();
+//		windowObjectReference = window.open('listDictionary.php');
+//		}
+	{
+		dictionary.style.height = "50em";
+        frame.style.height = "";
+		frame.style.overflow = "auto";
+		dictionaryRefresh();
+		document.getElementById('toggle').innerHTML = "<b>&#x25B4;</b>";
+        dictionary.classList.add("dictionaryOpen");
+	}
+}
+
+dictionaryRefresh = function()
+{
+	//if(document.getElementById('testDIV').style.height == "50em") // if not open, ignore
+	$.ajax({
+		type : "GET",
+		url : "listDictionary.php",
+		//data : {modelRequest:id, name:alt},
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+
+		},
+		success : function(result) {
+			document.getElementById('dictionary').innerHTML = result;
+
+		}
+	});
+}
+function parseInput(input)
+{	// returns: input == null if not in dictionary, else just the number.
+	// trim input!
+
+	input = input.trim();
+	// Check if numeric or not
+	// If not numeric, check dictionary
+	// if not in dictionary -> new window
+	// if in dictionary, convert and return,
+	// if numeric, just return, as numeric is always ok
+	// Output will be: the input, the translation, what kind of input and if unknown label
+	var output = {};
+	output.newName = input; // original name
+	output.label   = "000"; // new numeric label
+	output.numeric = false; // was the original numeric?
+	output.newEntry = false; // did the original need a new Entry in the dictionary?
+
+	if (input.match(/[0-9a-zA-Z,':]+$/) != null && input != "000")
+	{
+		// check if only numeric
+		if(input.match(/^[0-9]+$/) == null) // nope -> alphanumeric
+		{
+			// Capitalize
+			var temp = input.toLowerCase();
+			// check DB
+			if(typeof dictionary[temp]!== "undefined") // Part of the database!
+			{
+				// convert to Number! and send back!
+				output.label = dictionary[temp];
+				return output;
+			}
+			else
+				{
+				// HERE comes the new entry!!!
+					output.newEntry = true;
+					// not part of the DB: ask for new entry
+					var offsets = document.getElementById('signEdit').getBoundingClientRect();
+					var top = offsets.top + offsets.height/2;
+					var left = offsets.left - offsets.width;
+					document.getElementById("updateDictionary").style.top = top+window.scrollY;
+					document.getElementById("updateDictionary").style.left = left;
+					document.getElementById("enteredLabel").innerHTML = input;
+
+					// in case a number is already assigned to this annotation:
+					if(boxes[activeRectangle].symbol != "000")
+						{
+						document.getElementById("actualLabel").innerHTML = "Current ID: "+boxes[activeRectangle].symbol;
+						}
+					else
+						{
+						document.getElementById("actualLabel").innerHTML = "Next Available ID: "+nextLabel;
+						document.getElementById("dictionaryEdit").value = nextLabel;
+						}
+					document.getElementById("updateDictionary").style.display = "block";
+					document.getElementById("dictionaryEdit").focus();
+					document.getElementById("dictionaryEdit").select();
+					dictUpdateOpen = true;
+					return output;
+				}
+		}
+		else
+		{
+			output.numeric = true;
+			output.label = ("000" + (input)).slice(input.length);
+			if(typeof dictOrdered[output.label] == "undefined")
+				output.newName = "N/A";
+			else
+				output.newName = dictOrdered[output.label].toLowerCase();
+			return output; // Only numeric -> data can be used directly
+		}
+
+	}else
+		return null; // not alfanumeric, not a number
+
+}
+
+function metaData()
+{
+	this.fields = {};
+	this.data   ={};
+	var self = this;
+	$.ajax({
+		type : "GET",
+		url : "metaData.php",
+
+		cache : false,
+		error : function() {
+			console.log("error fetching the gallery");
+			return;
+		},
+		success : function(result) {
+			// console.log(result);
+			var data = JSON.parse(result);  // JSON.parse(result,self)
+			document.getElementById("metaForm").innerHTML = data.layout;
+			self.fields = data.fields;
+			self.data = data.data;
+			// self.loadMeta();
+		}
+	});
+}
+
+
+metaData.prototype.loadMeta = function(){
+
+	//This processes the fields into the Form.
+	for(var  i = 0; i< this.fields.length; i++)
+	{
+		var thisField = this.fields[i];
+		if(typeof(this.data[thisField]) != "undefined")
+			document.getElementById(thisField).value = this.data[thisField];
+	}
+};
+metaData.prototype.saveMeta = function()
+{
+	var data = {};
+
+	data["action"] = "saveData";
+	data["fields"] =  {};
+	for(var  i = 0; i< this.fields.length; i++)
+	{
+		var thisField = this.fields[i];
+		if(thisField != "-")
+			data["fields"][thisField] = document.getElementById(thisField).value;
+	}
+
+	$.ajax({
+		type : "POST",
+		url : "metaData.php",
+		data : data,
+		//processData : false,
+		//contentType : "application/json",
+		cache : false,
+		error : function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown);
+		},
+		success : function() {
+			setPopUp();
+		}
+	});
+
+}
+
+function unicodize(str)
+{
+	var number = Array('0','1','2','3','4','5','6','7','8','9');
+	var rep = Array("₀", "₁", "₂", "₃",	"₄", "₅", "₆", "₇",	"₈", "₉");
+	/*for(var i = 0; i<10;i++)
+		{
+			str = str.replace(number[i],"*"+number[i]);
+		}
+	for(var i = 0; i<10;i++)
+	{
+		str = str.replace("*"+number[i],"&#832"+number[i]);
+	}*/
+
+	for(var i = 0; i<10;i++)
+	{
+		str = str.replace(number[i],rep[i]);
+	}
+	for(var i = 0; i<10;i++) // twice, for numbers > 9
+	{
+		str = str.replace(number[i],rep[i]);
+	}
+	/*str = str.replace(/sz/g,"&#353");
+	str = str.replace(/SZ/g,"&#352");
+	str = str.replace(/t,/g,"&#7789");
+	str = str.replace(/T,/g,"&#7788");
+	str = str.replace(/s,/g,"&#7779");
+	str = str.replace(/S,/g,"&#7778");
+	str = str.replace(/h/g,"&#7723");
+	str = str.replace(/H/g,"&#7722");
+	str = str.replace(/s'/g,"ś");
+	str = str.replace(/S'/g,"Ś");
+	str = str.replace(/'/g,"ʾ");*/
+
+	str = str.replace(/sz/g,"š");
+	str = str.replace(/SZ/g,"&#352");
+	str = str.replace(/t,/g,"ṭ");
+	str = str.replace(/T,/g,"&#7788");
+	str = str.replace(/s,/g,"ṣ");
+	str = str.replace(/S,/g,"&#7778");
+	str = str.replace(/h/g,"ḫ");
+	str = str.replace(/H/g,"&#7722");
+	str = str.replace(/s'/g,"ś");
+	str = str.replace(/S'/g,"Ś");
+	str = str.replace(/'/g,"ʾ");
+
+	return str;
+}
+
+function setAccents(sign)
+{
+	var rep = Array("₀", "₁", "₂", "",	"₄", "₅", "₆", "₇",	"₈", "₉");
+	var lastLetter = sign.length -1;
+
+	var searchVocal = function(sign){
+
+	};
+
+	if(lastLetter == 0) // only one letter, send back
+		return sign;
+
+	if(sign[lastLetter-1] in rep) // sign has 2 numbers, return!
+		return sign;
+
+	if(sign[lastLetter] == "₂" || sign[lastLetter] == "₃")
+		{
+			var idx = 0;
+			var vowels = Array("a","e","i","u");
+			var vowels2 = Array("á", "é", "í", "ú");
+			var vowels3 = Array("à", "è", "ì", "ù");
+
+			for(var i = 0; i < sign.length; i++)
+				{
+					idx = vowels.indexOf(sign[i]);
+					if(idx != -1)
+					{
+						if(sign[lastLetter] == "₂")
+							sign = sign.substr(0,i) + vowels2[idx] + sign.substr(i+1, lastLetter-i-1);
+
+						if(sign[lastLetter] == "₃")
+							sign = sign.substr(0,i) + vowels3[idx] + sign.substr(i+1, lastLetter-i-1);
+
+						break;
+					}
+				}
+
+		}
+	return sign;
+}
+function send()
+{
+	var data = {};
+	data.info = generalInfo; // Always send current image!
+
+}
+
+function get()
+{
+
+}
+
+function showSigns(signList)
+{
+	var boundingBoxes = document.getElementsByTagName("rect");
+	var visible = 0;
+	for(var i=0; i< boundingBoxes.length; i++)
+	  {
+		if(signList.has(boundingBoxes[i].getAttribute("name")))
+			{
+				boundingBoxes[i].style.display = "block";
+				visible++;
+			}
+		else
+			boundingBoxes[i].style.display = "none";
+	  }
+
+	var totalBoxes = boxes.length-1;
+	document.getElementById("totals").innerHTML = "Boxes: "+visible+" / "+totalBoxes;
+
+}
+
+function showSign(sign)
+{
