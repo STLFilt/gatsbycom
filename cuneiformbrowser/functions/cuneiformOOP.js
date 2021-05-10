@@ -2829,3 +2829,491 @@ function defaultMode() {
 function noEditMode() {
 	clearMode();
 	$('#statusProtected').addClass('statusSelected');
+	$("rect").on("mouseover", rectangleOver);
+	noEdit = true;
+	setStatic();
+	if (!train)
+		document.getElementById("infoProtected").style.display = "block";
+	else
+		{
+		document.getElementById("infoTrain").style.display = "block";
+		document.getElementById("infoFeedback").style.display = "none";
+		// @TD
+		document.getElementById("cleanUp").style.display = "block";
+		document.getElementById("nonMaxBox").style.display = "block";
+		}
+	if(offline)
+		return;
+	if(statusAnnotations == "done")
+		{
+		document.getElementById("statusAnnotate").style.display = 'none';
+		document.getElementById("statusEdit").style.display = 'none';
+		document.getElementById("statusDefault").style.display = 'none';
+		document.getElementById("buffer1").style.display = 'block';
+		document.getElementById("buffer2").style.display = 'block';
+		document.getElementById("saveServer").style.display = 'none';
+		$('.editpossible').css("display", "none");
+		}
+	if(!annotationsLoaded && backupAvailable)
+		document.getElementById("loadBackup").style.display = "block";
+}
+
+function setResize() {
+	$("rect").off("click", rectangleClicked);
+	$("rect").off("mousedown", rectangleMouseDown);
+	$("rect").off("mouseover", rectangleOver);
+	$("rect").off("mouseup", rectangleMouseUp);
+	$("rect").attr("pointer-events", "none");
+	editFlag = true;
+	if(mode == "lines")
+		draw_line = true;
+}
+
+function setMove() {
+	$("rect").off("click", rectangleClicked);
+	$("rect").off("mousedown", rectangleMouseDown);
+	$("rect").off("mouseover", rectangleOver);
+	$("rect").on("mousedown", rectangleMouseDown);
+	$("rect").on("mouseover", rectangleOver);
+	$("rect").attr("pointer-events", "all");
+	editFlag = false;
+}
+function setStatic() {
+	$("rect").off("click", rectangleClicked);
+	$("rect").off("mouseover", rectangleOver);
+
+	$("rect").on("click", rectangleClicked);
+	$("rect").off("mousedown", rectangleMouseDown);
+	$("rect").on("mouseover", rectangleOver);
+	$("rect").attr("pointer-events", "all");
+	editFlag = false;
+	if (train) {
+		document.getElementById("infoDetect").style.display = "block";
+		document.getElementById("infoCorrect").style.display = "none";
+		document.getElementById("sendCorrections").style.display = "none";
+		document.getElementById("reTrain").style.display = "none";
+		document.getElementById("generalHelp").style.display = "none";
+		document.getElementById("trainHelp").style.display = "block";
+		$('.helpAnnotate').css("display", "none");
+		$('.editpossible').css("display", "none");
+		$('.helpTraining').css("display", "block");
+		colorizeConfidence();
+	}
+}
+
+function changeLog() {
+	this.changeArray = new Array();
+	this.actualPosition = -1;
+
+}
+
+changeLog.prototype.newBox = function(id, label, xmin, xmax, ymin, ymax) {
+	var myObj = new Object();
+
+	myObj.action = "NEW";
+	myObj.id = id;
+	myObj.label = label;
+	myObj.xmin = xmin;
+	myObj.xmax = xmax;
+	myObj.ymin = ymin;
+	myObj.ymax = ymax;
+
+	this.changeArray.push(myObj);
+	this.actualPosition++;
+	console.log('NEW: ' + id + ' label: ' + label);
+};
+
+changeLog.prototype.newLabel = function(id, label) {
+	var myObj = new Object();
+
+	myObj.action = "LABEL";
+	myObj.id = id;
+	myObj.label = label;
+
+	this.changeArray.push(myObj);
+	this.actualPosition++;
+	console.log('RELABEL: ' + id + ' label: ' + this.label);
+};
+
+changeLog.prototype.resizeBox = function(id, xmax, ymax) {
+	var myObj = new Object();
+
+	myObj.action = "RESIZE";
+	myObj.id = id;
+	myObj.xmax = xmax;
+	myObj.ymax = ymax;
+
+	this.changeArray.push(myObj);
+	this.actualPosition++;
+	console.log('Resize: ' + id);
+};
+
+changeLog.prototype.deleteBox = function(id) {
+	var myObj = new Object();
+
+	myObj.action = "DEL";
+	myObj.id = id;
+
+	this.changeArray.push(myObj);
+	this.actualPosition++;
+	console.log('DELETE: ' + id + ' label: ' + this.label);
+};
+
+changeLog.prototype.moveBox = function(id, xmin, ymin) {
+	var myObj = new Object();
+
+	myObj.action = "MOVE";
+	myObj.id = id;
+	myObj.xmin = xmin;
+	myObj.ymin = ymin;
+
+	this.changeArray.push(myObj);
+	this.actualPosition++;
+	console.log('MOVE: ' + id + ' label: ' + this.label);
+};
+
+changeLog.prototype.flushLog = function() {
+	var offset = this.changeArray.length - this.actualPosition;
+	console.log(offset);
+	var data;
+	if (offset != 1)
+		data == JSON.stringify(this.changeArray.slice(0, this.actualPosition));
+
+	else
+		data = JSON.stringify(this.changeArray);
+	changeLog.prototype.clearLog.call(this);
+	return data;
+
+};
+
+changeLog.prototype.clearLog = function() {
+	this.changeArray = new Array();
+	this.actualPosition = -1;
+};
+
+changeLog.prototype.undoLast = function() {
+	// Later maybe
+};
+
+changeLog.prototype.redoLast = function() {
+	// Later maybe
+};
+
+function showDetectAll() {
+	$("#detectSingular").removeClass("statusSelected");
+	$("#detectAll").addClass("statusSelected");
+	document.getElementById("specificInput").style.display = "none";
+
+}
+
+function showDetectSpecific() {
+	$("#detectAll").removeClass("statusSelected");
+	$("#detectSingular").addClass("statusSelected");
+	document.getElementById("specificInput").style.display = "block";
+}
+
+function showModelList() {
+
+	var offsets = document.getElementById('popDetect').getBoundingClientRect();
+	var left = offsets.left + offsets.width + 5;
+	document.getElementById("modelList").style.left = left;
+	var container = document.getElementById('availableModels');
+	var pad = "000";
+	document.getElementById("modelList").style.display = "block";
+
+	// clear the container in case it was already called
+	container.innerHTML = "";
+
+	$.ajax({
+		type : "GET",
+		url : "matlabInfo.php?infoRequest=modelList",
+		dataType : "json",
+		success : function(result) {
+			for ( var i in result ) {
+				if (result.hasOwnProperty(i)) {
+					if (result[i] == 1) {
+
+						var model =(pad + (i)).slice(-pad.length);
+						model = model + " ("+parseInput(model).newName+") ";
+						container.innerHTML = container.innerHTML + model;
+					}}}
+					if (container.innerHTML == "")
+						container.innerHTML = "No models available, please train.";
+
+		},
+		error : function(xhr, status, errorThrown) {
+			console.log("Error: " + errorThrown);
+			console.log("Status: " + status);
+			console.dir(xhr);
+		},
+		async : true,
+		cache : false
+	});
+
+}
+
+function getAvailableModels(detection) {
+	if(document.getElementById('imageOptions').value == "defaultOptions")
+		var options = 'none';
+	else
+		var options = document.getElementById('imageOptions').value;
+
+	$.ajax({
+		type : "GET",
+		url : "matlabInfo.php?infoRequest=modelList&options="+options,
+		dataType : "json",
+		success : function(result) {
+			detection.setAvailable(result);
+		},
+		error : function(xhr, status, errorThrown) {
+			console.log("Error: " + errorThrown);
+			console.log("Status: " + status);
+			console.dir(xhr);
+		},
+		async : true,
+		cache : false
+	});
+
+}
+
+/*function startDetection() {
+	// data['options']
+	// data['multi'] / data['prior'] / data['consensus'] / data['sift'] /
+	// data['wedges']
+	// data['detectAll'] boolean
+	// data['detect'][] signs to detect
+	var data = {};
+
+	// options
+	if(document.getElementById('imageOptions').value == "defaultOptions")
+		data['options'] = 'none';
+	else
+		data['options'] = document.getElementById('imageOptions').value;
+
+	getAvailableModels();
+
+
+	var error = false;
+	var errorField = document.getElementById("errorField");
+	var errorFieldAlg = document.getElementById("errorField2");
+	errorField.innerHTML = "";
+	errorFieldAlg.innerHTML = "";
+	var msg = "";
+	var msg2 = "";
+	// First, determine if all signs have to be detected or just some of them:
+	if (document.getElementById("detectAll").classList
+			.contains('statusSelected')) { // Detect ALL
+		data['detectAll'] = true;
+	} else { // Detect some
+		data['detectAll'] = false;
+		// close the list of available signs of open
+		document.getElementById('modelList').style.display = 'none';
+
+		// First, parse the text:
+		var userData = document.getElementById('selectedSign').value;
+		var parsedData = userData.split(",");
+		//var pad = "000";
+		for ( var i = 0; i < parsedData.length; i++) {
+			// Go over the indicated signs: pad them AND check if those are
+			// numbers!!
+			// For some signs: check if the models are available!
+			var toDetect = parseInput(parsedData[i]);
+
+			if (toDetect.label.length > 3 || toDetect.newEntry) {
+				error = true;
+				msg = "Invalid label";
+				break;
+			}
+
+			if (getAvailableModels.data[parseInt(toDetect.label)] == 0) {
+				error = true;
+				msg = "No model for sign " + toDetect.label + " ("+toDetect.newName+")";
+				break;
+			}
+			parsedData[i] = toDetect.label;
+
+		}
+
+		data['detect'] = parsedData;
+	}
+
+
+
+	// Get the methods to be used
+
+	data['multi'] = (document.getElementById('multi').checked) ? 1 : 0;
+	data['prior'] = (document.getElementById('prior').checked) ? 1 : 0;
+	data['sift'] = (document.getElementById('SIFT').checked) ? 1 : 0;
+	data['wedges'] = (document.getElementById('edge').checked) ? 1 : 0;
+	data['consensus'] = (document.getElementById('consensus').checked) ? 1 : 0;
+	data['fast'] = (document.getElementById('fast').checked) ? 1 : 0;
+	data['ngram'] = (document.getElementById('ngram').checked) ? 1 : 0;
+
+	if(data['multi'])
+		{
+			error = !mainInfo['algorithms']['multi'] || error;
+			msg2 = "Multi-Class not available\n";
+		}
+	if(!mainInfo['algorithms']['all'])
+		{
+			error = !mainInfo['algorithms']['all'] || error;
+			msg2 = msg2 + "General detection not possible!";
+		}
+	if (error) {
+		errorField.innerHTML = msg;
+		errorField2.innerHTML = msg2;
+		return;
+	}
+	setPopUp();
+
+
+	// send the call!
+
+	$.ajax({
+		type : "POST",
+		url : "detect.php",
+		data : data,
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+			console.log("error calling detection");
+			return;
+		},
+		success : function(result) {
+			result = JSON.parse(result);
+			detectionInfo.ID = result.detectionID;
+
+		}
+	});
+
+	// Show the new dialog
+	document.getElementById('matlabOutput').value = "Calling matlab...\n";
+	setPopUp('matlabStream');
+
+	// Now call the streaming function in one sec!
+	setTimeout('streamMatlab()', 1000);
+}*/
+
+function startDetection() {
+
+	var data = {};
+
+	// options
+	data['tab_scale'] = document.getElementById('scale_val').value;
+	data['model_version'] = document.getElementById('model_version').value;
+	
+	// error handling
+	var error = false;
+	var errorFieldDet = document.getElementById("errorFieldDet");
+	errorFieldDet.innerHTML = "";
+
+    // close detection popup
+    setPopUp();
+    // remove scale pattern
+    clearScalePattern();
+
+	// send the call!
+	$.ajax({
+		type : "POST",
+		url : "detect.php",
+		data : data,
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+			console.log("error calling detection");
+			return;
+		},
+		success : function(result) {
+            if (result.trim()) {
+            	result = JSON.parse(result);
+            	detection_success = result.detection;
+            	if (detection_success) {
+                    // clear detection window and open load results
+                    //loadResults();
+                    oldDetectionsWindow.show();
+            	} else {
+            	    // handle error
+            	    // open detection pop up and display error
+                    setPopUp('popDetect');
+                    errorFieldDet.innerHTML = "Tablet image too large! Select smaller scale or cut image!";
+            	}
+
+            } else {
+                // open detection pop up and display error
+                setPopUp('popDetect');
+                errorFieldDet.innerHTML = "Detector is offline!";
+                //return;
+            }
+		}
+	});
+
+}
+
+/* function startDetection() {
+	// data['options']
+	// data['multi'] / data['prior'] / data['consensus'] / data['sift'] /
+	// data['wedges']
+	// data['detectAll'] boolean
+	// data['detect'][] signs to detect
+	var data = {};
+
+	// options
+	if(document.getElementById('imageOptions').value != "defaultOptions")
+		detectionInfo.data.options = document.getElementById('imageOptions').value;
+
+	var error = false;
+	var errorField = document.getElementById("errorField");
+	var errorFieldAlg = document.getElementById("errorField2");
+	errorField.innerHTML = "";
+	errorFieldAlg.innerHTML = "";
+
+	// First, determine if all signs have to be detected or just some of them:
+	if (document.getElementById("detectAll").classList
+			.contains('statusSelected')) { // Detect ALL
+		detectionInfo.parseUserInput("all");
+	} else { // Detect some
+
+		// close the list of available signs of open
+		document.getElementById('modelList').style.display = 'none';
+
+		// First, parse the text:
+		var userData = document.getElementById('selectedSign').value;
+		if(!detectionInfo.parseUserInput(userData))
+		    {
+		        errorField.innerHTML = detectionInfo.getErrorMessage(0);
+		        errorField2.innerHTML = detectionInfo.getErrorMessage(1);
+		        return;
+	        }
+	}
+
+
+
+	// Get the methods to be used
+
+	detectionInfo.data['prior'] = (document.getElementById('prior').checked) ? 1 : 0;
+	detectionInfo.data['fast'] = (document.getElementById('fast').checked) ? 1 : 0;
+	detectionInfo.data['ngram'] = (document.getElementById('ngram').checked) ? 1 : 0;
+
+	setPopUp();
+
+	// send the call!
+
+    detectionInfo.start();
+
+} */
+
+
+function switchStream()
+{
+	streamChange = false;
+	var temp;
+	temp = document.getElementById('matlabOutput').value;
+	$('#verbose').toggleClass('statusSelected');
+	verbose = !verbose;
+	document.getElementById('matlabOutput').value = verboseBuffer;
+	verboseBuffer = temp;
+}
+
+function streamMatlab() {
