@@ -3317,3 +3317,447 @@ function switchStream()
 }
 
 function streamMatlab() {
+	// thsi function calls the server and reads matlab's runnign output
+	// it will end and set a timeout to itself!
+	$.ajax({
+				type : "GET",
+				url : "streamMatlab.php?verbose="+verbose,
+				dataType : "json",
+				success : function(result) {
+					// some nice display to show it is working
+					if (document.getElementById("pingLeft").style.backgroundColor == "white") {
+						document.getElementById("pingLeft").style.backgroundColor = "green";
+						document.getElementById("pingRight").style.backgroundColor = "white";
+					} else {
+						document.getElementById("pingLeft").style.backgroundColor = "white";
+						document.getElementById("pingRight").style.backgroundColor = "green";
+					}
+
+					// now check the data
+					if (result['end'] == "true") // server done
+					{
+						if (!(result['content'] == 'waiting')) // just in case
+																// the server
+																// was done but
+																// no new
+																// information
+																// was available
+						document.getElementById('matlabOutput').value += result['content'];
+						document.getElementById('matlabOutput').value += "Detection done!\nClick ok to display";
+						document.getElementById('closeStream').style.display = "block";
+						return;
+					}
+					if (result['content'] == 'waiting') // server is waiting for
+														// information, don't
+														// output!
+					{
+						console.log("Im Matlab nichts neues");
+						setTimeout('streamMatlab()', 1000);
+						return;
+					}
+					// output the new info
+					document.getElementById('matlabOutput').value += result['content'];
+
+					// server isn't done, call again in 1s
+					setTimeout('streamMatlab()', 1000);
+
+				},
+				error : function(xhr, status, errorThrown) {
+					console.log("Error: " + errorThrown);
+					console.log("Status: " + status);
+					console.dir(xhr);
+				},
+				async : true,
+				cache : false
+			});
+	if(streamChange)
+		switchStream();
+
+}
+
+function ping() {
+	// Just check for connection
+	$.ajax({
+		type : "GET",
+		url : 'pong.php',
+		dataType : "json",
+		success : function(result) {
+			var pong = document.getElementById("ping");
+			if (result['ping'] == "pong") {
+				if (pong.style.backgroundColor == "green")
+					pong.style.backgroundColor = "lime";
+				else
+					pong.style.backgroundColor = "green";
+
+				timer = window.setTimeout(ping, 720000);
+			} else {
+				pong.style.backgroundColor = "red";
+			}
+		},
+		error : function(xhr, status, errorThrown) {
+			console.log("Error: " + errorThrown);
+			console.log("Status: " + status);
+			console.dir(xhr);
+		},
+		async : true,
+		cache : false
+	});
+
+}
+
+function saveCorrections()
+{
+//	corrections =[];
+//	boxes.forEach(function(element, index, array) {
+//			if (element != null)
+//				corrections.push(element.boxCorrections()); // Maybe corrections.push(element); Just send the whole boxes as is? -> need to serialize!!!
+//
+//	});
+
+	var data = {};
+	data = { 'corrections': JSON.stringify(boxes), 'detectionID': detectionInfo.ID};
+	$.ajax({
+			type : "POST",
+			url : "backupCorrections.php",
+			data : data,
+			cache : false,
+			error : function() {
+				console.log("Error saving corrections!");
+				window.alert("An error ocurred");
+				return;
+			},
+			success : function(result) {
+
+			}
+		});
+}
+
+function restoreBackup()
+{
+	boxes = [null];
+	$.ajax({
+		type : "GET",
+		url : 'backupCorrections.php',
+		dataType : "json",
+		success : function(result) {
+			var jsonResult = JSON.parse(result.corrections);
+			detectionInfo.ID = result.detectionID["detectionID"];
+
+			for(var i=1;i<jsonResult.length;i++)
+			{
+			  var box = new boundingBox();
+			  box.jsonBox(jsonResult[i]);
+			  box.svgBox();
+			  boxes.push(box);
+
+			}
+			$("rect").on("mousedown", rectangleMouseDown);
+			$("rect").on("mouseover", rectangleOver);
+			$("rect").on("mouseover", rectangleOver);
+			$("rect").attr("pointer-events", "all");
+			document.getElementById("slider").disabled = false;
+			loadModels();
+			setTraining();
+			if (colorize)
+				colorizeConfidence();
+			correctMode();
+		},
+		error : function(xhr, status, errorThrown) {
+			console.log("Error: " + errorThrown);
+			console.log("Status: " + status);
+			console.dir(xhr);
+		},
+		async : true,
+		cache : false
+	});
+	console.log("dumdidum");
+
+}
+
+function refreshInfo()
+{
+	var e = document.getElementById('imageOptions');
+	var options = e.options[e.selectedIndex].value;
+
+		$.ajax({
+			type : "GET",
+			url : "matlabInfo.php?infoRequest=algorithms&options="+options,
+			dataType : "json",
+			async : false,
+			cache : false,
+			error : function() {
+				console.log("error calling for Info!");
+				return;
+			},
+			success : function(result) {
+				mainInfo['algorithms']=result;
+				if(!mainInfo['algorithms']['multi'])
+				{
+				document.getElementById('multi').disabled = true;
+				document.getElementById('multi').checked = false;
+				}
+				else
+				{
+					document.getElementById('multi').disabled = false;
+					document.getElementById('multi').checked = true;
+					}
+			}
+		});
+}
+
+function startRetrain()
+{
+    verboseBuffer ="";
+
+	// read the checkboxes
+	annotations = [];
+	var form = document.getElementById("availableAnnotations");
+	// annotations[i] = {"annotation":document.forms[2][i].id,"collection":document.forms[2][i].value};
+	for (var i=0; i < form.length; i++)
+		{
+			if(form[i].checked)
+					//annotations[i] = form[i].value;
+				annotations[i] = {"annotation":document.form[i].name,"collection":document.form[i].value};
+		}
+
+	console.log(annotations);
+	var list = data.fpList;
+	var pad = "000";
+	for ( var i = 0; i < list.length; i++)
+		list[i] = (pad + (list[i])).slice(-pad.length);
+
+	// now call php!
+	var data = {};
+	// data = {'toTrain': parsedData, 'annotations':annotations, 'target':'none', 'reTrain':retrain};
+	// annotations[i] = {"annotation":document.forms[2][i].id,"collection":document.forms[2][i].value};
+	data = {'toTrain': list, 'annotations':annotations, 'target':'none', 'reTrain':'1'};
+	JSON.stringify(data);
+	console.log(data);
+
+	$.ajax({
+		type : "POST",
+		url : "startTraining.php",
+		data : data,
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+			console.log("error calling training");
+			return;
+		},
+		success : function(result) {
+
+
+		}
+	});
+	// Show the new dialog
+	document.getElementById('reTrain').style.display='none';
+	document.getElementById('matlabOutput').value = "Calling matlab...\n";
+	setPopUp('matlabStream');
+
+	// Now call the streaming function in one sec!
+	setTimeout('streamMatlab()', 1000);
+}
+
+function prepareRetrain()
+{
+	// this will be only possible after saving the data!
+	for(var i=0;i<data.fpList.length;i++)
+	{
+		document.getElementById('retrainData').innerHTML += data.fpList[i]+" ";
+	}
+
+	// now get the available annotations  - DONE by PHP right now, might change this to a dynamic approach later on
+	/*
+	$.ajax({
+		type : "GET",
+		url : "matlabInfo?infoRequest=annotations",
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+			console.log("error calling training");
+			return;
+		},
+		success : function(result) {
+			var form = document.getElementById("availableAnnotations");
+			result = JSON.parse(result);
+			for(i=0;i<result.length;i++)
+			{
+				var checkbox = document.createElement('input');
+				checkbox.type = "checkbox";
+				checkbox.name = result[i];
+				checkbox.value = result[i];
+				checkbox.id = result[i];
+				checkbox.checked = true;
+
+				var label = document.createElement('label');
+				label.htmlFor = result[i];
+				label.appendChild(document.createTextNode(result[i]));
+
+				form.appendChild(checkbox);
+				form.appendChild(label);
+				if((i+1)%3 == 0)
+			        document.getElementById("availableAnnotations").innerHTML += "<br/>";
+
+			}
+			document.getElementById('startRetrain').style.display='inline-block';
+		}
+	});
+	*/
+	setPopUp('retrainPopUp');
+}
+
+function localAnnotation(doAction)
+{
+	if(doAction == "start")
+		{
+			document.getElementById("loadAnnotation").style.display = 'block';
+			document.getElementById("fileField").reset();
+			return;
+		}
+	if(doAction == "cancel")
+		{
+			document.getElementById("loadAnnotation").style.display = 'none';
+			$("#error").text("");
+			return;
+		}
+
+
+	var control = document.getElementById("annotationFile");
+	var reader = new FileReader();
+
+        reader.readAsText(control.files[0]);
+        reader.onload = function(event) {
+            var data = event.target.result;
+            var parser = new DOMParser();
+            var xmlData = parser.parseFromString(data, "application/xml");
+            if (xmlData.firstElementChild.nodeName == "parsererror")
+            	{
+            		$("#error").text("Invalid File");
+            		return;
+            	}
+            document.getElementById("loadAnnotation").style.display = 'none';
+            xmlProcess(xmlData);
+            trackChanges.changed();
+            annotationsLoaded = true;
+        };
+        reader.onerror = function(event) {
+            console.error("File could not be read! Code " + event.target.error.code);
+        };
+
+}
+function localImage(doAction)
+{
+
+
+	if(doAction == "start")
+	{
+		if(annotationsLoaded)
+			clearAnnotations();
+		document.getElementById("loadImage").style.display = 'block';
+		document.getElementById("fileField").reset();
+		return;
+	}
+	if(doAction == "cancel")
+	{
+		document.getElementById("loadImage").style.display = 'none';
+		$("#error").text("");
+		return;
+	}
+
+
+	document.getElementById("loadImage").style.display = 'none';
+	var fileInput = document.getElementById("imageFile");
+	var file = fileInput.files[0];
+	var imageType = /image.*/;
+	var svgimg = document.getElementById("image");
+	var svgthumb = document.getElementById("thumb");
+	if (file.type.match(imageType)) {
+	  var reader = new FileReader();
+//  document.getElementById("loading").style.display="block";
+	  reader.readAsDataURL(file);
+	  reader.onload = function(e) {
+
+
+	    // Create a new image.
+	    var img = new Image();
+	    var svgMaster = document.getElementById("containerSVG");
+	    // Set the img src property using the data URL.
+		img.src = reader.result;
+		//document.getElementById("loading").style.display="none";
+	    // Add the image to the page.
+		svgMaster.setAttributeNS(null,'height',img.height);
+		svgMaster.setAttributeNS(null,'width',img.width);
+		svgimg.setAttributeNS(null,'height',img.height);
+		svgimg.setAttributeNS(null,'width',img.width);
+		svgimg.setAttributeNS(null,'x','0');
+		svgimg.setAttributeNS(null,'y','0');
+		svgimg.setAttributeNS('http://www.w3.org/1999/xlink','href', reader.result);
+
+		svgthumb.setAttributeNS(null,'height',img.height);
+		svgthumb.setAttributeNS(null,'width',img.width);
+		svgthumb.setAttributeNS(null,'x','0');
+		svgthumb.setAttributeNS(null,'y','0');
+		svgthumb.setAttributeNS('http://www.w3.org/1999/xlink','href', reader.result);
+
+		svgimg.setAttributeNS(null, 'visibility', 'visible');
+		//svgimg.setAttributeNS(null, 'id', 'image');
+		//$('svgMaster').append(svgimg);
+
+		x = $("#image").offset().left;
+		y = $("#image").offset().top;
+		svgElement = document.getElementById("image");
+		svgElement.addEventListener("click", imageClicked);
+		svgElement.addEventListener("mouseover", imageOver);
+
+		 imageHeight = svgElement.getAttribute("height");
+		 imageWidth =  svgElement.getAttribute("width");
+
+		 x = $("#image").offset().left;
+		 y = $("#image").offset().top;
+		 svgElement = document.getElementById("image");
+		// Adjust zoom to let image fit on screen
+			if(imageWidth < window.outerWidth)
+				{
+					zoom = 100;
+				}
+			else
+				if(imageWidth*0.75 < window.outerWidth)
+					{
+						zoom = 75;
+					}
+				else
+					if(imageWidth*0.5 < window.outerWidth)
+						{
+							zoom = 50;
+						}
+					else
+						zoom = 25;
+
+			document.getElementById("zoom").value = zoom;
+			resizeEverything(zoom);
+
+		document.getElementById("clear").style.display = 'block';
+		//document.getElementById("loadLocal").style.display = 'block';
+	//	document.getElementById("saveLocal").style.display = 'block';
+
+
+	  };
+
+	}
+
+}
+
+// Dictionary Functions
+//
+//function Dictionary(){
+//	var mainDictionary = Array();
+//
+//	this.prototype.prepare = function(){};
+//
+//	this.prototype.find = function(){};
+//
+//	this.prototype.askNewEntry = function(){};
+//
+//	this.prototype.update = function(){};
