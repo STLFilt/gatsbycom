@@ -4199,3 +4199,404 @@ function showSigns(signList)
 
 function showSign(sign)
 {
+  var signNum = dictionary[sign];
+
+  for(var i =1; i< boxes.length; i++)
+  {
+    if(boxes[i].symbol == signNum)
+      boxes[i].svg.setAttribute("display","true");
+    else
+      boxes[i].svg.setAttribute("display","none");
+  }
+}
+
+function adjustSize(useConfidence)
+{
+
+	var confidence = (useConfidence)?document.getElementById("slider").value:0;
+	var score = document.getElementById("sliderAdjustSize").value;
+
+	// First, get sizes for boxes over the score
+	var sizes = [];
+	var tempBoxes = [];
+	for(var i=1; i< boxes.length; i++)
+		{
+			if (boxes[i] != null)
+				if (boxes[i].confidence >= score)
+				{
+					var height = Math.round(boxes[i].ymax-boxes[i].ymin);
+					var width =  Math.round(boxes[i].xmax-boxes[i].xmin);
+					sizes.push({"h":height,"w":width, "a":width*height, "p": 0, "sign": boxes[i].symbol});
+					tempBoxes.push(boxes[i]);
+				}
+		}
+
+	sizes.sort(function(a,b){
+		return a.a - b.a;
+	});
+	var median;
+
+	if(sizes.length % 2 == 0)
+		{
+			median = (sizes[sizes.length/2].a +  sizes[sizes.length/2 -1].a)/2;
+		}
+	else
+		median = sizes[Math.round(sizes.length/2)].a;
+
+	var percent;
+
+	for(var i = 0; i < sizes.length; i++)
+		{
+			sizes[i].p = sizes[i].a / median;
+		}
+	for(var i = 1; i < boxes.length; i++)
+	{
+		var height = Math.round(boxes[i].ymax-boxes[i].ymin);
+		var width =  Math.round(boxes[i].xmax-boxes[i].xmin);
+		var p = height*width/median;
+		if(p > detectionInfo.config.maxSizeRatio || p < detectionInfo.config.minSizeRatio || boxes[i].confidence < confidence)
+			{
+				//console.log("Sign "+boxes[i].id+" non-conform: "+p);
+				boxes[i].svg.setAttribute("display","none");
+				boxes[i].show = 0;
+			}else
+				{	//console.log("Sign "+boxes[i].id+" conform: "+p);
+					boxes[i].svg.setAttribute("display","true");
+					boxes[i].show = 1;
+				}
+	}
+
+}
+
+function adjustmentUpdate(value)
+{
+	$("#sliderAdjustValue").text(document.getElementById("sliderAdjustSize").value);
+}
+
+
+/*function updateSignList(source)
+{
+	return;
+	docFragment = document.createDocumentFragment();
+	switch(source)
+	{
+	case "detection":
+		detectionInfo.detectedSigns.forEach(function(element, element2, set) {
+			var checkbox = document.createElement('input');
+			checkbox.type = "checkbox";
+			checkbox.id = "c"+element;
+			checkbox.checked = true;
+
+			var label = document.createElement('label')
+			label.htmlFor = "c"+element;
+			label.appendChild(document.createTextNode(dictOrdered[element]));
+			docFragment.appendChild(checkbox);
+			docFragment.appendChild(label);
+		});
+		break;
+	case "annotation":
+		break;
+	}
+
+	document.getElementById("searchedSigns").innerHTML = "";
+	document.getElementById("searchedSigns").appendChild(docFragment);
+
+}*/
+
+function updateVisible()
+{
+	for(var i =1; i < boxes.length; i++)
+	{
+
+
+		if(document.getElementById("c"+boxes[i].symbol).checked)
+			boxes[i].svg.setAttribute("display","true");
+		else
+			boxes[i].svg.setAttribute("display","none");
+
+	};
+
+}
+
+function maximumSuppression(maxOverlap)
+{
+	document.getElementById(boxes[1].id).setAttribute("display","true");
+
+	var intersect = [0.0,0.0,0.0,0.0];
+	var iw = 0.0;
+	var ih = 0.0;
+	var interArea = 0.0;
+	var currentArea = 0.0;
+	var overlap = 0.0;
+	var previousValueBigger = parseFloat(document.getElementById("sliderNonMax").innerHTML) > maxOverlap;
+	var currentThreshold = parseFloat(document.getElementById("slider").value);
+
+	// set all boxes to "show" first
+	if(!previousValueBigger)
+		for(var i = 2; i < boxes.length; i++) // First ist allways best!
+		{
+			if(boxes[i].confidence > currentThreshold)
+				boxes[i].show = 1;
+		}
+
+	for(var i = 2; i < boxes.length; i++) // First ist allways best!
+	{
+		if(boxes[i].show == 0)
+			continue;
+
+		for(var j = 1; j <boxes.length; j++) // higher boxes already eliminated or tested!
+			{
+
+				if(i == j)
+					continue;
+				/*if(previousValueBigger)
+					if(boxes[j].svg.getAttribute("display") == "none")
+						{
+							boxes[j].show = 0;
+							continue;
+						}*/
+				if(boxes[j].show == 0)
+					continue;
+
+				intersect[0] = Math.max(boxes[i].xmin, boxes[j].xmin);
+				intersect[1] = Math.max(boxes[i].ymin, boxes[j].ymin);
+				intersect[2] = Math.min(boxes[i].xmax, boxes[j].xmax);
+				intersect[3] = Math.min(boxes[i].ymax, boxes[j].ymax);
+
+				iw = (intersect[2]-intersect[0]+1);
+				ih = (intersect[3]-intersect[1]+1);
+
+				if(iw > 0 && ih >0)
+				{
+					interArea = iw * ih
+
+					currentArea =  (boxes[j].xmax-boxes[j].xmin+1)*(boxes[j].ymax-boxes[j].ymin+1);
+
+					overlap = interArea / currentArea;
+
+					if(overlap > maxOverlap) //detectionInfo.config.maxOverlap)
+						{
+							if(boxes[j].confidence < boxes[i].confidence)
+								boxes[j].show = 0;
+							else
+								boxes[i].show = 0;
+						}
+
+
+				}
+
+
+			}
+	}
+
+	var visible = 0;
+	for(var i = 1; i < boxes.length; i++)
+		if(boxes[i].show != 0)
+			{
+				boxes[i].svg.setAttribute("display","true");
+				visible += 1;
+			}
+		else
+			boxes[i].svg.setAttribute("display","none");
+
+
+	var totalBoxes = boxes.length-1;
+	document.getElementById("totals").innerHTML = "Boxes: "+visible+" / "+totalBoxes;
+
+	document.getElementById("sliderNonMax").innerHTML = maxOverlap;
+	document.getElementById("nonmax").value = maxOverlap;
+}
+
+
+function showLabels(bShowUnicode)
+{
+
+	if(document.getElementById("svgLabels") == null)
+		{
+			 //var divMaster = document.createElement("div");
+			//divMaster.id = "toolTipBlock";// get median height:
+			var height = [];
+			for(var i = 1; i < boxes.length; i++)
+				{
+					height.push(Math.round(boxes[i].ymax-boxes[i].ymin));
+				}
+
+			height.sort();
+
+			if(height.length%2 == 0)
+				var median = height[height.length/2];
+			else
+				var median = (height[Math.floor(height.length/2)]+height[Math.floor(height.length/2)+1])/2;
+
+			median = Math.round(median/3);
+			var svgLabels = document.createElementNS(xmlns, "g");
+			svgLabels.id = "svgLabels";
+
+			if(train)
+				var confidence = document.getElementById("slider").value;
+			else
+				var confidence = 0;
+			for(var i = 1; i < boxes.length; i++)
+			{
+				//if(boxes[i].) check confidence value
+				/*var div = document.createElement("div");
+				//div.setAttribute("style", (boxes[3].ymin+boxes[3].ymax)/2);
+				//div.setAttribute("left", (boxes[3].xmin+boxes[3].xmax)/2);
+				div.style.left =boxes[i].ymin+x;
+				div.style.top =boxes[i].xmin+y;
+				div.setAttribute("class", "tooltip");
+				div.style.background = "white";
+				div.style.display = "block";
+				divMaster.appendChild(div);*/
+
+				if(boxes[i].confidence < confidence || boxes[i].show == 0) //boxes[i].svg.getAttribute("display") != "true")
+					continue;
+
+				var rect = document.createElementNS(xmlns, "rect");
+
+				rect.setAttribute("x", 3);
+				rect.setAttribute("y", 3);
+				rect.setAttribute("width", 6);
+				rect.setAttribute("height", 6);
+
+				var elem = document.createElementNS(xmlns, "text");
+
+				elem.setAttribute("x", (boxes[i].xmin/2+boxes[i].xmax/2));
+				elem.setAttribute("y", boxes[i].ymax-10);
+				elem.setAttribute("name", i);
+				elem.setAttribute("stroke", "black");
+				elem.setAttribute("font-size",median);
+				elem.setAttribute("fill", "black");
+if(bShowUnicode) {
+    var sIndex = ("000" + boxes[i].symbol).slice(-3);   
+    elem.innerHTML = aDictUnicode[sIndex];
+    elem.setAttribute("font-family", "assurbanipal");
+} else {
+				elem.innerHTML = unicodize(boxes[i].readableSymbol.toLowerCase());
+}
+				svgLabels.appendChild(rect);
+				svgLabels.appendChild(elem);
+
+			}
+
+		//	document.body.appendChild(divMaster);
+			document.getElementById("boxes_group").appendChild(svgLabels);
+
+
+
+			for(var i = 1; i < svgLabels.childNodes.length; i += 2)
+				{
+					var elem = svgLabels.childNodes[i-1];
+					var label = svgLabels.childNodes[i];
+					var j = document.getElementById("svgLabels").childNodes[i].getAttribute("name");
+					var labWidth = label.getBBox().width;
+					var labHeight = label.getBBox().height;
+
+					var boxMiddle = (boxes[j].xmax - boxes[j].xmin)/2 + parseFloat(boxes[j].xmin);
+
+					label.setAttribute("x",boxMiddle - labWidth/2);
+
+					elem.setAttribute("x", label.getBBox().x);
+					elem.setAttribute("y", label.getBBox().y);
+					elem.setAttribute("width", labWidth);
+					elem.setAttribute("height", labHeight);
+					elem.setAttribute("fill", "white");
+
+				}
+
+
+		}
+	else
+		{
+			document.getElementById("boxes_group").removeChild(document.getElementById("svgLabels"));
+		}
+
+
+}
+
+
+function cleanUp()
+{
+	adjustSize(true);
+	confidenceUpdate(0.3);
+	maximumSuppression(detectionInfo.config.maxOverlap);
+}
+
+/* LEGACY : n-grams
+function drawLines()
+{
+	if(document.getElementById("lineGroup") == null)
+	{
+		var group =  document.createElementNS(xmlns, "g");
+		group.id = "lineGroup";
+		var lines = detectionInfo.lines.bigLines;
+
+		for (var i = 0;i < lines.length; i++)
+		{
+			var elem = document.createElementNS(xmlns, "line");
+      var num = detectionInfo.lines.points[i].split(" ").length;
+      if(num>4)
+        elem.setAttribute("stroke", "green");
+      else
+        elem.setAttribute("stroke", "pink");
+			elem.setAttribute("x1", lines[i].x1);
+			elem.setAttribute("x2", lines[i].x2);
+			elem.setAttribute("y1", lines[i].y1);
+			elem.setAttribute("y2", lines[i].y2);
+			group.appendChild(elem);
+		}
+
+		document.getElementById("svgMaster").appendChild(group);
+	}else
+		{
+		document.getElementById("svgMaster").removeChild(document.getElementById("lineGroup"));
+		}
+
+}
+
+
+function drawNGrams()
+{
+
+	if(document.getElementById("ngramGroup") == null)
+	{
+		var group =  document.createElementNS(xmlns, "g");
+		group.id = "ngramGroup";
+		var ngramPoints = detectionInfo.lines.points
+
+		for (var i = 0;i < ngramPoints.length; i++)
+		{
+			var elem = document.createElementNS(xmlns, "polyline");
+			elem.setAttribute("stroke", "pink");
+			elem.setAttribute("points", ngramPoints[i]);
+			elem.setAttribute("fill", "none");
+			group.appendChild(elem);
+		}
+		document.getElementById("svgMaster").appendChild(group);
+	}
+	else
+	{
+		document.getElementById("svgMaster").removeChild(document.getElementById("ngramGroup"));
+	}
+}*/
+
+function parseTransliteration()
+{
+	var text = document.getElementById("transText").value;
+//	var lines = text.split("\n");
+//	var signs;
+//	var toDetect = new Set();
+//	document.getElementById("transTable").innerHTML = "";
+
+	//getAvailableModels();
+	//document.getElementById("transText").parentNode.removeChild(document.getElementById("transText"));
+	var parsedData = detectionInfo.parseTransliteration(text);
+
+	if(parsedData.lenght == 0)
+		return;
+	/*var models = []
+	for(i in getAvailableModels.data)
+		{
+			num = ("000"+i).slice(-3);
+			models[num] = (getAvailableModels.data[i] == 1)?true:false;
+		}*/
