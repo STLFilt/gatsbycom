@@ -4600,3 +4600,425 @@ function parseTransliteration()
 			num = ("000"+i).slice(-3);
 			models[num] = (getAvailableModels.data[i] == 1)?true:false;
 		}*/
+
+	var table = document.createElement("table");
+
+
+	for(var i = 0; i< parsedData.length; i++)
+		{
+			var row = document.createElement("tr");
+			//signs = lines[i].split(/\.|\s|-/);
+			//for (var j = 0; j < signs.length; j++)
+			for (var j = 0; j < parsedData[i].length; j++)
+				{
+					var cell = document.createElement("td");
+
+					if(detectionInfo.data.lines[i][j] != "000" )
+						var sign = dictionary[parsedData[i][j].toLowerCase()];
+					else
+						var sign = parsedData[i][j];
+
+					if(detectionInfo.data.linesStatus[i][j] == 0)
+						{
+							cell.className = "noModel";
+						}
+					else
+						if(detectionInfo.availableModels[sign])
+							cell.className = "yesModel";
+						else
+							cell.className = "notDetectable";
+
+					cell.innerHTML = parsedData[i][j];
+
+					row.appendChild(cell);
+
+				}
+			table.appendChild(row);
+		}
+
+	document.getElementById("transTable").appendChild(table);
+}
+
+function detection()
+{
+    this.data = {};
+    this.detectedSigns = new Set();
+    this.ID = 0;
+    this.searchedSigns = [];
+    this.algorithms = [];
+    this.errorMsg = ["",""];
+    this.fullInfo = {};
+    this.lines = {};
+
+    this.availableModels = {};
+
+    this.data.multi = 0;
+    this.data.sift = 0;
+    this.data.wedgses = 0;
+    this.data.consensus = 0;
+    this.data.fast = 0;
+    this.data.ngram = 0;
+    this.data.prior = 0;
+    this.data.autoanno = 0;
+
+    this.data.options = 'none';
+
+    this.data.detectAll = false;
+    this.data.detect = [];
+
+    this.data.annotation = [];
+    this.data.annotationOriginal = "";
+
+    this.config = {}
+    this.config.maxOverlap = 0.5;
+    this.config.maxSizeRatio = 2;
+    this.config.minSizeRatio = 0.25;
+
+    getAvailableModels(this);
+}
+
+detection.prototype.setConfig =  function(maxOverlap, maxSize, minSize)
+{
+    if(maxOverlap != null)
+        this.config.maxOverlap = maxOverlap;
+    if(maxSize != null)
+        this.config.maxSizeRatio = maxSize;
+    if(minSize != null)
+        this.config.minSizeRatio = minSize;
+}
+
+detection.prototype.getErrorMessage = function(index)
+{
+    if(index != 0 && index != 1)
+        return "";
+
+    return this.errorMsg[index];
+};
+
+detection.prototype.start = function()
+{
+	$.ajax({
+		type : "POST",
+		url : "detect.php",
+		data : this.data,
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+			console.log("error calling detection");
+			return;
+		},
+		success : function(result) {
+			result = JSON.parse(result);
+			detectionInfo.ID = result.detectionID;
+
+		}
+	});
+
+	// Show the new dialog
+	if(this.data.autoanno != 1)
+	{
+	document.getElementById('matlabOutput').value = "Calling matlab...\n";
+	setPopUp('matlabStream');
+
+	// Now call the streaming function in one sec!
+	setTimeout('streamMatlab()', 1000);
+	}else
+	{
+		document.getElementById("transliteration").style.display = "none";
+	}
+};
+
+detection.prototype.parseUserInput = function(stringData)
+{
+    var ok = true;
+
+    if(stringData == "all")
+    {
+        this.data.detectAll = true
+        return ok;
+    }
+
+    var parsedData = stringData.split(",");
+		//var pad = "000";
+    for ( var i = 0; i < parsedData.length; i++) {
+			// Go over the indicated signs: pad them AND check if those are
+			// numbers!!
+			// For some signs: check if the models are available!
+		var toDetect = parseInput(parsedData[i]);
+
+		if (toDetect.label.length > 3 || toDetect.newEntry) {
+				ok = false;
+				this.errorMsg[0] = "Invalid label";
+				break;
+			}
+
+		if (!this.availableModels[toDetect.label]) {
+				ok = false;
+				this.errorMsg[1] = "No model for sign " + toDetect.label + " ("+toDetect.newName+")";
+				break;
+			}
+		parsedData[i] = toDetect.label;
+
+	}
+
+    if(!ok)
+        this.data.detect = parsedData;
+
+    return ok;
+};
+
+detection.prototype.parseTransliteration = function(text)
+{
+	this.data.annotationOriginal = text;
+    var parsedData = [];
+    var lines = text.split("\n");
+	var parsedLines =[];
+	var parsedLinesHuman = [];
+	var parsedLinesStatus = []; //half broken, unknow, whole, uncertain
+	var signs = [];
+	var tempSign = [];
+	var broken = false;
+	var partBroken = false;
+	var store = false;
+	var bigGap = false;
+	var determinative = false;
+	var error = false;
+	var superscripts = {"ᵃ":"a", "ᴬ":"a", "ᵇ":"b", "ᴮ":"b", "ᶜ":"c", "ᵈ":"d", "ᴰ":"d",
+			 "ᵉ":"e",
+			 "ᴱ":"e",
+			 "ᶠ":"f",
+			 "ᵍ":"g",
+			 "ᴳ":"g",
+			 "ʰ":"h",
+			 "ᴴ":"h",
+			 "ⁱ":"i",
+			 "ᴵ":"i",
+			 "ʲ":"j",
+			 "ᴶ":"j",
+			 "ᵏ":"k",
+			 "ᴷ":"k",
+			 "ˡ":"l",
+			 "ᴸ":"l",
+			 "ᵐ":"m",
+			 "ᴹ":"m",
+			 "ⁿ":"n",
+			 "ᴺ":"n",
+			 "ᵒ":"o",
+			 "ᴼ":"o",
+			 "ᵖ":"p",
+			 "ᴾ":"p",
+			 "ʳ":"r",
+			 "ᴿ":"R",
+			 "ˢ":"s",
+			 "ᵗ":"t",
+			 "ᵀ":"t",
+			 "ᵘ":"u",
+			 "ᵁ":"u",
+			 "ᵛ":"v",
+			 "ⱽ":"v",
+			 "ʷ":"w",
+			 "ᵂ":"w",
+			 "ˣ":"x",
+			 "ʸ":"y",
+			 "ᶻ":"z"};
+
+	var ignore = false;
+	var lineNumber = false;
+
+	for(var i = 0; i< lines.length; i++)
+		{
+			parsedLines[i] = [];
+			parsedLinesHuman[i] = [];
+			parsedLinesStatus[i] = [];
+			//signs = lines[i].split(/\.|\s|-/); // TODO: NUMBERS at the beginning of a line!!!
+			lines[i] = lines[i].trim()+" ";  // the last space forces the storage of the last sign!
+
+			for(var j = 0; j< lines[i].length; j++)
+				{
+				// START with text version, then unicode
+
+					var c = lines[i][j];
+
+					if(j== 0 & !isNaN(c))
+						{
+							lineNumber = true;
+						}
+			    // Determinative, ignore {} !!!! CAREFUL!! What if there is another sign directly behind???
+					// check for flags
+
+					if(c == '{'  || c == '}' || c == "*" || c == "?" || c == "+" )
+						store = true;
+
+					if(c == '<')
+						ignore = true;
+
+					if(c == '>')
+						ignore = false;
+
+					if(c in superscripts)
+						{
+							determinative = true;
+							c = superscripts[c]; // convert to normal letters
+						}
+
+					if(determinative && !(c in superscripts))
+						store = true;
+
+					// check for determinatives? -> unicode and stuf... UGH!
+					if (c == "_" || c == "!")
+						continue;
+					// check for broken?
+					if(c == '[')
+					{
+						broken = true;
+						continue;
+					}
+
+					if(c == '(')
+						{
+							tempSign = []; //flush the sign/word
+							continue;
+						}
+
+					if(c == ')')
+						{
+						 	store = true;
+						}
+					if(c == '⸢')
+					{
+						partBroken = true;
+						continue;
+					}
+					if(c == "]")
+						{
+						store = true;
+						}
+					if(c == '#' || c == "⸣")
+					{
+						partBroken = true;
+						store  = true;
+					}
+
+					if(c == ' ' || c == '.' || c == '-' || c == '—')
+						{
+							if(broken && c == '.')
+							{
+								bigGap = true;
+								continue;
+							}
+							if(lineNumber)
+							{	tempSign = [];
+								lineNumber = false;
+								continue;
+							}else
+								store = true;
+						}
+
+
+
+					if(store & tempSign.length != 0 & !ignore)
+						{
+							signs.push(tempSign.join(""));
+							store = false;
+							if(broken || c == 'x' || c == 'X')
+								parsedLinesStatus[i].push(0);
+							else
+								if(partBroken)
+								{
+									parsedLinesStatus[i].push(2);
+									partBroken = false;
+								}
+								else
+									parsedLinesStatus[i].push(1);
+							// flush buffer
+							tempSign = [];
+						}else
+						{
+							if(c != " " & c != "-" & c!= "." & c != '{' & c != "?" & c != "+" & c != '<' & c != '>' & c != ']' & c != '}' & c != '—')
+								tempSign.push(c);
+
+						//	if(c == 'x' || c == 'X')  // might have jumped over the storage process.
+						//		parsedLinesStatus[i].push(0);
+
+							store = false;
+							determinative = false;
+						}
+
+					if(c == "]")
+					{
+						broken = false;
+						if(bigGap)
+						{
+							signs.push("...");
+							parsedLinesStatus[i].push(0);
+							bigGap = false;
+						}
+					}
+
+					if(c == "⸣" || c== '#')
+						partBroken = false;
+				}
+
+			for (var j = 0; j < signs.length; j++)
+			{
+				signs[j] = signs[j].toLowerCase();  // convert to lower case first!
+				if(parsedLinesStatus[i][j] == 0)
+					{
+						if(signs[j] == "...")
+							var signNum = "998";
+						else
+							if(signs[j] in dictionary)
+								var signNum = dictionary[signs[j]];
+							else
+								var signNum = "000";
+					}
+				else
+					{
+						if(signs[j] in dictionary)
+						{
+							var signNum = dictionary[signs[j]];
+
+						}else
+						{
+							if(signs[j] == "x" || signs[j] == "X")
+								var signNum = "000";
+							else
+							{
+								console.log("Sign "+signs[j]+" not found!");
+								error = true;
+							}
+						}
+						if(parsedData.indexOf(signNum) == -1 && this.availableModels[signNum])
+							 parsedData.push(signNum);
+					}
+				parsedLines[i].push(signNum);
+				parsedLinesHuman[i].push(signs[j]);
+			}
+
+			signs = [];
+
+		}
+
+	if(error)
+		return [];
+
+    this.data.detect = parsedData;
+    this.data.lines = parsedLines;
+    this.data.linesStatus = parsedLinesStatus;
+    this.data.autoanno = 1;
+
+    return parsedLinesHuman;
+};
+
+detection.prototype.setAvailable = function(availableArray)
+{
+	var num;
+
+	for(var i = 0; i < 1000; i++)
+		{
+			num = ("000" + i).slice(-3);
+			if(availableArray[num] == "undefined")
+				this.availableModels[num] = false;
+			else
+				this.availableModels[num] = (availableArray[i] == 1)?true:false;
