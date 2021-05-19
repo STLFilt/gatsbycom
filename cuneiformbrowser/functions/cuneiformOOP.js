@@ -5022,3 +5022,188 @@ detection.prototype.setAvailable = function(availableArray)
 				this.availableModels[num] = false;
 			else
 				this.availableModels[num] = (availableArray[i] == 1)?true:false;
+		}
+
+}
+
+function oldDetections()
+{
+	// check if a radio button is selected
+	var selected = 0;
+
+	//if(annotationsLoaded)
+	//	return;
+	if(annotationsLoaded)
+	{
+		clearAnnotations();
+	}
+
+	for(var i = 0; i< this.content.childNodes.length; i += 2) // second child is always br!
+	{
+		if(this.content.childNodes[i].firstChild.checked)
+			{
+			selected = this.content.childNodes[i].firstChild.value;
+			break;
+			}
+	}
+
+	if(selected != 0) // Make the call!
+	{
+		loadResults(selected);
+		oldDetectionsWindow.hide();
+	}
+}
+
+function highlightSignFromDictionary(oEvent) {
+
+	var sRow, sSign;
+	unselectSignClass();
+	if(oEvent.target.parentElement.id) {
+		sRow = oEvent.target.parentElement.id;		
+	} else {
+		sRow = oEvent.target.parentElement.parentElement.id
+	}
+	sSign = sRow.slice(-3);
+	selectSignClass(sSign);
+}
+function onMouseDownDictionary(event) {
+	var dictionaryDiv = document.getElementById("dictionaryHeader");
+	dictionaryDiv.addEventListener("mousemove", onDragDictionary);
+	dictionaryDiv.addEventListener("mouseup", onMouseUpDictionary);
+	dictionaryDiv.addEventListener("mouseout", onMouseUpDictionary);
+	dictionaryDiv.style.cursor = 'move';
+}
+
+var onDragDictionary = function(event) {
+	var dictionaryDiv = document.getElementById("dictionaryHeader");
+	var boundingClientRect = dictionaryDiv.getBoundingClientRect();
+	dictionaryDiv.style.top = boundingClientRect.top + event.movementY;
+	dictionaryDiv.style.left = boundingClientRect.left + event.movementX;
+};
+
+var onMouseUpDictionary = function() {
+	var dictionaryDiv = document.getElementById("dictionaryHeader");
+	dictionaryDiv.removeEventListener("mousemove", onDragDictionary);
+	dictionaryDiv.removeEventListener("mouseup", onMouseUpDictionary);
+	dictionaryDiv.style.cursor = 'auto';
+};
+function updateTotalBoxes() {
+	
+	if(mode == "boxes") {
+		var iNonEmptyBoxes = boxes.filter(Boolean).length;
+		document.getElementById("totals").innerHTML = "Boxes: "+ iNonEmptyBoxes;
+	} else {
+		document.getElementById("totals").innerHTML = "Lines: "+ (lines.length-1);
+	}
+}
+
+// From https://www.w3schools.com/howto/howto_js_draggable.asp
+
+function dragDictionary(elmnt) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  if (document.getElementById("dictionaryHeader")) {
+    // if present, the header is where you move the DIV from:
+    document.getElementById("dictionaryHeader").onmousedown = dragMouseDown;
+  } else {
+    // otherwise, move the DIV from anywhere inside the DIV:
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+function updateTextInput(val, target) {
+  // update target value
+  document.getElementById(target).value=val;
+  // update scale pattern
+  createScalePattern(val);
+}
+
+
+function createScalePattern(val) {
+  // create scale pattern
+  targetSVG = 'svgMaster';
+
+  // compute relative height (with svgMaster zoom already accounted for thanks to transform property)
+  if (val > 0) {
+    invVal = 1 / val;
+  } else {
+    invVal = 0;
+  }
+  relHeight = 160 * invVal;
+
+  // check if containerGrid exists
+  rect = document.getElementById('sampleGrid');
+  if (rect) {
+      // change pattern size
+      grid = document.getElementById('gridPat');
+      grid.setAttribute('width', relHeight);
+      grid.setAttribute('height', relHeight);
+
+//      rect = document.getElementById('sampleGrid2');
+//      // change rectangle size
+//      rect.setAttribute('width', relHeight);
+//      rect.setAttribute('height', relHeight);
+
+  } else {
+      // insert patternContainer
+      // https://stackoverflow.com/questions/14208673/how-to-draw-grid-using-html5-and-canvas-or-svg
+      pattern = "<defs><pattern id='gridPat' width='128' height='128' patternUnits='userSpaceOnUse'>"
+      pattern = pattern + "<path d='M 1000 0 L 0 0 0 5' fill='none' stroke='#a6bddb' stroke-width='10' style='stroke-opacity: .6;'/></pattern></defs>"
+      document.getElementById(targetSVG).insertAdjacentHTML('beforeend', pattern);
+      // with svgMaster set width and height to 400% in order to handle zoom up to 12.5%
+      document.getElementById(targetSVG).insertAdjacentHTML('beforeend', "<rect id='sampleGrid' width='800%' height='800%' fill='url(#gridPat)' />");
+
+//      // create rectangle whose size depends on val scale
+//      var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+//      rect.setAttribute('id', 'sampleGrid2');
+//      rect.setAttribute('width', relHeight);
+//      rect.setAttribute('height', relHeight);
+//      rect.setAttribute('fill','white');
+//      rect.setAttribute("stroke", "gray")
+//      rect.setAttribute("stroke-width", 2);
+//
+//      // append rectangle
+//      document.getElementById('svgMaster').appendChild(rect);
+
+  }
+}
+
+function clearScalePattern() {
+    // remove scale pattern from svgMaster
+    rect = document.getElementById('sampleGrid');
+    pat = document.getElementById('gridPat');
+    // check if pattern exists
+    if (rect) {
+        rect.remove();
+        pat.remove();
+    }
+}
