@@ -222,3 +222,155 @@ function update()
     currentRow.cells[2].innerHTML.innerHTML = "";
 
 // trim the table
+
+	for(var i= 3; i < values;i++ )
+		{
+			currentRow.cells[i].innerHTML = "";
+			//dictionary[nextLabel].reading.pop();
+		}
+    var offset = 0;
+    currentRow.cells[3].innerHTML = dictionary[nextLabel].reading[0];
+	for(var i=0; i< dictionary[nextLabel].reading.length; i++)
+		{
+			temp = dictionary[nextLabel].reading[i];
+    
+            if( /[^\u0000-\u00ff]/.test(temp))
+            {
+                currentRow.cells[2].innerHTML = temp;
+                offset = 1;
+                continue;
+            }
+
+			if(i+3>=values)
+				{
+				var newCell = currentRow.insertCell(-1);			
+                newCell.innerHTML = unicodize(temp);
+				}
+			else
+				currentRow.cells[i-offset+4].innerHTML = unicodize(temp);
+		}
+	
+	// Store the data:
+	data = {};
+	data = {"id": nextLabel, "label": dictionary[nextLabel].reading };
+	$.ajax({
+		type : "POST",
+		url : "updateDictionary.php",
+		data : data,
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+			console.log("error calling update function");
+			return;
+		},
+		success : function(result) {
+		
+
+		}
+	});
+	
+
+	
+	//change span for "readings"
+	var maxspan = 0;
+	var tableRows = document.getElementById("dictionary").children[0].children; 
+	for(var  i = 1; i<tableRows.length;i++)
+		if(tableRows[i].cells.length > maxspan)
+			maxspan = tableRows[i].cells.length;
+	
+	
+	var span = parseInt(document.getElementById("header").getAttribute("colspan"));
+	span =  span + (maxspan-3-span);
+	document.getElementById("header").setAttribute("colspan",span);
+	document.getElementById('editName').style.display = "none";
+	pop = false;
+	
+	
+}
+
+function newEntry()
+{
+	var newSign = document.getElementById("new").value;
+	var newSign = ("000" + (newSign)).slice(-3);
+
+	if(newSign.match(/[0-9a-zA-Z\.]+$/) != null && newSign != "000")
+	{
+		if(document.getElementById(newSign) == null)
+			{
+		
+				var number = parseInt(newSign);
+				var table = document.getElementById("dictionary");
+				var tableRows = document.getElementById("dictionary").children[0].children;
+				var destination = 1;
+				for(var i= tableRows.length-1; i>0; i--)
+					{
+						if(parseInt(tableRows[i].id)>number)
+							{
+								destination = i;								
+							}
+					}
+				var newRow = table.insertRow(destination);
+				newRow.setAttribute("id",newSign);
+				var cell = newRow.insertCell(-1);
+				cell.innerHTML = newSign;
+				cell.setAttribute("class","noModel");
+				for (var i=0; i<3; i++)  // three empty cells: Image, Name, First reading
+				{
+					var cell = newRow.insertCell(-1);
+					cell.innerHTML = "?";
+				}
+				
+			}
+		nextLabel = newSign;
+		openEditor(newSign);
+	}
+}
+
+
+function reactKeyboard(event) {
+
+	if (pop) {
+		if (event.which == _ESC_)
+			{
+			document.getElementById(visible).style.display = "none";
+			pop = false;
+			return;
+			}
+		if(event.which == _ENTER_ )
+			{
+				if(visible == "editName")
+					{			
+						update();
+						return;
+					}
+				document.getElementById(visible).style.display = "none";
+				pop = false;
+				return;
+			}
+	}else
+		if(event.which == _ENTER_)
+		{
+		 newEntry();
+		}
+	
+}
+
+function setPosition(position, id)
+{
+	var popup = document.getElementById(id);
+	var h = popup.offsetHeight;
+	var w = popup.offsetWidth
+	h = $('#'+id).height();
+	w = $('#'+id).width();
+	var newD = Math.round(position.left-w/2)
+	var newT = Math.round(position.top- h);
+	
+	window.scrollTo(0,newT-100);
+	popup.style.left = (newD>0) ? newD : 0;
+	popup.style.top = (newT>0) ? newT : 0;
+	popup.style.position = "absolute";
+	
+	
+	
+}
