@@ -15,4 +15,23 @@ function openImagesList(imageClicked)
 		$.ajax({
 		type : "GET",
 		url : "listModelImages.php",
-		data : {modelRequest:imageClicked.id, name:image
+		data : {modelRequest:imageClicked.id, name:imageClicked.alt},
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+			
+		},
+		success : function(result) {
+			document.getElementById('content').innerHTML = result;
+			document.getElementById('modelImages').style.display = "block";
+			setTimeout(function(){setPosition($(clicked).position(),"modelImages");}, 0)
+			
+		}
+	});
+	
+		
+
+}
+
+function openHOGList(image
