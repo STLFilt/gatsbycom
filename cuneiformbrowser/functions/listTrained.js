@@ -34,4 +34,20 @@ function openImagesList(imageClicked)
 
 }
 
-function openHOGList(image
+function openHOGList(imageClicked)
+{	
+	clicked = imageClicked;
+		$.ajax({
+		type : "GET",
+		url : "listModelImages.php",
+		data : {modelRequest:imageClicked.id, name:imageClicked.alt},
+		// processData: false,
+		// contentType: "application/json",
+		cache : false,
+		error : function() {
+			
+		},
+		success : function(result) {
+			result = result.replace(/.jpg/gi, '_HOG.jpg');
+			document.getElementById('content').innerHTML = result;
+			document.getElementById('modelImag
