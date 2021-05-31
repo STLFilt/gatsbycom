@@ -50,4 +50,23 @@ function openHOGList(imageClicked)
 		success : function(result) {
 			result = result.replace(/.jpg/gi, '_HOG.jpg');
 			document.getElementById('content').innerHTML = result;
-			document.getElementById('modelImag
+			document.getElementById('modelImages').style.display = "block";
+			setPosition($(clicked).position(),"modelImages");
+		}
+	});
+	
+	
+	
+}
+
+function setPosition(position, id)
+{
+	var popup = document.getElementById(id);
+	var h = popup.offsetHeight;
+	var w = popup.offsetWidth
+	h = $('#'+id).height();
+	w = $('#'+id).width();
+	var newD = Math.round(position.left-w/2)
+	var newT = Math.round(position.top- h);
+	
+	popup.style.left 
