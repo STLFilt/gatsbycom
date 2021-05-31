@@ -69,4 +69,10 @@ function setPosition(position, id)
 	var newD = Math.round(position.left-w/2)
 	var newT = Math.round(position.top- h);
 	
-	popup.style.left 
+	popup.style.left = (newD>0) ? newD : 0;
+	popup.style.top = (newT>0) ? newT : 0;
+	popup.style.position = "absolute";
+	
+	
+	
+}
