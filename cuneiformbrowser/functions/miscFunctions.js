@@ -48,4 +48,18 @@ function updateData()
 		cell.innerHTML = element;
 	});
 	
-	t
+	table.style.display = "inline-block";
+	$.ajax({
+		type : "GET",
+		url : "matlabInfo.php?infoRequest=signInfo&sign="+sign,
+	
+		cache : false,
+		error : function() {
+			console.log("error fetching Info");
+			return;
+		},
+		success : function(result) {
+			
+			var signInfo = JSON.parse(result);
+			document.getElementById("totalExamples").innerHTML =  signInfo.totalExamples;
+			document.getElementById("PR").inn
