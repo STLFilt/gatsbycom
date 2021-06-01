@@ -28,4 +28,24 @@ function updateData()
 	if(typeof(fullDictionary[sign]) == "undefined")
 		document.getElementById("name").innerHTML = "?";
 	else
-		document.getElementById("name").inn
+		document.getElementById("name").innerHTML = fullDictionary[sign][0];
+	document.getElementById("id").innerHTML = sign;
+	
+	var table = document.getElementById("readings");
+	
+	// Erase old rows
+	while(table.rows.length > 1)
+		table.deleteRow(-1);
+
+	var row;
+	
+	if(typeof(fullDictionary[sign]) != "undefined")
+	fullDictionary[sign].forEach(function(element, ind, array){
+		if(ind%10 == 0)
+			row = table.insertRow(-1);
+		
+		var cell = row.insertCell(-1);
+		cell.innerHTML = element;
+	});
+	
+	t
