@@ -115,4 +115,30 @@ function updateImages(sign)
 			return;
 		},
 		success : function(result) {
-			document.getElementB
+			document.getElementById("images").innerHTML =  result;
+		}
+	});*/
+	
+	//clicked = imageClicked;
+	$.ajax({
+	type : "GET",
+	url : "listModelImages.php",
+	data : {modelRequest:sign, name:sign},
+	// processData: false,
+	// contentType: "application/json",
+	cache : false,
+	error : function() {
+		
+	},
+	success : function(result) {
+		document.getElementById('examples').innerHTML = result;
+		
+	}
+});
+}
+
+function dictionaryPrepare()
+{
+	$.ajax({
+		type : "GET",
+		url : "matlabInf
