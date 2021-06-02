@@ -89,3 +89,30 @@ function updateData()
 				document.getElementById("totalCorrect").innerHTML  = confusion[sign][sign];
 			
 			if(!drawn)
+				drawConfusion(sign);
+			
+			updateConfusion(sign);
+		}
+	});
+	
+	
+
+}
+
+function updateImages(sign)
+{
+	
+	//var sign = document.getElementById("selection").value;
+	/*document.getElementById("imagesName").innerHTML = sign;
+	
+	$.ajax({
+		type : "GET",
+		url : "listExamples.php?sign="+sign,
+	
+		cache : false,
+		error : function() {
+			console.log("error fetching the gallery");
+			return;
+		},
+		success : function(result) {
+			document.getElementB
