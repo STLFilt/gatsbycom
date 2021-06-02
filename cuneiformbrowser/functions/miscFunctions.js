@@ -62,4 +62,16 @@ function updateData()
 			
 			var signInfo = JSON.parse(result);
 			document.getElementById("totalExamples").innerHTML =  signInfo.totalExamples;
-			document.getElementById("PR").inn
+			document.getElementById("PR").innerHTML = "";
+			if(signInfo.pr)
+				{
+					document.getElementById("PR").innerHTML = "<h3>P/R for all images</h3><img src=\""+signInfo.prFile+"\" width=\"40%\">";
+				}
+			document.getElementById("trained").innerHTML = signInfo.trainStatus;
+			switch(signInfo.trainStatus)
+			{
+			case "trained":
+				document.getElementById("trained").className = "tabCell yes";
+				break;
+			case "trainable":
+			
