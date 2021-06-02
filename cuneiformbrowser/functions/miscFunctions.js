@@ -74,4 +74,18 @@ function updateData()
 				document.getElementById("trained").className = "tabCell yes";
 				break;
 			case "trainable":
+				document.getElementById("trained").className = "tabCell almost";
+				break;
+			case "untrained":
+				document.getElementById("trained").className = "tabCell no";
+				break;
+			}
 			
+			updateImages(sign);
+			confusion = [];
+			confusion[sign] = JSON.parse(signInfo.CMdata);
+			
+			if(confusion[sign] != null)
+				document.getElementById("totalCorrect").innerHTML  = confusion[sign][sign];
+			
+			if(!drawn)
