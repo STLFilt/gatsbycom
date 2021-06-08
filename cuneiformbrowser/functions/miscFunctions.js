@@ -185,3 +185,15 @@ function unicodize(str)
 	}
 	
 	str = str.replace(/sz/g,String.fromCharCode(353));
+	str = str.replace(/SZ/g,String.fromCharCode(352));
+	str = str.replace(/t\./g,String.fromCharCode(7789));
+	str = str.replace(/T\./g,String.fromCharCode(7788));
+	str = str.replace(/s\./g,String.fromCharCode(7779));
+	str = str.replace(/S\./g,String.fromCharCode(7778));
+	str = str.replace(/h/g,String.fromCharCode(7723));
+	str = str.replace(/H/g,String.fromCharCode(7722));
+	
+	return str;
+}
+
+funct
