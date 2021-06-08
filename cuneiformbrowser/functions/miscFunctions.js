@@ -141,4 +141,25 @@ function dictionaryPrepare()
 {
 	$.ajax({
 		type : "GET",
-		url : "matlabInf
+		url : "matlabInfo.php?infoRequest=dictionary",
+		dataType : "json",
+		async : false,
+		cache : false,
+		processData: false,
+		error : function() {
+			console.log("error calling for startup Info!");
+			return;
+		},
+		success : function(result) {
+			
+			fullDictionary = result;
+			
+			var names = Object.keys(fullDictionary);
+			
+			for(var i = 0; i< names.length; i++)
+				{
+
+					
+					fullDictionary[names[i]].forEach(function(element, ind, array)
+							{
+			
