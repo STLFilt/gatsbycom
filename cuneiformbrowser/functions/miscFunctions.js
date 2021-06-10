@@ -213,4 +213,17 @@ function drawConfusion(sign)
 	//for (var i=0; i<searched.length; i++)
 	//	totals[searched[i]] = 0;
 	
-	d
+	document.getElementById("svgMaster").setAttribute("width", (numFound+5)*rectHeight+5);
+	document.getElementById("svgMaster").setAttribute("height", 5*rectHeight+15);
+
+	newRectangle(1,1,(numFound+5)*rectHeight+3,5*rectHeight+13,"confusion1","xx","none");
+	
+	//for (var i=0; i<searched.length; i++)
+	var search = sign;
+	var index = searched.indexOf(search);
+
+	
+	
+	newText(7,10+rectHeight+rectHeight-3,fullDictionary[sign][0],12,false);
+	
+	new
