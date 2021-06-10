@@ -226,4 +226,20 @@ function drawConfusion(sign)
 	
 	newText(7,10+rectHeight+rectHeight-3,fullDictionary[sign][0],12,false);
 	
-	new
+	newRectangle(5,10+rectHeight,rectHeight*3,rectHeight,"rand","xx","none");
+    if(index != -1)
+	{
+
+		//total += totals[index]; 
+	}
+    
+	for(var i=1; i<numFound; i++) // found[0] = 000! -> not a sign
+		{
+		
+		var nameSearched = found[i];
+		
+		
+	    if(typeof(fullDictionary[found[i]])!= "undefined")
+	    	{
+	    		nameSearched = fullDictionary[found[i]][0];
+	    	//	search = nameSearched + " ("+found[i]+")";
