@@ -196,4 +196,21 @@ function unicodize(str)
 	return str;
 }
 
-funct
+function drawConfusion(sign)
+{
+	if(confusion[sign]==null)
+		return;
+	
+	drawn = true;
+	searched = Object.keys(confusion).sort();
+	found = Object.keys(confusion[searched[0]]).sort();
+	if(found[0] == "")
+		found = found.splice(1); // there seems to be a "" around
+	
+	numFound = found.length;
+	
+	//var total = 0;
+	//for (var i=0; i<searched.length; i++)
+	//	totals[searched[i]] = 0;
+	
+	d
