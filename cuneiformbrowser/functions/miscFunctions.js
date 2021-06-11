@@ -261,4 +261,12 @@ function drawConfusion(sign)
 					//{
 					//    var percent =  Math.round(confusion[sign][found[j]]/totals * 10000)/100; 
 					//    percent = isNaN(percent)?0:percent;
-					   /* if(typeof(ful
+					   /* if(typeof(fullDictionary[found[j]])!= "undefined")
+					    	find = unicodize(fullDictionary[found[j]][0]) + " ("+found[j]+")";
+					    if(find == "000")
+					    	find = "not a sign";
+					    name = "Searched: "+search+" Detected: "+find+" ("+percent+"% of "+totals[index]+" )";*/
+					//    var hue = Math.round(250 - 250*percent/100);
+					//    color = "hsla(" + hue + ",100%,50%,1)";
+					//}
+				newRectangle(47+j*rectHeight,10+rectHei
