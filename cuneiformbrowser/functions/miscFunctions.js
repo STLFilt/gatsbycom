@@ -269,4 +269,18 @@ function drawConfusion(sign)
 					//    var hue = Math.round(250 - 250*percent/100);
 					//    color = "hsla(" + hue + ",100%,50%,1)";
 					//}
-				newRectangle(47+j*rectHeight,10+rectHei
+				newRectangle(47+j*rectHeight,10+rectHeight,rectHeight,rectHeight,sign,found[j],color);
+			}
+	
+	var text =newText(50+rectHeight*numFound,10+rectHeight+rectHeight-3,0,12,false);
+	text.id = "total"; 
+	$("rect").on("mouseover", toolTip);
+	document.getElementById("tooltip").innerHTML = "Hover over the confusion matrix to see the details";
+	//newText(50+rectHeight*numFound,22+rectHeight+20,total.toString(),13,false);
+	
+}
+
+function updateConfusion(sign)
+{
+		
+	tot
