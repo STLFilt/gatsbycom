@@ -283,4 +283,18 @@ function drawConfusion(sign)
 function updateConfusion(sign)
 {
 		
-	tot
+	totals = 0;
+	var search = sign;
+	
+	if(confusion[sign] !=null)
+	for(var j=0; j<found.length; j++)
+		totals += confusion[sign][found[j]];
+	else 
+		totals = 0;
+	
+	updateStats(totals, sign, found)
+	
+	//newText(50+rectHeight*numFound,10+rectHeight+rectHeight-3,totals,12,false);
+	if(document.getElementById("total")!= null)
+		document.getElementById("total").textContent = totals; 
+	document.getElementById("totalDetect").innerHTML = tota
