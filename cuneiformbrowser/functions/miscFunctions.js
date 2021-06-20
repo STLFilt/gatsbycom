@@ -297,4 +297,18 @@ function updateConfusion(sign)
 	//newText(50+rectHeight*numFound,10+rectHeight+rectHeight-3,totals,12,false);
 	if(document.getElementById("total")!= null)
 		document.getElementById("total").textContent = totals; 
-	document.getElementById("totalDetect").innerHTML = tota
+	document.getElementById("totalDetect").innerHTML = totals;
+	
+	for(var j=0; j<numFound; j++)
+	{
+		var color = "none";
+		// name = "None searched";
+		var find = found[j];
+		
+		if(confusion[sign] !=null)
+			{
+			var percent =  Math.round(confusion[sign][found[j]]/totals * 10000)/100; 
+			percent = isNaN(percent)?0:percent;
+			   /* if(typeof(fullDictionary[found[j]])!= "undefined")
+			    	find = unicodize(fullDictionary[found[j]][0]) + " ("+found[j]+")";
+			    if(find == "0
