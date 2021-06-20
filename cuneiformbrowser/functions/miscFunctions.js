@@ -323,4 +323,21 @@ function updateConfusion(sign)
 		rect.setAttribute("id",find);
 		rect.setAttribute("searched",sign);
 		rect.setAttribute("fill",color);
-		//newRectangle(47+j*rectHeight
+		//newRectangle(47+j*rectHeight,10+rectHeight,rectHeight,rectHeight,sign,found[j],color);
+	}
+
+
+document.getElementById("tooltip").innerHTML = "Hover over the confusion matrix to see the details";
+	
+}
+
+function newRectangle(x,y,w,h,id,found,fill){
+	
+	
+	var elem = document.createElementNS(xmlns, "rect");
+	
+	elem.setAttribute("id", found);
+	elem.setAttribute("searched", id);
+	//elem.setAttribute("total", total);
+	elem.setAttribute("x", x);
+	elem.setAttribute(
