@@ -340,4 +340,21 @@ function newRectangle(x,y,w,h,id,found,fill){
 	elem.setAttribute("searched", id);
 	//elem.setAttribute("total", total);
 	elem.setAttribute("x", x);
-	elem.setAttribute(
+	elem.setAttribute("y", y);
+	elem.setAttribute("width", w);
+	elem.setAttribute("height", h);
+	elem.setAttribute("stroke", "black");
+	
+	elem.setAttribute("stroke-width", 0.5);
+	elem.setAttribute("fill", fill);
+	elem.setAttribute("vector-effect", "non-scaling-stroke");
+	document.getElementById("svgMaster").appendChild(elem);
+	
+}
+
+function newText(x,y,text,size, vertical)
+{
+	var elem = document.createElementNS(xmlns, "text");
+	
+	elem.setAttribute("name", "label");
+	elem.setAttribute
