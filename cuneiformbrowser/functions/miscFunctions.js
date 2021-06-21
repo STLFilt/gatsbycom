@@ -357,4 +357,22 @@ function newText(x,y,text,size, vertical)
 	var elem = document.createElementNS(xmlns, "text");
 	
 	elem.setAttribute("name", "label");
-	elem.setAttribute
+	elem.setAttribute("x", x);
+	elem.setAttribute("y", y);
+	elem.setAttribute("font-size", size);
+	elem.textContent = text;
+	if(vertical)
+		{
+			elem.style.writingMode= "tb";
+		}
+	document.getElementById("svgMaster").appendChild(elem);
+	
+	return elem;
+}
+function toolTip(event)
+{
+	if(confusion[sign] == null)
+		return;
+	var sign = $(event.target).attr("searched");
+	var found = $(event.target).attr("id");
+	//var totals = $(eve
