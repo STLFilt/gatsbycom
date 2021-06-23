@@ -375,4 +375,16 @@ function toolTip(event)
 		return;
 	var sign = $(event.target).attr("searched");
 	var found = $(event.target).attr("id");
-	//var totals = $(eve
+	//var totals = $(event.target).attr("total");
+	if(found == "xx")
+		var text = "Hover over the confusion matrix to see the details";
+	else
+		{
+		    var percent =  Math.round(confusion[sign][found]/searchTotal * 10000)/100; 
+		    percent = isNaN(percent)?0:percent;
+		    if(typeof(fullDictionary[found])!= "undefined")
+		    	find = unicodize(fullDictionary[found][0]) + " ("+found+")";
+		    else
+		    	find = found;
+		    if(find == "000")
+		    	
