@@ -414,4 +414,21 @@ function updateStats(totals, sign, found)
 		}
 	var best = [totals +1,0,0,0];
 	var bestID = ["","",""];
-	var best
+	var bestNr = [0,0,0];
+	for(var i=1; i<4; i++)
+	{
+		for(var j=0; j<found.length; j++)
+			{
+				
+				if(best[i]<confusion[sign][found[j]] && best[i-1] > confusion[sign][found[j]])
+					{
+					best[i] =confusion[sign][found[j]];
+						if(j== 0)
+							bestID[i]="No Sign";
+						else
+							bestID[i] = fullDictionary[found[j]][0];
+						
+						bestNr[i-1] = found[j];
+					}
+			}
+		if(best[i]
