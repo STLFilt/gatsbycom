@@ -387,4 +387,19 @@ function toolTip(event)
 		    else
 		    	find = found;
 		    if(find == "000")
-		    	
+		    	find = "not a sign";
+		    
+		    if(typeof(fullDictionary[sign])!= "undefined")
+		    	signU = unicodize(fullDictionary[sign][0]) + " ("+sign+")";
+		    else
+		    	signU = sign;
+		    
+		    var text = "Searched: "+signU+" Detected: "+find+" ("+percent+"% of "+confusion[sign][found]+" )";
+		}
+    
+	document.getElementById("tooltip").innerHTML = text;
+}
+
+function updateStats(totals, sign, found)
+{
+	if(confusion
