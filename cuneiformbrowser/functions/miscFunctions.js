@@ -402,4 +402,16 @@ function toolTip(event)
 
 function updateStats(totals, sign, found)
 {
-	if(confusion
+	if(confusion[sign] == null)
+		{
+		document.getElementById("mostDetected").innerHTML  = "";
+		document.getElementById("secDetection").innerHTML  = "";
+		document.getElementById("thirdDetection").innerHTML  = "";
+		document.getElementById("imFirst").src ="lib/dummy.jpg";
+		document.getElementById("imSecond").src ="lib/dummy.jpg";
+		document.getElementById("imThird").src ="lib/dummy.jpg";
+		return;
+		}
+	var best = [totals +1,0,0,0];
+	var bestID = ["","",""];
+	var best
