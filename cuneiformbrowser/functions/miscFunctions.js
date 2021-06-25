@@ -444,4 +444,18 @@ function updateStats(totals, sign, found)
 			type : "GET",
 			url : "matlabInfo.php?infoRequest=getModelImage&arr[]="+bestNr[0]+"&arr[]="+bestNr[1]+"&arr[]="+bestNr[2],
 			//data : {"data":bestNr},
-			// processData: 
+			// processData: false,
+			// contentType: "application/json",
+			cache : false,
+			error : function() {
+				
+			},
+			success : function(result) {
+				var data = JSON.parse(result);
+				
+				document.getElementById("imFirst").src  =  data[0];
+				document.getElementById("imSecond").src =data[1];
+				document.getElementById("imThird").src =data[2];
+			}});
+		
+}
