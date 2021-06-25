@@ -431,4 +431,17 @@ function updateStats(totals, sign, found)
 						bestNr[i-1] = found[j];
 					}
 			}
-		if(best[i]
+		if(best[i] == 0)
+			bestID[i] = "Not enough Input!";
+		
+	}
+		
+		document.getElementById("mostDetected").innerHTML  = bestID[1];
+		document.getElementById("secDetection").innerHTML  = bestID[2];
+		document.getElementById("thirdDetection").innerHTML  = bestID[3];
+		
+		$.ajax({
+			type : "GET",
+			url : "matlabInfo.php?infoRequest=getModelImage&arr[]="+bestNr[0]+"&arr[]="+bestNr[1]+"&arr[]="+bestNr[2],
+			//data : {"data":bestNr},
+			// processData: 
