@@ -80,3 +80,36 @@ $
 					document.getElementById('closeStream').style.display = "block";
 					return;
 				}
+				if (result['content'] == 'waiting') // server is waiting for
+													// information, don't
+													// output!
+				{
+					console.log("Im Matlab nichts neues");
+					setTimeout('streamMatlab()', 1000);
+					return;
+				}
+				// output the new info
+				document.getElementById('matlabOutput').value += result['content'];
+
+				// server isn't done, call again in 1s
+				setTimeout('streamMatlab()', 1000);
+
+			},
+			error : function(xhr, status, errorThrown) {
+				console.log("Error: " + errorThrown);
+				console.log("Status: " + status);
+				console.dir(xhr);
+			},
+			async : true,
+			cache : false
+		});
+if(streamChange)
+	switchStream();
+
+}
+
+function closeStream()
+{
+	document.getElementById('main').style.display = "block";
+	document.getElementById('matlabStream').style.display = "none";
+}
