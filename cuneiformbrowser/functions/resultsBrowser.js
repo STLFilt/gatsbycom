@@ -37,4 +37,14 @@ function drawConfusion()
 	var searched = Object.keys(confusion).sort();
 	var numSearched = searched.length;
 	var found = Object.keys(confusion[searched[0]]).sort();
-	if(found[0] 
+	if(found[0] == "")
+		found = found.splice(1); // there seems to be a "" around
+	
+	var numFound = found.length;
+	var totals = Array.apply(null, Array(searched.length)).map(Number.prototype.valueOf,0);
+	var total = 0;
+	//for (var i=0; i<searched.length; i++)
+	//	totals[searched[i]] = 0;
+	
+	document.getElementById("svgMaster").setAttribute("width", (numFound+5)*rectHeight+5);
+	document.getElementById("svgMast
