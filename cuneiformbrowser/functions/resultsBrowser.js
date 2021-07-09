@@ -15,4 +15,26 @@ function startingSetup()
 	
 	$.ajax({
 		type : "GET",
-		url : "matlabInfo.php?infoR
+		url : "matlabInfo.php?infoRequest=confusion",
+		dataType : "json",
+		async : true,
+		cache : false,
+		error : function() {
+			console.log("error calling for Info!");
+			return;
+		},
+		success : function(result) {
+			confusion = result;
+			drawConfusion();
+		}
+	});
+	
+}
+
+function drawConfusion()
+{
+	
+	var searched = Object.keys(confusion).sort();
+	var numSearched = searched.length;
+	var found = Object.keys(confusion[searched[0]]).sort();
+	if(found[0] 
