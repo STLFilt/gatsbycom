@@ -47,4 +47,18 @@ function drawConfusion()
 	//	totals[searched[i]] = 0;
 	
 	document.getElementById("svgMaster").setAttribute("width", (numFound+5)*rectHeight+5);
-	document.getElementById("svgMast
+	document.getElementById("svgMaster").setAttribute("height", (numSearched+5)*rectHeight+5);
+
+	newRectangle(0,0,(numFound+5)*rectHeight+5,(numSearched+5)*rectHeight+5,"confusion","none","black");
+	
+	for (var i=0; i<searched.length; i++)
+		for(var j=0; j<found.length; j++)
+			{
+				totals[i] += confusion[searched[i]][found[j]];
+			}
+	
+	var offset = 1;
+	for(var i=1; i<numFound; i++) // found[0] = 000! -> not a sign
+		{
+		var search = found[i];
+		var name
