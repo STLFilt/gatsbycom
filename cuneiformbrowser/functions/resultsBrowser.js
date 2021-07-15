@@ -61,4 +61,14 @@ function drawConfusion()
 	for(var i=1; i<numFound; i++) // found[0] = 000! -> not a sign
 		{
 		var search = found[i];
-		var name
+		var nameSearched = found[i];
+		var index = searched.indexOf(search);
+	    if(typeof(dictOrdered[found[i]])!= "undefined")
+	    	{
+	    		nameSearched = unicodize(dictOrdered[found[i]]);
+	    		search = nameSearched + " ("+found[i]+")";
+	    	}
+	    if(typeof(confusion[search]) != "undefined")
+	    	newText(7,10+i*rectHeight+rectHeight-3,nameSearched,12,false);
+	    
+	    newText(53+i*rectHeight,12+rectHeight*(numSearched+1),nameSearched,13,
