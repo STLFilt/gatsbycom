@@ -71,4 +71,15 @@ function drawConfusion()
 	    if(typeof(confusion[search]) != "undefined")
 	    	newText(7,10+i*rectHeight+rectHeight-3,nameSearched,12,false);
 	    
-	    newText(53+i*rectHeight,12+rectHeight*(numSearched+1),nameSearched,13,
+	    newText(53+i*rectHeight,12+rectHeight*(numSearched+1),nameSearched,13,true);
+	    
+	    if(index != -1)
+	    	{
+	    		newText(7,10+offset*rectHeight+rectHeight-3,nameSearched,12,false);
+	    		newText(50+rectHeight*numFound,10+offset*rectHeight+rectHeight-3,totals[index],12,false);
+	    		total += totals[index]; 
+	    		newRectangle(5,10+offset*rectHeight,rectHeight*3,rectHeight,"","none","black");
+	    		for(var j=0; j<numFound; j++)
+				{
+					var color = "none";
+				
