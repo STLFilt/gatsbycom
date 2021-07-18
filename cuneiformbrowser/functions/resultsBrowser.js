@@ -110,4 +110,21 @@ function drawConfusion()
 		
 	    
 		}
-	$("rect").on("mouseover",
+	$("rect").on("mouseover", toolTip);
+	newText(50+rectHeight*numFound,22+rectHeight*numFound+20,total.toString(),13,false);
+}
+
+function newRectangle(x,y,w,h,id,fill, stroke){
+	
+	
+	var elem = document.createElementNS(xmlns, "rect");
+	
+	elem.setAttribute("name", id);
+	elem.setAttribute("x", x);
+	elem.setAttribute("y", y);
+	elem.setAttribute("width", w);
+	elem.setAttribute("height", h);
+	elem.setAttribute("stroke", stroke);
+	
+	elem.setAttribute("stroke-width", 0.5);
+	elem
