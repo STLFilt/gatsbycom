@@ -127,4 +127,19 @@ function newRectangle(x,y,w,h,id,fill, stroke){
 	elem.setAttribute("stroke", stroke);
 	
 	elem.setAttribute("stroke-width", 0.5);
-	elem
+	elem.setAttribute("fill", fill);
+	elem.setAttribute("vector-effect", "non-scaling-stroke");
+	document.getElementById("svgMaster").appendChild(elem);
+	
+}
+
+function newText(x,y,text,size, vertical)
+{
+	var elem = document.createElementNS(xmlns, "text");
+	
+	elem.setAttribute("name", "label");
+	elem.setAttribute("x", x);
+	elem.setAttribute("y", y);
+	elem.setAttribute("font-size", size);
+	elem.textContent = text;
+	if(vertical)
