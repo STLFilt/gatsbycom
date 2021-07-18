@@ -93,4 +93,21 @@ function drawConfusion()
 						    	find = unicodize(dictOrdered[found[j]]) + " ("+found[j]+")";
 						    if(find == "000")
 						    	find = "not a sign";
-						    name = "Searched: "+search+" Detec
+						    name = "Searched: "+search+" Detected: "+find+" ("+percent+"% of "+totals[index]+" )";
+						    var hue = Math.round(250 - 250*percent/100);
+						    color = "hsla(" + hue + ",100%,50%,1)";
+						}
+					if(i==j)
+						var stroke = "white";
+					else
+						var stroke = "black";
+					newRectangle(47+j*rectHeight,10+offset*rectHeight,rectHeight,rectHeight,name,color,stroke);
+				}
+	    		
+	    		offset += 1;
+	    	}
+	    
+		
+	    
+		}
+	$("rect").on("mouseover",
