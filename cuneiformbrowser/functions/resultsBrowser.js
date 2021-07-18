@@ -82,4 +82,15 @@ function drawConfusion()
 	    		for(var j=0; j<numFound; j++)
 				{
 					var color = "none";
-				
+					var name = "None searched";
+					var find = found[j];
+					
+					if(index != -1)
+						{
+						    var percent =  Math.round(confusion[found[i]][found[j]]/totals[index] * 10000)/100; 
+						    percent = isNaN(percent)?0:percent;
+						    if(typeof(dictOrdered[found[j]])!= "undefined")
+						    	find = unicodize(dictOrdered[found[j]]) + " ("+found[j]+")";
+						    if(find == "000")
+						    	find = "not a sign";
+						    name = "Searched: "+search+" Detec
