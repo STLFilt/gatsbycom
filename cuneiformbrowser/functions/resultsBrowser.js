@@ -163,4 +163,19 @@ function dictionaryPrepare()
 		cache : false,
 		processData: false,
 		error : function() {
-			co
+			console.log("error calling for startup Info!");
+			return;
+		},
+		success : function(result) {
+			
+			// now flip this thing!!!
+			
+			for(var id in result)
+				{
+				if(result.hasOwnProperty(id)){
+					var newId = ("000" + (id)).slice(-3);
+					dictOrdered[newId] = result[id][0];
+					for(var i = 0; i< result[id].length;i++)
+						 {
+							var newId = ("000" + (id)).slice(-3);
+							dictionary[result[id]
