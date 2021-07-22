@@ -143,3 +143,24 @@ function newText(x,y,text,size, vertical)
 	elem.setAttribute("font-size", size);
 	elem.textContent = text;
 	if(vertical)
+		{
+			elem.style.writingMode= "tb";
+		}
+	document.getElementById("svgMaster").appendChild(elem);
+}
+function toolTip(event)
+{
+	document.getElementById("tooltip").innerHTML = $(event.target).attr("name");
+}
+
+function dictionaryPrepare()
+{
+	$.ajax({
+		type : "GET",
+		url : "matlabInfo.php?infoRequest=dictionary",
+		dataType : "json",
+		async : false,
+		cache : false,
+		processData: false,
+		error : function() {
+			co
