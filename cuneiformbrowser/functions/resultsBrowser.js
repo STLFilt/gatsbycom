@@ -178,4 +178,21 @@ function dictionaryPrepare()
 					for(var i = 0; i< result[id].length;i++)
 						 {
 							var newId = ("000" + (id)).slice(-3);
-							dictionary[result[id]
+							dictionary[result[id][i].toLowerCase()] = newId;  // store the dictionary!
+						 }}
+					usedLabels[parseInt(id)] = 1; // index all used labels
+				}
+			
+			for(var i = 1; i<= usedLabels.length; i++)
+				{
+					if(typeof usedLabels[i] == "undefined")
+						{
+						nextLabel = ("000" + i).slice(-3);
+						break;
+						}
+				}
+			if( nextLabel == null) // No empty spaces in the array
+				{
+					nextLabel = ("000"+usedLabels.length).slice(-3);
+				}
+		}
