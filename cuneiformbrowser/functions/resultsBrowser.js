@@ -196,3 +196,23 @@ function dictionaryPrepare()
 					nextLabel = ("000"+usedLabels.length).slice(-3);
 				}
 		}
+	});
+}
+
+function unicodize(str)
+{
+	var number = Array('0','1','2','3','4','5','6','7','8','9');
+	
+	for(var i = 0; i<10;i++)
+		{ 
+			str = str.replace(number[i],"*"+number[i]);
+		}
+	for(var i = 0; i<10;i++)
+	{ 
+		var rep = "832" +number[i];
+		str = str.replace("*"+number[i],String.fromCharCode(rep));
+	}
+	
+	str = str.replace(/sz/g,String.fromCharCode(353));
+	str = str.replace(/SZ/g,String.fromCharCode(352));
+	str = str.re
