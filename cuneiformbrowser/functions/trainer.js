@@ -506,3 +506,192 @@ function cancelSelection(){
 //	var value = parseInt(button.getAttribute("value")); 
 //	collectionID = value;
 //	
+//	window.location.href="startxml.php?group="+groupID+"&collection="+collectionID;
+//}
+
+function removeImage(imageId)
+{
+
+	if(confirm("Are you sure you want to delete this image?\n Any Annotations will be lost!!"))
+		{
+			console.log("Kill "+imageId);
+			data = {};
+			data = {'action':'kill',
+					'imageId': imageId};
+			JSON.stringify(data);
+			
+			$.ajax({
+				type : "POST",
+				url : 'matlabInfo.php',
+				data : data,
+				cache : false,
+				success : function(result) {
+					if(JSON.parse(result)["error"])
+						{
+						alert("Error erasing data");
+						return;
+						}
+					window.location.href="start.php?group="+groupID+"&collection="+collectionID+'&selection=true'+'&page='+currentPage;
+				},
+				error : function(xhr, status, errorThrown) {
+					console.log("Error: " + errorThrown);
+					console.log("Status: " + status);
+					console.dir(xhr);
+				},
+				async : true,
+				cache : false
+			});
+		}
+}
+
+function reactKeyboard(event) {
+
+	if (visible) {
+		if (event.which == _ESC_) // ESC: close Popup.
+		{
+			setPopUp();
+			return;
+		}
+	}
+	
+}
+
+function changePage(){
+	
+	var value  = this.getAttribute("value");
+	if(value == currentPage)
+		return;
+	// get button with currentPage and erase selected
+	
+	document.getElementById("pages").children[currentPage].classList.remove('statusSelected');
+	//now select the button
+	document.getElementById("pages").children[value].classList.add('statusSelected');
+	
+	currentPage = value;
+	// call the gallery
+	
+	loadGallery(value);
+	
+	
+	
+}
+
+function loadGallery(pages){
+	
+	$.ajax({
+		type : "GET",
+		url : "loadGallery.php?page="+pages,
+	
+		cache : false,
+		error : function() {
+			console.log("error fetching the gallery");
+			return;
+		},
+		success : function(result) {
+			document.getElementById("tableContent").innerHTML = result;
+		}
+	});
+	
+	currentPage = pages;
+	history.pushState({}, "", "start.php?group="+groupID+"&collection="+collectionID+'&selection=true'+'&page='+pages);
+}
+
+function popUpNew(type)
+{
+	setPopUp();
+	document.getElementById("errorFieldNew").innerHTML="";
+	popUpNew.type = type;
+	
+	document.getElementById("new").innerHTML = "New "+popUpNew.type;
+	document.getElementById("newLong").innerHTML = "New "+popUpNew.type+"'s Name:";
+	document.getElementById("newShort").innerHTML = "New "+popUpNew.type+"'s Directory:";
+	
+	setPopUp("popNew");
+	
+}
+
+function createNew()
+{
+
+	
+	var newLong = document.getElementById("long").value;
+	var newShort = document.getElementById("short").value;
+	var reg = /^[\w ]+$/;
+	var test1 = reg.test(newLong);
+	var test2 = reg.test(newShort);
+	
+	if(!test1 || !test2 )
+		{
+			document.getElementById("errorFieldNew").innerHTML= "Bad Name. Please use only alphanumeric names!";
+			return;
+		}
+	
+	setPopUp();
+	
+	$.ajax({
+		type : "GET",
+		url :  "matlabInfo.php?infoRequest=setGroup&group="+groupID,
+	
+		cache : false,
+		error : function() {
+			console.log("error changing group");
+			return;
+		},
+		success : function() {
+			$.ajax({
+				type : "GET",
+				url :  "matlabInfo.php?infoRequest=new"+popUpNew.type+"&newName="+newLong+"&shortName="+newShort,
+			
+				cache : false,
+				error : function() {
+					console.log("error fetching the gallery");
+					return;
+				},
+				success : function(result) {
+					console.log(result);
+					getGroups();
+					if(popUpNew.type=="Group")
+						setTimeout(select(),1000);
+					else
+						{
+						collectionID = groupsInfo.groups[groupID].collections.length;
+						setTimeout(callNewCollection(),1000);
+						}
+				}
+			});
+		}
+	});
+	
+
+}
+////////////////////////
+
+function ping() {
+	// Just check for connection
+	$.ajax({
+		type : "GET",
+		url : 'pong.php',
+		dataType : "json",
+		success : function(result) {
+			var pong = document.getElementById("ping");
+			if (result['ping'] == "pong") {
+				if (pong.style.backgroundColor == "green")
+					pong.style.backgroundColor = "lime";
+				else
+					pong.style.backgroundColor = "green";
+
+				timer = window.setTimeout(ping, 720000);
+			} else {
+				pong.style.backgroundColor = "red";
+			}
+		},
+		error : function(xhr, status, errorThrown) {
+			console.log("Error: " + errorThrown);
+			console.log("Status: " + status);
+			console.dir(xhr);
+		},
+		async : true,
+		cache : false
+	});
+
+}
