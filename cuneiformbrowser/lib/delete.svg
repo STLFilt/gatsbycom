@@ -4,4 +4,12 @@
  <title id="title9167">Gnome Symbolic Icon Theme</title>
  <metadata id="metadata90">
   <rdf:RDF>
-   <cc:Work rdf:abo
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title>Gnome Symbolic Icon Theme</dc:title>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g id="layer12" transform="translate(-40,-518)">
+  <path id="path10839" style="block-progression:tb;text-indent:0;color:#bebebe;enable-background:new;text-transform:none;fill:#ff0000" d="m48 519.03c-3
