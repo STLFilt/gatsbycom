@@ -94,3 +94,45 @@ $size = 1000;
         $uni_sign = "N/A";
     else
         $uni_sign = $uni_sign[0];
+
+	echo "<td name=\"unicode\">$uni_sign</td>";
+
+  	$t = 0;
+  	foreach($list as $i=>$name)
+  		{
+  		for ($j=0; $j<10; $j++)
+  		{
+  			$name = str_replace("$j","*".$j, $name);
+
+  		}
+  		for ($j=0; $j<10; $j++)
+  		{
+  			$name = str_replace("*$j","&#832".$j, $name);
+  		}
+
+  		$name = str_replace("sz","&#353", $name);
+  		$name = str_replace("SZ","&#352", $name);
+  		$name = str_replace("t,","&#7789", $name);
+  		$name = str_replace("T,","&#7788", $name);
+  		$name = str_replace("s,","&#7779", $name);
+  		$name = str_replace("S,","&#7778", $name);
+  		$name = str_replace("h","&#7723", $name);
+  		$name = str_replace("H","&#7722", $name);
+  		$name = str_replace("S'","Ś", $name);
+  		$name = str_replace("s'","ś", $name);
+  		$name = str_replace("'","ʾ",$name);
+
+		if($i==0)
+  			echo "<td rowID=$key colID=$i name\"$key\"=>$list[0]</td>";  //$name
+
+		$t = $i+1;
+		echo "<td rowID=$key colID=$t name\"$key\"=>$name</td>";
+
+  		}
+  	echo '</tr>';
+  	}
+  }
+
+  ?>
+
+</table>
