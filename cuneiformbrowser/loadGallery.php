@@ -31,4 +31,16 @@ function loadIndex($page)
 	$xmlImages = simplexml_load_file($_SESSION['cuneidemo']['imagesList']);
 	$totalPages = ceil($xmlImages->total / _PAGESIZE_);
 	$counter = $page*_PAGESIZE_;
-	$endLoop = (($page+1)*_PAGESIZE_ > $xmlImages->total)? $xmlImages
+	$endLoop = (($page+1)*_PAGESIZE_ > $xmlImages->total)? $xmlImages->total :	($page+1)*_PAGESIZE_;
+	// check if there are _any_ images!
+	if($xmlImages->total != 0)
+	{
+		echo '<table style="margin:auto;"><tr>';
+		for($i = $page*_PAGESIZE_; $i < $endLoop; $i++)
+		{
+			$imageInfo =$xmlImages->image[$i];
+			$id = $counter;
+			$name = $imageInfo->name;
+			$file = $imageInfo->file;
+			$type = $imageInfo->name['type'];
+			$size =  round(filesize($_SESSION['cuneidemo']['imagesPath']."$file.jpg"
