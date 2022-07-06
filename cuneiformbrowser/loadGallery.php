@@ -53,4 +53,16 @@ function loadIndex($page)
 			// 				}
 			// 				else
 			// 				{
-	
+			// 					$name = $name."Rs";
+			// 				}
+
+			if($imageInfo->annotation["info"] == "none")
+			{
+				$trash = '<div class="trash" onclick="removeImage('.$id.');"></div>';
+
+				$annotation = '<div class="button no">Not Annotated</div>';
+			}
+			elseif ($imageInfo->annotation["info"] == "partial")
+			{
+				$trash = '<div class="trash" onclick="removeImage('.$id.');"></div>';
+				$annotation = "<a href=\"editor.php?image=$id&anno
