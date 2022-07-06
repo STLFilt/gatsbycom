@@ -43,4 +43,14 @@ function loadIndex($page)
 			$name = $imageInfo->name;
 			$file = $imageInfo->file;
 			$type = $imageInfo->name['type'];
-			$size =  round(filesize($_SESSION['cuneidemo']['imagesPath']."$file.jpg"
+			$size =  round(filesize($_SESSION['cuneidemo']['imagesPath']."$file.jpg")/(1024*1024),1);
+			//$image = $_SESSION['cuneidemo']['imagesPath'].'images'.DIRECTORY_SEPARATOR."$file";
+			$thumb = $_SESSION['cuneidemo']['collectionFolder'].'thumbs'.DIRECTORY_SEPARATOR."$file-thumb.jpg";
+			//$thumb = $_SESSION['cuneidemo']['collectionFolder']."$file-thumb.jpg";
+			// 				if ($type=="front")
+			// 				{
+			// 					$name = $name."Vs";
+			// 				}
+			// 				else
+			// 				{
+	
