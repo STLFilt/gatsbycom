@@ -11,4 +11,12 @@
 
  	$logJSON = file_get_contents('php://input');
 
- //	if(isJSON($l
+ //	if(isJSON($logJSON))
+ //	{
+ 		$time = @date('d/m/Y - G:i:s ');
+ 		$logfile = _LOGPATH_."changeLog_".$_SESSION['cuneidemo']["imageName"].".log";
+ 		//$logfile = _LOGPATH_."testlog.log";
+ 		logMessage("Saving changes' log in $logfile");
+ 		$log = fopen($logfile, 'a');
+ 		fwrite($log,"####### Update ######\n### user: ".$_SESSION['cuneidemo']["user"]."\n### $time\n");
+ 		fwrite($log, $logJ
