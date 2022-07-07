@@ -19,4 +19,13 @@
  		logMessage("Saving changes' log in $logfile");
  		$log = fopen($logfile, 'a');
  		fwrite($log,"####### Update ######\n### user: ".$_SESSION['cuneidemo']["user"]."\n### $time\n");
- 		fwrite($log, $logJ
+ 		fwrite($log, $logJSON . PHP_EOL);
+ 		fclose($log);
+ //	}
+
+
+ function isJSON($string){
+ 	return is_string($string) && is_object(json_decode($string)) ? true : false;
+ }
+
+ ?>
