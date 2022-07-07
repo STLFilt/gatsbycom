@@ -74,4 +74,18 @@ function loadIndex($page)
 			}
 
 			echo'<td><div class=thumbnail>'.$trash.'<div style="height:272px; display:table-cell;vertical-align: middle">';
-			echo "<a href=\"editor.php?ima
+			echo "<a href=\"editor.php?image=$id&group=".$_SESSION['cuneidemo']['group']."&collection=".$_SESSION['cuneidemo']['collection']."&annotation=false&page=$page\"> <img class='preview-image' src=\"$thumb\"> </a></div>";
+			echo "$name <br />[$size Mb]<br /> $annotation</div></td>";
+
+			$counter++;
+			if( ($counter % 5) == 0)
+			{
+			echo '</tr><tr>';
+			}
+
+		}
+
+			for (;($counter % 5) != 0; $counter++)
+			{	echo "<td></td>";
+			}
+			echo '</tr></table>';/*<div id=page
