@@ -99,4 +99,9 @@ function loadIndex($page)
 				}
 				echo '</div></div>';*/
 			} else
-				echo '<h2> No images in this collection! </h2><br />Cons
+				echo '<h2> No images in this collection! </h2><br />Consider uploading some images first!';
+
+		}
+
+
+?>
