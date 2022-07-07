@@ -88,4 +88,15 @@ function loadIndex($page)
 			for (;($counter % 5) != 0; $counter++)
 			{	echo "<td></td>";
 			}
-			echo '</tr></table>';/*<div id=page
+			echo '</tr></table>';/*<div id=pages onclick=changePage; value="0">';
+				for ($i = 0; $i < $totalPages; $i++)
+				{
+				$number = $i+1;
+					if ($number == 1)
+						echo '<div class="helpButton buttonNormal statusSelected" value='.$number.'>'.$number.'</div>';
+					else
+						echo '<div class="helpButton buttonNormal" value='.$number.'>'.$number.'</div>';
+				}
+				echo '</div></div>';*/
+			} else
+				echo '<h2> No images in this collection! </h2><br />Cons
