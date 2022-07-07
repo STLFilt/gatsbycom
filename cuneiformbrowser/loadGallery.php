@@ -65,4 +65,13 @@ function loadIndex($page)
 			elseif ($imageInfo->annotation["info"] == "partial")
 			{
 				$trash = '<div class="trash" onclick="removeImage('.$id.');"></div>';
-				$annotation = "<a href=\"editor.php?image=$id&anno
+				$annotation = "<a href=\"editor.php?image=$id&annotation=true&page=$page\"> <div class=\"button almost\">Partially Annotated</div> </a>";
+			}
+			else
+			{
+				$trash = "";
+				$annotation = "<a href=\"editor.php?image=$id&annotation=true&page=$page\"> <div class=\"button\">Annotated</div> </a>";
+			}
+
+			echo'<td><div class=thumbnail>'.$trash.'<div style="height:272px; display:table-cell;vertical-align: middle">';
+			echo "<a href=\"editor.php?ima
