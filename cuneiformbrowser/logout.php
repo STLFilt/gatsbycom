@@ -27,3 +27,6 @@ unset($_SESSION["cuneidemo"]);
 	// redirect to index
 
 	header('Location: index.php');
+	exit();
+?>
+
