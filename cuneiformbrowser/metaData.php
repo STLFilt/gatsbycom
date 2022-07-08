@@ -106,3 +106,59 @@ function loadMetaConfig() // what for??
 				$temp[0] = strtolower($temp[0]);
 
 				if($temp[1] == null)
+					$temp[1] ="";
+
+				$metaCfg[] = $temp;
+			}
+		}
+	}
+
+	return $metaCfg;
+}
+
+function eraseMetaConfigField()
+{
+
+}
+
+function addMetaConfigField()
+{
+
+}
+
+function updateMetaConfig()
+{
+
+}
+
+function generateFormular()
+{
+	$metaCfg = loadMetaConfig();
+
+	$jsonData = Array();
+
+	$table = '<form method="POST" action="">';
+	$config = Array();
+
+	// TODO better names
+	foreach($metaCfg as $cfg)
+	{
+		$cfg[0] = trim($cfg[0]);
+		$config[] = $cfg[0];
+		if($cfg[0][0] == '-')
+		{
+			$table .= "<div class='center' style='border-bottom:solid'><b> $cfg[1] </b></div>";
+		}elseif($cfg[1] != "")
+			$table .= "<p><label for=\"$cfg[0]\">$cfg[1]:</label> <input type=\"text\" id=\"$cfg[0]\"></p><br/>";
+		else
+			$table .= "<p><label for=\"$cfg[0]\">$cfg[0]:</label><input type=\"text\" id=\"$cfg[0]\"></p><br/>";
+
+	}
+	$table .= '</form>';
+
+	$jsonData['layout'] = $table; // Change and generate with JS!
+	$jsonData['fields'] = $config; // just use this!
+	$jsonData['data'] = loadMetaData();
+	echo json_encode($jsonData);
+}
+?>
