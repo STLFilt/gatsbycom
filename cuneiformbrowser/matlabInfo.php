@@ -449,3 +449,324 @@ function getAllModels() {
 	// $specModels = array_flip(scandir($specific));
 
 	foreach($models as $sign => &$present) {
+		$search = sprintf('%03d', $sign) . "_model$options.mat";
+		$searchNormal = sprintf('%03d', $sign) . "_model.mat";
+		// if(isset($specModels[$search]) || isset($mainModels[$searchNormal]))
+		if(isset($mainModels[$searchNormal]))
+			$present = 1;
+	}
+
+	return $models;
+}
+function getAlgorithms($options) {
+	// IMPORTANT: this will (as of now) only search without options!
+	if($options == 'none')
+		$options = '';
+	else
+		$options = '(' . $options . ')';
+
+	$algo['multi'] = false;
+	$algo['all'] = false;
+
+	$main = $_SESSION['cuneidemo']['groupModels'];
+	// $specific = _MATLABPATH_."models_cv_".$_SESSION['cuneidemo']['imageName'];
+	$mul = "multi_model$options.mat";
+	$all = "all_model$options.mat";
+	$mainModels = array_flip(scandir($main));
+	// $specModels = array_flip(scandir($specific));
+	// if(isset($specModels[$mul]) || isset($mainModels["multi_model.mat"]))
+	if(isset($mainModels["multi_model.mat"]))
+		$algo['multi'] = true;
+
+		// if(isset($specModels[$all]) || isset($mainModels["all_model.mat"]))
+	if(isset($mainModels["all_model.mat"]))
+		$algo['all'] = true;
+
+	return $algo;
+}
+function startingCheck() {
+	/*
+	 * For DETECTION:
+	 * $text = sprintf("DETECTION\n%s\n{\"imageID\":%u,\"group\":%u,\"collection\":%u}\n%s\n%s",
+	 * $_SESSION['cuneidemo']['verboseFile'], $imageID,$_SESSION['cuneidemo']['group'],$_SESSION['cuneidemo']['collection'],$algo,$todetect);
+	 *
+	 * For TRAINING:
+	 * $text = sprintf("TRAINING\n%s\n%s", $_SESSION['cuneidemo']['verboseFile'], $annoFile);
+	 *
+	 * $matlabData['imagesPath'] = str_replace('', "", $_SESSION['cuneidemo']['imagesPath']);
+	 * $matlabData['toTrain'] = $_POST['toTrain'];
+	 * $matlabData['save'] = 0;
+	 * $matlabData['reTrain'] = $reTrainFlag;
+	 * $matlabData['annoOptions'] = '';
+	 * $matlabData['outputOptions'] = '';
+	 * $matlabData['modeldir'] = str_replace('', "", $_SESSION['cuneidemo']['groupModels']);
+	 * $matlabData['groupFolder'] = str_replace('', "", $_SESSION['cuneidemo']['groupFolder']);
+	 * $matlabData['userInfoFile'] = $info;
+	 */
+	if(file_exists(_USERS_ . $_SESSION['cuneidemo']['user'] . 'process.txt')) {
+		$file = fopen(_USERDATA_ . $_SESSION['cuneidemo']['user'] . "process.txt", 'rb');
+		$process = trim(fgets($file));
+		$_SESSION['cuneidemo']['verboseFile'] = trim(fgets($file));
+		$data = json_decode(fgets($file), true); // This is json data
+		fclose($file);
+		return array(
+				'process' => true,
+				'type' => $process,
+				'data' => $data
+		);
+	}
+	if(file_exists(_USERS_ . $_SESSION['cuneidemo']['user'] . '_backupDetection.txt')) {
+		logMessage("Corrections available.");
+		$backupCorrections = fopen(_USERS_ . $_SESSION['cuneidemo']['user'] . '_backupDetection.txt', 'rb');
+
+		$image = fscanf($backupCorrections, "%u"); // first line is only for the server
+		fclose($backupCorrections);
+		return array(
+				'process' => false,
+				'backup' => true,
+				'image' => $image
+		);
+	} else
+		return array(
+				'process' => false,
+				'backup' => false
+		);
+}
+function imageOptions() {
+	// Search all images with same name and options
+	$length = strlen($_SESSION['cuneidemo']['imageName']);
+	$temp = glob($_SESSION['cuneidemo']['imagesPath'] . $_SESSION['cuneidemo']['imageName'] . '(*).jpg');
+	if(empty($temp))
+		return null;
+
+	$options = array();
+
+	foreach($temp as $longName) {
+		$options[] = substr(basename($longName, '.jpg'), $length + 1, -1);
+	}
+	return $options;
+}
+function startUpInfo() {
+	$xmlImages = simplexml_load_file($_SESSION['cuneidemo']['imagesList']);
+	$imagefile = $_SESSION['cuneidemo']['imagesPath'] . ($xmlImages->image[$_SESSION['cuneidemo']["imageID"]]->file);
+	$statusAnnotations = $xmlImages->image[$_SESSION['cuneidemo']["imageID"]]->annotation['info'];
+
+	$autoload = $_SESSION['cuneidemo']['autoload'];
+	$imagesize = getimagesize($imagefile . ".jpg");
+	$width = $imagesize[0];
+	$height = $imagesize[1];
+	$urlThumbHOG = _RESULTS_ . $_SESSION['cuneidemo']["user"] . "HOG.jpg";
+	$urlThumb = _RESULTS_ . $_SESSION['cuneidemo']["user"] . "thumbs.jpg";
+
+	if($statusAnnotations == "partial") {
+		$versions = (string) $xmlImages->image[$_SESSION['cuneidemo']["imageID"]]->annotation['version'];
+	} else {
+		$versions = 0;
+	}
+
+	return array(
+			'imageID' => $_SESSION['cuneidemo']['imageID'],
+			'imageName' => $_SESSION['cuneidemo']['imageName'],
+			'imageFile' => $imagefile,
+			'statusAnnotations' => (string) $statusAnnotations,
+			'autoload' => $_SESSION['cuneidemo']['autoload'],
+			'imageWidth' => $width,
+			'imageHeight' => $height,
+			'urlThumb' => $urlThumbHOG,
+			'urlThumbHOG' => $urlThumb,
+			'version' => $versions,
+			'collectionNr' => $_SESSION['cuneidemo']['collection'],
+			'groupNr' => $_SESSION['cuneidemo']['group'],
+			'collectionName' => $_SESSION['cuneidemo']['collectionName'],
+			'groupName' => $_SESSION['cuneidemo']['groupName'],
+			'user' => $_SESSION['cuneidemo']['user'],
+			'metaData' => $_SESSION['cuneidemo']['metaData'],
+			'page' => $_SESSION['cuneidemo']['page']
+	);
+
+	/*
+	 * $_SESSION['cuneidemo']["imageName"] for tablet name and for title DONE
+	 * echo "<script> var autoload = $GLOBALS[annotation]; < ------------------ !!!!!! Always autoload? No!!!!!
+	 * var statusAnnotations = \"$GLOBALS[statusAnnotations]\"; DONE
+	 * var annotationsVersions = $GLOBALS[versions]; DONE
+	 * var urlThumbHOG = \""._RESULTS_.$_SESSION['cuneidemo']["user"]."HOG.jpg\"; DONE
+	 * var urlThumb = \""._RESULTS_.$_SESSION['cuneidemo']["user"]."thumbs.jpg\"; </script>"; DONE
+	 *
+	 *
+	 */
+}
+
+// // DELETE IMAGE. Is in this script just to not make it too available
+function deleteImage() {
+	$errorFlag = FALSE;
+
+	$index = intval($_POST["imageId"]);
+	$xmlImages = simplexml_load_file($_SESSION['cuneidemo']['imagesList']);
+	$annotationfile = $_SESSION['cuneidemo']['annotationsPath'] . ($xmlImages->image[$index]->annotation);
+	$imagefile = $_SESSION['cuneidemo']['imagesPath'] . ($xmlImages->image[$index]->file);
+	$imageThumb = $_SESSION['cuneidemo']['collectionFolder'] . thumbs . DIRECTORY_SEPARATOR . ($xmlImages->image[$index]->file) . '-thumb.jpg';
+	$imagefile = $imagefile . '.jpg';
+
+	// LOG START
+	logMessage("Asked for deletion of file " . $_POST["imageId"] . " (" . (string) ($xmlImages->image[$index]->file) . ".jpg) in group ".$_SESSION['cuneidemo']['group']. "("
+			. $_SESSION['cuneidemo']['groupName'] . "), collection ".$_SESSION['cuneidemo']['collection']." (" . $_SESSION['cuneidemo']['collectionName'] . ")");
+
+	// save annotations' names
+
+	if($xmlImages->image[$index]->annotation != "empty") {
+		$annoList = glob("$annotationfile-v*.xml");
+		array_push($annoList, "$annotationfile.xml");
+	} else {
+		$annoList = array();
+	}
+	array_push($annoList, $imagefile);
+	array_push($annoList, $imageThumb);
+
+	// BAckup everything in a zip-file
+	$backupDirectory = 'data/trash/';
+
+	$zip = new ZipArchive();
+	$filename = $backupDirectory . $_SESSION['cuneidemo']['user'] . time() . ".zip";
+
+	if($zip->open($filename, ZipArchive::CREATE) !== TRUE) {
+		$error = "Error creating Zip file!";
+		logMessage("Error creating Zip file!");
+		$errorFlag = TRUE;
+	} else {
+		foreach($annoList as $anno) {
+			$test = (boolean) ($zip->addFile($anno));
+
+			if($test != TRUE) {
+				$error = "Error adding file to Zip file!";
+				logMessage("Error adding file '$anno' to Zip file!");
+				$errorFlag = TRUE;
+			}
+		}
+		$zip->close();
+
+		if(!$errorFlag) {
+			logMessage("Image and Annotations saved to ZIP: $filename");
+
+			// Erase Files
+			foreach($annoList as $anno) {
+				$err = unlink($anno);
+				if(!$err) {
+					$error = "Error erasing File";
+					logMessage("Error erasing File");
+					$errorFlag = TRUE;
+				}
+			}
+
+			logmessage("Image and Annotations erased from disk");
+		}
+	}
+
+	if($errorFlag) {
+		echo json_encode(array(
+				'error' => true,
+				'Errormsg' => $error
+		));
+	} else {
+		// Change image total
+		$total = (int) $xmlImages->total;
+		$total--;
+		$xmlImages->total = $total;
+
+		// REMOVE FROM XML
+		unset($xmlImages->image[$index]);
+
+		$counter = 1;
+
+		// Change ID from files
+		foreach($xmlImages->image as $imageInfo) {
+			$imageInfo->id = $counter;
+			$counter++;
+		}
+		$xmlImages->asXML($_SESSION['cuneidemo']['imagesList']);
+
+		logMessage("Image erased from  XML and XML ids updated");
+		echo json_encode(array(
+				'error' => false
+		));
+	}
+}
+function testing() {
+	return;
+	$errorFlag = FALSE;
+
+	$xmlImages = simplexml_load_file($_SESSION['cuneidemo']['imagesList']);
+	$annotationfile = $_SESSION['cuneidemo']['annotationsPath'] . ($xmlImages->image[$_SESSION['cuneidemo']["imageID"]]->annotation);
+	$imagefile = $_SESSION['cuneidemo']['imagesPath'] . ($xmlImages->image[$_SESSION['cuneidemo']["imageID"]]->file);
+	$imageThumb = $imagefile . '-thumb.jpg';
+	$imagefile = $imagefile . '.jpg';
+
+	// LOG START
+	logMessage("Asked for deletion of file " . $_SESSION['cuneidemo']['annotationsPath'] . ($xmlImages->image[$_SESSION['cuneidemo']["imageID"]]->name) . " in group " . $_SESSION['cuneidemo']['group'] . ", collection " . $_SESSION['cuneidemo']['collection']);
+
+	// REMOVE FROM XML
+	unset($xmlImages->image[3]);
+
+	$counter = 0;
+
+	// Change ID from files
+	foreach($xmlImages->image as $imageInfo) {
+		$imageInfo->id = $counter;
+		$counter++;
+	}
+	$xmlImages->asXML($_SESSION['cuneidemo']['imagesList']);
+
+	logMessage("Image erased from  XML and XML ids updated");
+
+	// BAckup everything in a zip-file
+	$backupDirectory = 'data/trash/';
+	$annoList = glob("$annotationfile-v*.xml");
+	array_push($annoList, "$annotationfile.xml");
+	array_push($annoList, $imagefile);
+	array_push($annoList, $imageThumb);
+
+	$zip = new ZipArchive();
+	$filename = $backupDirectory . $_SESSION['cuneidemo']['user'] . time() . ".zip";
+
+	if($zip->open($filename, ZipArchive::CREATE) !== TRUE) {
+		$error = "Error creating Zip file!";
+		logMessage("Error creating Zip file!");
+		$errorFlag = TRUE;
+	} else {
+		foreach($annoList as $anno) {
+			if($zip->addFile($anno) !== TRUE) {
+				$error = "Error adding file to Zip file!";
+				logMessage("Error adding file to Zip file!");
+				$errorFlag = TRUE;
+			}
+		}
+		$zip->close();
+
+		if(!errorFlag) {
+			logMessage("Image and Annotations saved to ZIP: $filename");
+
+			// Erase Files
+			foreach($annoList as $anno) {
+				$err = unlink($anno);
+				if(!$err) {
+					$error = "Error erasing File";
+					logMessage("Error erasing File");
+					$errorFlag = TRUE;
+				}
+			}
+
+			logmessage("Image and Annotations erased from disk");
+		}
+	}
+
+	if($errorFlag) {
+		echo json_encode(array(
+				'error' => true,
+				'Errormsg' => $error
+		));
+	} else {
+		echo json_encode(array(
+				'error' => false
+		));
+	}
+}
+?>
