@@ -26,4 +26,19 @@ file_put_contents("matlab/data/cuneiform/parserDictionary.json", json_encode($re
 // now for multi-logogramms
 if(isset($_GET["multi"]))
 {
-	$multidictionary = json_decode(file_get_contents("matlab/data/cuneiform/multi.j
+	$multidictionary = json_decode(file_get_contents("matlab/data/cuneiform/multi.json"), true);
+	$newDictionary = Array();
+
+	foreach($multidictionary as $id => $readings) {
+
+		$id = parseToSpecial($id);
+		$newDictionary[$id[0]] = Array();
+		if($id[0] != $id[1])
+			$newDictionary[$id[1]] = Array();
+		$individualSigns = explode("-", $readings);
+		foreach($individualSigns as $sign)
+		{
+			if(isset($readingdictionary[$sign]))
+			{
+				array_push($newDictionary[$id[0]], $readingdictionary[$sign]);
+				if($id[0
