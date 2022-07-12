@@ -41,4 +41,22 @@ if(isset($_GET["multi"]))
 			if(isset($readingdictionary[$sign]))
 			{
 				array_push($newDictionary[$id[0]], $readingdictionary[$sign]);
-				if($id[0
+				if($id[0] != $id[1])
+					array_push($newDictionary[$id[1]], $readingdictionary[$sign]);
+			}
+			else
+			{
+				echo "Reading not known! $sign";
+				exit();
+			}
+		}
+	}
+	file_put_contents("matlab/data/cuneiform/multiSignLogogrammsDictionary.json", json_encode($newDictionary));
+}
+
+function parseToSpecial($read)
+{
+	$parsed = [];
+	$parsed[0] = strtolower(trim($read));
+	echo $parsed[0];
+	// $read = str_replace(
