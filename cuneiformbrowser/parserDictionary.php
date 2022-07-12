@@ -59,4 +59,24 @@ function parseToSpecial($read)
 	$parsed = [];
 	$parsed[0] = strtolower(trim($read));
 	echo $parsed[0];
-	// $read = str_replace(
+	// $read = str_replace("sz", "š", $read);
+	// $read = str_replace("s.", "ṣ", $read);
+	$rep = Array(
+			"sz" => "š",
+			"t," => "ṭ",
+			"s," => "ṣ",
+			"h" => "ḫ",
+			"s'" => "ś",
+			"'" => "ʾ"
+			);
+	$parsed[0] = strtr($parsed[0], $rep);
+	echo " -> $parsed[0]";
+	$parsed[1] = $parsed[0];
+	$parsed[0] = replaceFirstVowel($parsed[0]);
+	echo " -> $parsed[0]";
+	$rep = Array(
+			"1" => "₁",
+			"2" => "₂",
+			"3" => "₃",
+			"4" => "₄",
+	
