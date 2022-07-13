@@ -102,4 +102,30 @@ function replaceFirstVowel($word) {
 	if($number > 1)
 		return $word;
 
-	$wo
+	$word = substr($word, 0, -1);
+
+	$replacements = Array(
+			"a" => Array(
+					"á",
+					"à"
+			),
+			"e" => Array(
+					"é",
+					"è"
+			),
+			"i" => Array(
+					"í",
+					"ì"
+			),
+			"u" => Array(
+					"ú",
+					"ù"
+			)
+	);
+	$pos = strcspn($word, "aeiu");
+	$word = substr_replace($word, $replacements[$word[$pos]][$number], $pos, 1);
+	return $word;
+}
+?>
+
+
