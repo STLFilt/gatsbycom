@@ -80,4 +80,15 @@ function startingCheck()
  		$process = trim(fgets($file));  // first line -> type of process
  		$_SESSION['verboseFile'] = trim(fgets($file)); // verbose file
  		$jsonData = json_decode(trim(fgets($file)),true); // info
- //		$_SESSION['backupData'] = $j
+ //		$_SESSION['backupData'] = $jsonData;
+ 		fclose($file);
+ 		return array('process'=>true,'type'=>$process);
+ 	}
+	if(file_exists(_USERS_.$_SESSION["cuneidemo"]['user'].'_backupDetection.txt'))
+	{
+		logMessage("Corrections available.");
+		$backupCorrections = fopen(_USERS_.$_SESSION["cuneidemo"]['user'].'_backupDetection.txt','rb');
+
+		$image = fscanf($backupCorrections, "%u"); // first line is only for the server
+		fclose($backupCorrections);
+		return array('pr
