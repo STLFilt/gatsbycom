@@ -91,4 +91,11 @@ function startingCheck()
 
 		$image = fscanf($backupCorrections, "%u"); // first line is only for the server
 		fclose($backupCorrections);
-		return array('pr
+		return array('process'=>false,'backup'=>true, 'image'=>$image);
+	}
+	else
+		return array('process'=>false,'backup'=>false);
+}
+?>
+
+
