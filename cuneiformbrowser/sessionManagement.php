@@ -33,4 +33,29 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
 
 		if(($user == $userName && $pass == $userPassword))
 		{
-			$_SESS
+			$_SESSION["cuneidemo"] = Array();
+		    $_SESSION["cuneidemo"]["enabled"] = true;
+		    $_SESSION["cuneidemo"]["user"] = $user;
+
+		    startSessionLog();
+
+		}
+		else
+		{
+			# Show login form. Request for username and password
+			$message = "Wrong username and/or password";
+            form();
+		}
+	}
+
+
+
+function form()
+{
+    global $message;
+			{?>
+				<html>
+				<body>
+					<form method="POST" action="">
+						Username: <input type="text" name="user"><br/>
+						Password: <
