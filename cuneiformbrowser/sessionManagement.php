@@ -58,4 +58,15 @@ function form()
 				<body>
 					<form method="POST" action="">
 						Username: <input type="text" name="user"><br/>
-						Password: <
+						Password: <input type="password" name="pass"><br/>
+						<input type="submit" name="submit" value="Login">
+					</form> <br />
+					<?php echo $message;?>
+					<br />
+					Please note: this Web Interface will only work with modern browsers (IE10+ Firefox23+ Chrome7+ Opera12.01+) </br>
+					For an optimal experience, Firefox or Chrome are recommended
+
+				</body>
+				</html>
+			<?php }
+		
