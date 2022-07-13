@@ -16,4 +16,21 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
 	        form();
 	    }
 
-	  
+	    $user = $_POST["user"];
+	    $pass = $_POST["pass"];
+	    $xmlUsers = simplexml_load_file(_USERSLIST_);
+
+	    foreach($xmlUsers->user as $userInfo)
+	    {
+	        $userName = $userInfo->name;
+	        if($userName == $user)
+	        {
+	            $userPassword = $userInfo->password;
+	            $askedflag = true;
+	            break;
+	        }
+	    }
+
+		if(($user == $userName && $pass == $userPassword))
+		{
+			$_SESS
