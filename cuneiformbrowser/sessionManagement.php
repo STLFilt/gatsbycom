@@ -69,4 +69,15 @@ function form()
 				</body>
 				</html>
 			<?php }
-		
+			exit;
+}
+
+function startingCheck()
+{
+ 	if(file_exists(_USERS_.$_SESSION["cuneidemo"]['user'].'process.txt'))
+ 	{
+ 		$file = fopen(_USERDATA_.$_SESSION["nagbu"]['user']."process.txt",'rb');
+ 		$process = trim(fgets($file));  // first line -> type of process
+ 		$_SESSION['verboseFile'] = trim(fgets($file)); // verbose file
+ 		$jsonData = json_decode(trim(fgets($file)),true); // info
+ //		$_SESSION['backupData'] = $j
