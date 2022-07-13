@@ -79,4 +79,27 @@ function parseToSpecial($read)
 			"2" => "₂",
 			"3" => "₃",
 			"4" => "₄",
-	
+			"5" => "₅",
+			"6" => "₆",
+			"7" => "₇",
+			"8" => "₈",
+			"9" => "₉",
+			"0"	=> "₀"
+			);
+	$parsed[0] = strtr($parsed[0], $rep);
+	$parsed[1] = strtr($parsed[1], $rep);
+
+	echo " to $parsed[0] ($id) /$parsed[1]/<br />";
+	return $parsed;
+}
+
+function replaceFirstVowel($word) {
+	if(is_numeric(substr($word, -2)) || !is_numeric(substr($word, -1)))
+		return $word;
+
+	$number = intval(substr($word, -1)) - 2;
+	echo " ($number) ";
+	if($number > 1)
+		return $word;
+
+	$wo
