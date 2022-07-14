@@ -305,3 +305,49 @@ To be able to access any function, you have to first choose an image Group and a
 Once in a collection, you will have three options (or four, see below):<br /><br />
 <div id="generalHelp">
 <div class="center"><div class="buttonNormal">Select Image</div><div class="buttonNormal">Upload Image</div></div>
+<br/>
+<div class="center"><div class="buttonNormal">Select Image</div></div>
+This will open a gallery of all the images of the given collection. <br />
+Click on an image to load it on the editor, click on the button with the annotations' status to open the image with its annotations loaded. <br />
+For non-archived annotations, you have the option to erase the image (an its annotations) by clicking on the small red cross near the thumbnail.
+<br /><br />
+<div class="center"><div class="buttonNormal">Upload Image</div></div>
+This tab will enable you to upload new images to the collection. You will have to give them a new name (<i>only</i> alphanumeric characters!)<br />
+<b>Important</b>: <i>only</i> JPEG and PNG images are processed correctly.
+
+<br />
+<br />
+For more information, you can always download the quick starter guides (annotation <a href="functions/AnnotationQuickGuide.pdf" download><img src="functions/AdobePDF.png" /></a>).
+</div></div>
+</div>
+<div class="button statusButton popupButton" onclick="setPopUp();" style="background-color:white; ">Ok</div></div>
+
+
+<script> <?php if(isset($_GET['selection']))
+				echo "var sel =true;";
+			   else
+			   	echo "var sel= false;";
+
+			   if(isset($_GET['group']))
+			   {
+			   		echo 'var groupID = '.$_GET['group'];
+			   		echo ";var groupName =  \"".$_SESSION['cuneidemo']['groupName']."\";";
+			   		echo 'var collectionID = '.$_GET['collection'];
+			   		echo ";var collectionName =  \"".$_SESSION['cuneidemo']['collectionName']."\";";
+			   }else
+			   {
+			   	echo 'var groupID =null;
+					  var groupName = null;
+				      var collectionID = null;
+				      var collectionName = null;';
+			   }
+
+			   if(isset($_GET['page']))
+			   		echo "var currentPage = \"$_GET[page]\";";
+			   else
+			   		echo 'var currentPage = "0";';
+			   	?></script>
+
+<script src="functions/trainer.js"></script>
+</body>
+</html>
