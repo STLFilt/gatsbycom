@@ -380,3 +380,104 @@ function generateAnnotation($name, $jsonString)
 
 	$xmlAnno = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?><annotation></annotation>');
 	//$xmlAnno = $xmlAnnoAll->addChild("annotation");
+	$xmlAnno->addChild("folder","KileS");
+	$xmlAnno->addChild("filename",$name);
+
+	$size = $xmlAnno->addChild("size");
+	$s = getimagesize($_SESSION['cuneidemo']["imagesPath"]."$name.jpg");
+	$size->addChild("width",$s[0]);
+	$size->addChild("height",$s[1]);
+
+	$id = 1;
+
+	foreach ($jsonAnno as $jsonBB){
+
+		// {"id":1,"xmin":261.215295,"ymin":306.4701,"xmax":362.0387,"ymax":373.3524,"symbol":"010", etc , "reviewed":true,"fp":false
+		/*<object>
+		<name>1</name>
+		<symbol>495</symbol>
+		<bndbox>
+		<xmin>584</xmin>
+		<ymin>620</ymin>
+		<xmax>694</xmax>
+		<ymax>698</ymax>
+		</bndbox>
+		<center>
+		<xc>639</xc>
+		<yc>659</yc>
+		</center>
+		<coordpos><row>1</row><col>1</col></coordpos>
+		<hrsymbol>e2</hrsymbol>
+		</object>*/
+		$newSign = false;
+		if($jsonBB != null)
+		{
+			if($jsonBB["reviewed"] == true)
+			{
+				if($jsonBB["fp"] == false)
+				{
+					$newSign = true;
+					$signName = $jsonBB["symbol"];
+					$read = $jsonBB["readableSymbol"];
+				}elseif($jsonBB["correction"] != "000")
+				{
+					$newSign = true;
+					$signName = $jsonBB["correction"];
+					$read = $jsonBB["corRead"];
+				}else
+				{
+					$newSign = false;
+				}
+
+				if($newSign)
+					{
+						$xmlBox = $xmlAnno->addChild("object");
+						$xmlBox->addChild("name",$id);
+						$xmlBox->addChild("symbol",$signName);
+						$xmlBox->addChild("readableSymbol",$read);
+						$box = $xmlBox->addChild("bndbox");
+						$box->addChild("xmin", $jsonBB["xmin"]);
+						$box->addChild("ymin", $jsonBB["ymin"]);
+						$box->addChild("xmax", $jsonBB["xmax"]);
+						$box->addChild("ymax", $jsonBB["ymax"]);
+						$center = $xmlBox->addChild("center");
+						$center->addChild("xc",($jsonBB["xmax"]-$jsonBB["xmin"])/2);
+						$center->addChild("yc",($jsonBB["ymax"]-$jsonBB["ymin"])/2);
+						$coor = $xmlBox->addChild("coordpos");
+						$coor->addChild("row",1);
+						$coor->addChild("col",1);
+						$id += 1;
+					}
+
+			}
+
+
+
+
+		}
+
+	}
+
+	$xmlAnno->asXML($_SESSION['cuneidemo']["annotationsPath"].$name.".xml");
+
+	//var_dump($xmlAnno);
+	$xmlImages = simplexml_load_file($_SESSION['cuneidemo']['imagesList']);
+
+	$image =$xmlImages->xpath('//image[file = "'.$name.'"]')[0];
+
+	echo "<pre>";
+	var_dump($image);
+	echo "</pre>";
+
+	$image->annotation["version"] = 1;
+	$image->annotation["info"] = "partial";
+	$image->annotation = $name;
+
+	echo "<pre>";
+	var_dump($image);
+	echo "</pre>";
+
+	$xmlImages->asXML($_SESSION['cuneidemo']['imagesList']);
+
+}
+?>
