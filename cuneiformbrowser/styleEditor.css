@@ -326,3 +326,94 @@ rect:hover{
 /*    position:fixed; */
 /*    top:0; */
 /*    left:0; */
+/*    height:100%; */
+/*    width:100%; */
+/*    z-index:1; */
+/*    background-color:white; */
+/*    opacity:1; */
+/*    filter:alpha(opacity=50); */
+/*    pointer-events: none; */
+
+/* } */
+
+.statusBuffer {
+    float: left;
+	display:inline-block;
+	position: relative;
+	width: 100; 
+	line-height: 15px;
+	display:none;
+	margin-right: auto;
+    margin-top: 3px;
+    padding: 3px;
+    vertical-align: middle;
+}
+
+#overlay {
+	position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 999;
+	
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    empty-cells: show;
+    margin:auto;
+}
+th, td {
+    padding: 5px;
+    text-align:center;
+
+}
+
+/* make sure cuneiform unicode is shown in nice font */
+td[name=unicode] {
+    font-family: assurbanipal;
+}
+
+td:hover {
+	background-color: AliceBlue ;
+}
+
+.yesModel{
+	    background-color:#C1FFC1;
+}
+.noModel {
+	background-color: lightpink ;
+}
+.notDetectable{
+	background-color: yellow ;
+}
+
+.meta form  { display: table;      }
+.meta p     { display: table-row;  }
+.meta label { display: table-cell; }
+.meta input { display: table-cell; }
+
+.logout {
+	background-image: url("lib/logout.svg");
+	background-size: 100%;
+    height: 1.2em;
+    width: 1.2em;
+    position:relative;
+    border-radius:5px;
+    border:1px solid #a1a1a1;
+    display: inline-block;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 1.5px;
+    padding: 3px;
+    position: relative;
+    vertical-align: middle;
+    float:right;
+    background-repeat: no-repeat;
+}
+
+.logout:hover{
+	background-color:salmon;
+}
