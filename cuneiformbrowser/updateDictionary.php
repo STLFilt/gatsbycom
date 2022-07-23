@@ -29,4 +29,13 @@ if(isset($_POST['id']))
 	file_put_contents($_SESSION['cuneidemo']['groupFolder']."dictionary.json",$dictionaryJSON);
 
 	// Now, generate a new thumb, if needed
-	if(!file_exists($_SESSION['cuneidemo']['groupModels']."modelThumb/thumb_".spri
+	if(!file_exists($_SESSION['cuneidemo']['groupModels']."modelThumb/thumb_".sprintf("%03d", $_POST['id'])."_model001.jpg") && $thumb)
+	{
+		$xmlImages = simplexml_load_file($_SESSION['nagbu']['collectionFolder'].'imagesList.xml');
+		$imagefile = $_SESSION['cuneidemo']['imagesPath'].((String)$xmlImages->image[$_SESSION['cuneidemo']["imageID"]]->file).".jpg";
+		$src = imagecreatefromjpeg($imagefile);
+
+		if($_POST['height']>$_POST['width'])
+		{
+			$height = 100<$_POST['height']? 100:$_POST['height'];
+			$width = $_POST[
