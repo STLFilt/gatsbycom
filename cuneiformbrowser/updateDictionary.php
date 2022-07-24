@@ -38,4 +38,16 @@ if(isset($_POST['id']))
 		if($_POST['height']>$_POST['width'])
 		{
 			$height = 100<$_POST['height']? 100:$_POST['height'];
-			$width = $_POST[
+			$width = $_POST['width']*$height/$_POST['height'];
+		}
+		else
+		{
+			$width = 100<$_POST['width']? 100:$_POST['width'];
+			$height = $_POST['height']*$width/$_POST['width'];
+		}
+
+		$dest = imagecreatetruecolor($width, $height);
+
+		imagecopyresized($dest, $src, 0, 0,$_POST['x'], $_POST['y'],$width, $height, $_POST['width'], $_POST['height']);
+
+		imagejpeg($dest,$_SESSION['cuneidemo']['groupModels']."modelThumb/thumbBack_".s
