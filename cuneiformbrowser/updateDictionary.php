@@ -50,4 +50,12 @@ if(isset($_POST['id']))
 
 		imagecopyresized($dest, $src, 0, 0,$_POST['x'], $_POST['y'],$width, $height, $_POST['width'], $_POST['height']);
 
-		imagejpeg($dest,$_SESSION['cuneidemo']['groupModels']."modelThumb/thumbBack_".s
+		imagejpeg($dest,$_SESSION['cuneidemo']['groupModels']."modelThumb/thumbBack_".sprintf("%03d", $_POST['id']).".jpg");
+
+	}
+}
+else
+{
+	echo json_encode(array('error'=>true));
+}
+?>
