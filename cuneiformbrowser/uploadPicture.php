@@ -13,4 +13,16 @@
  // same for Annotations? Or use AJAX instead? Yep, Ajax
 
 $newName = $_POST["catalog"];
-//$sid
+//$side = $_POST["side"];
+$uploadOk=1;
+$aValid = array('-', '_'); // this will be sued to replace spetial characters allowed in tablets' names.
+							// like this: !ctype_alnum(str_replace($aValid, '', $sUser)
+
+// Check if file is image
+$imageType = exif_imagetype($_FILES['imageUploaded']['tmp_name']);
+logmessage("has uploaded a file. Temporal name: ".$_FILES['imageUploaded']['tmp_name']);
+
+
+$allowedTypes = array( 
+        1,  // [] gif 
+        2,  // [] 
