@@ -57,4 +57,12 @@ if (!in_array($imageType, $allowedTypes)) {
 }
 
 // Check if Name is valid
-if(!ctype_alnum(str_replace(
+if(!ctype_alnum(str_replace($aValid, '',$newName)))
+{
+    logMessage("uploaded an image with invalid name.");
+	echo "incorrect name";
+	$uploadOk = 0;
+}
+//$newFileName = $_SESSION['cuneidemo']['imagesPath'] .$newName  . $file_ext; // does not work, because editor expects jpg extensions :/
+$newFileName = $_SESSION['cuneidemo']['imagesPath'] .$newName  . ".jpg";
+$newThumb =  $_SESSION['cuneidemo']['collectionFolder'] .'thumbs'.DIRECTORY_SEPARATOR. $newName  . "-thumb" . ".
