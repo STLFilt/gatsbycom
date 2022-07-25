@@ -25,4 +25,18 @@ logmessage("has uploaded a file. Temporal name: ".$_FILES['imageUploaded']['tmp_
 
 $allowedTypes = array( 
         1,  // [] gif 
-        2,  // [] 
+        2,  // [] jpg 
+        3,  // [] png 
+        6   // [] bmp 
+    ); 
+if (!in_array($imageType, $allowedTypes)) { 
+	logMessage("uploaded a not supported image file format.");
+	 //	echo $_FILES['imageUploaded'];
+	 //	echo "Not an Image";
+	 //	echo $imageType." ".$_FILES['imageUploaded']['tmp_name']." - ";
+	 $uploadOk = 0;
+} else {
+	switch ($imageType) { 
+		case 1 : 
+		    $img = imageCreateFromGif($_FILES['imageUploaded']['tmp_name']); 
+		    $fil
