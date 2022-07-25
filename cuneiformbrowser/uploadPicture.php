@@ -65,4 +65,19 @@ if(!ctype_alnum(str_replace($aValid, '',$newName)))
 }
 //$newFileName = $_SESSION['cuneidemo']['imagesPath'] .$newName  . $file_ext; // does not work, because editor expects jpg extensions :/
 $newFileName = $_SESSION['cuneidemo']['imagesPath'] .$newName  . ".jpg";
-$newThumb =  $_SESSION['cuneidemo']['collectionFolder'] .'thumbs'.DIRECTORY_SEPARATOR. $newName  . "-thumb" . ".
+$newThumb =  $_SESSION['cuneidemo']['collectionFolder'] .'thumbs'.DIRECTORY_SEPARATOR. $newName  . "-thumb" . ".jpg";
+
+
+// Check if file already exists
+if (file_exists($newFileName)) {
+    logMessage("uploaded an image that already exists.");
+    echo "Sorry, file already exists.";
+    $uploadOk = 0;
+}
+
+// Check if $uploadOk is set to 0 by an error
+if ($uploadOk==0) {
+    echo "Sorry, your file was not uploaded.";
+// if everything is ok, try to upload file
+} else {
+    #if (move_uploaded_file
