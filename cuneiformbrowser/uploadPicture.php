@@ -39,4 +39,22 @@ if (!in_array($imageType, $allowedTypes)) {
 	switch ($imageType) { 
 		case 1 : 
 		    $img = imageCreateFromGif($_FILES['imageUploaded']['tmp_name']); 
-		    $fil
+		    $file_ext = ".gif";
+		break; 
+		case 2 : 
+		    $img = imageCreateFromJpeg($_FILES['imageUploaded']['tmp_name']);
+		    $file_ext = ".jpg";
+		break; 
+		case 3 : 
+		    $img = imageCreateFromPng($_FILES['imageUploaded']['tmp_name']);
+		    $file_ext = ".png";
+		break; 
+		case 6 : 
+		    $img = imageCreateFromBmp($_FILES['imageUploaded']['tmp_name']);
+		    $file_ext = ".bmp";
+		break; 
+	}    
+}
+
+// Check if Name is valid
+if(!ctype_alnum(str_replace(
