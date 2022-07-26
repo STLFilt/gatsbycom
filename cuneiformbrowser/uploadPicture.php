@@ -80,4 +80,18 @@ if ($uploadOk==0) {
     echo "Sorry, your file was not uploaded.";
 // if everything is ok, try to upload file
 } else {
-    #if (move_uploaded_file
+    #if (move_uploaded_file($_FILES["imageUploaded"]["tmp_name"], $newFileName)) {
+    if (imagejpeg($img, $newFileName, 90)) {
+        logMessage("uploaded an Image: ". $newFileName);
+    } else {
+        logMessage("error storing the image file.");
+        echo "Sorry, there was an error uploading your file.". $_FILES["imageUploaded"]["tmp_name"];
+    }
+
+ // File stored, now the rest
+ // thumbnail
+
+    $width = imagesx( $img );
+    $height = imagesy( $img );
+
+    // calculate thumbnail size
