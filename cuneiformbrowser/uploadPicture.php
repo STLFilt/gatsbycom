@@ -107,4 +107,18 @@ if ($uploadOk==0) {
     $tmp_img = imagecreatetruecolor( $new_width, $new_height );
 
     // copy and resize old image into new image
-    imagecopyresized( $tmp_img, $img, 0, 0, 0, 0,
+    imagecopyresized( $tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
+
+    // save thumbnail into a file
+    imagejpeg( $tmp_img,  $newThumb);
+
+ // XML
+
+    $xmlImages = simplexml_load_file($_SESSION['cuneidemo']['imagesList']);
+
+    $image = $xmlImages->addChild("image");
+    $items = $xmlImages->total + 1;
+
+    $image->addChild("id", $items);
+    $name = $image->addChild("name", $newName . $side);
+    //if($side == "Vs")
