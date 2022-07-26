@@ -95,3 +95,16 @@ if ($uploadOk==0) {
     $height = imagesy( $img );
 
     // calculate thumbnail size
+
+    $new_width = 200;
+    $new_height = floor( $height * ( 200 / $width ) );
+    if ($new_height>270)
+    {
+	$new_height = floor( $height * ( 270 / $height ) );
+	$new_width = floor( $width * ( 270 / $height ) );
+    }
+    // create a new temporary image
+    $tmp_img = imagecreatetruecolor( $new_width, $new_height );
+
+    // copy and resize old image into new image
+    imagecopyresized( $tmp_img, $img, 0, 0, 0, 0,
