@@ -122,3 +122,14 @@ if ($uploadOk==0) {
     $image->addChild("id", $items);
     $name = $image->addChild("name", $newName . $side);
     //if($side == "Vs")
+   // 	$Fside = "front";
+   // else
+   // 	$Fside = "back";
+   $Fside = "NA";
+    $name->addAttribute("type", $Fside);
+    $image->addChild("file", $newName . $side);
+    $image->addChild("annotation","empty");
+    $image->annotation->addAttribute("info", "none");
+    $xmlImages->total = $items;
+    //backup!
+    copy($_SESSION['cuneidemo']['imagesList'], $_SESSION['cuneidemo']['collectionFolder'] . "backup.
