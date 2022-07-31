@@ -132,4 +132,15 @@ if ($uploadOk==0) {
     $image->annotation->addAttribute("info", "none");
     $xmlImages->total = $items;
     //backup!
-    copy($_SESSION['cuneidemo']['imagesList'], $_SESSION['cuneidemo']['collectionFolder'] . "backup.
+    copy($_SESSION['cuneidemo']['imagesList'], $_SESSION['cuneidemo']['collectionFolder'] . "backup.xml");
+    $xmlImages->asXML($_SESSION['cuneidemo']['imagesList']);
+
+	$items--;
+
+ // call editor
+
+ 	header("Location: editor.php?image=$items&annotation=false");
+
+
+}
+?>
